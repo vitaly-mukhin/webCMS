@@ -5,15 +5,14 @@
  *
  * @author Vitaly Mukhin
  */
-class Config {
-	
+class Fw_Config {
+
 	/**
 	 * Full filename for config file
 	 *
 	 * @var filename
 	 */
 	protected $_file = '';
-	
 	protected $_data = array();
 
 	public function __construct($file_name) {
@@ -24,14 +23,14 @@ class Config {
 			$this->_data = $this->_getConfigData();
 		}
 	}
-	
+
 	protected function _getConfigData() {
 		ob_start();
 		$data = include($this->_file);
 		ob_end_clean();
 		return $data;
 	}
-	
+
 	public function __get($name) {
 		if(isset($this->_data[$name])) {
 			if(is_array($this->_data[$name])) {
@@ -40,10 +39,10 @@ class Config {
 				return $this->_data[$name];
 			}
 		}
-		
-		throw new Exception('Unknown config property: '.$name);
+
+		throw new Exception('Unknown config property: ' . $name);
 	}
-	
+
 	public function __isset($name) {
 		return isset($this->_data[$name]);
 	}
