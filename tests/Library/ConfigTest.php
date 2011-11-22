@@ -14,37 +14,53 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
 	protected $object;
 
 	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
+	 * 
 	 */
 	protected function setUp() {
 		$this->object = new Config(PATH_CONFIG . DIRECTORY_SEPARATOR . 'config.php' );
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
+	 * 
 	 */
 	protected function tearDown() {
 		unset($this->object);
 	}
+	
+	public function test__construct() {
+		$this->assertInstanceOf('Config', $this->object);
+		
+		$obj = new Config(PATH_CONFIG . DIRECTORY_SEPARATOR . 'config.php' );
+		$this->assertTrue($obj instanceof Config);
+		unset($obj);
+		
+		$obj = new Config(array('a'=>1));
+		$this->assertTrue($obj instanceof Config);
+	}
 
 	/**
-	 * @covers Config::__get
+	 * 
 	 */
 	public function test__get() {
-//		var_dump($this->object);
-		$this->assertTrue($this->object instanceof Config);
-		$this->assertTrue($this->object->db instanceof Config);
+		$this->assertInstanceOf('Config', $this->object->db);
 		$this->assertEquals('localhost', $this->object->db->server);
 	}
 
 	/**
-	 * @covers Config::__isset
 	 */
 	public function test__isset() {
 		$this->assertTrue(isset($this->object->db));
 		$this->assertFalse(isset($this->object->ababagalamaga));
+	}
+	
+	/**
+	 * @expectedException Exception 
+	 */
+	public function testException() {
+		//	Testing unexisting config property
+		$this->object->ahaha;
+		//	Testing unexisting config property
+		$this->object->db->ahaha;
 	}
 
 }
