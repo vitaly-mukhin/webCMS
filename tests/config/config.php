@@ -3,7 +3,7 @@
 return array(
 	'db' => array(
 		'driver' => 'mysql',
-		'server' => 'localhost',
+		'server' => 'google.com',
 		'port' => '3306',
 		'name' => 'hb_dev',
 		'user' => 'root',

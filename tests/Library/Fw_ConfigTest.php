@@ -15,7 +15,15 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 	 * 
 	 */
 	protected function setUp() {
-		$this->object = new Fw_Config(PATH_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+		$this->object = new Fw_Config(array('db'=>array(
+					'driver' => 'mysql',
+					'server' => 'localhost',
+					'port' => '3306',
+					'name' => 'hb_dev',
+					'user' => 'root',
+					'password' => 'root',
+					'encoding' => 'utf8'
+				)));
 	}
 
 	/**
@@ -32,7 +40,7 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($obj instanceof Fw_Config);
 
 		//	Testing constructor with array argument
-		$obj = new Fw_Config(array('a'=>1));
+		$obj = new Fw_Config(array('a' => 1));
 		$this->assertTrue($obj instanceof Fw_Config);
 	}
 
@@ -52,19 +60,40 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException Exception 
+	 * @expectedException Fw_Exception_Config
 	 */
 	public function testException() {
-		//	Testing unexisting config property
 		$this->object->ahaha;
 	}
 
 	/**
-	 * @expectedException Exception
+	 * @expectedException Fw_Exception_Config
 	 */
 	public function testExceptionIncorrectFilename() {
 		//	Testing constructor with incorrect filename argument
 		$obj = new Fw_Config(PATH_CONFIG . 'ababagalamaga.php');
+	}
+
+	public function testToArray() {
+		$obj = new Fw_Config(array(
+					'driver' => 'mysql',
+					'server' => 'localhost',
+					'port' => '3306',
+					'name' => 'hb_dev',
+					'user' => 'root',
+					'password' => 'root',
+					'encoding' => 'utf8'
+				));
+
+		$this->assertEquals(array(
+			'driver' => 'mysql',
+			'server' => 'localhost',
+			'port' => '3306',
+			'name' => 'hb_dev',
+			'user' => 'root',
+			'password' => 'root',
+			'encoding' => 'utf8'
+				), $obj->toArray());
 	}
 
 }
