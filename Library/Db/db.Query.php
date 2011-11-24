@@ -24,6 +24,26 @@ class Fw_Db_Query {
 	 * @var Fw_Db_Query_Behaviour
 	 */
 	protected $_behaviour;
+	
+	/**
+	 * All params of query
+	 * array(
+	 *		self::PARAM_FROM => array(
+	 *			'alias' => array(
+	 *				table => 'table_name',
+	 *				fields => array('field1', 'field2', ...) | '*'
+	 *			)
+	 *		),
+	 *		[
+	 *		self::PARAM_WHERE => array(
+	 *			Fw_Db_Query_Where, 
+	 *			[Fw_Db_Query_Where]
+	 *		)
+	 *		]
+	 * )
+	 * 
+	 * @var array
+	 */
 	protected $_params = array();
 
 	const PARAM_FROM = 'from';
@@ -73,6 +93,10 @@ class Fw_Db_Query {
 		$this->_params[self::PARAM_FROM][$alias] = array('table' => $table_name, 'fields' => (!empty($fields) ? $fields : '*'));
 
 		return $this;
+	}
+	
+	public function where($condition) {
+		
 	}
 
 	/**

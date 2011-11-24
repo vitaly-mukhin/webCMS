@@ -18,5 +18,12 @@ abstract class Fw_Db_Query_Behaviour {
 	}
 	
 	abstract function sql();
+	
+	protected function _addCommaAndPush(&$sql, $array) {
+		$l = count($array); //	array(f1, f2); $l = 2;
+		for ($i = 0; $i < $l; $i++) {
+			$sql[] = $array[$i]. (($i+1) < $l ? ',' : '');			
+		}
+	}
 
 }

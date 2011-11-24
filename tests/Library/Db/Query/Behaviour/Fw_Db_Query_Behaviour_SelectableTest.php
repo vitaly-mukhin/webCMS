@@ -7,21 +7,19 @@
 class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * @var Fw_Db_Query_Behaviour_Selectable
+	 * @var Fw_Db_Query
 	 */
 	protected $object;
 
 	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
+	 * 
 	 */
 	protected function setUp() {
-//		$this->object = Fw_Db::i()->query()->select()->getBehaviour();
+		$this->object = Fw_Db::i()->query()->select();
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
+	 * 
 	 */
 	protected function tearDown() {
 		
@@ -35,10 +33,10 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSqlSimpleAlias() {
-		$tableName = array('al'=>'table_name');
+		$tableName = array('tb'=>'table_name');
 		$obj = Fw_Db::i()->query()->from($tableName)->select()->getBehaviour();
 		$sql = $obj->sql();
-		$this->assertEquals('SELECT al.* FROM `table_name` al', $sql);
+		$this->assertEquals('SELECT tb.* FROM `table_name` tb', $sql);
 	}
 
 	public function testSqlSingleColumn() {
@@ -49,12 +47,48 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('SELECT `table_name`.field FROM `table_name`', $sql);
 	}
 
-	public function testSqlMultiColumn() {
-		$tableName = 'table_name';
-		$tableFields = array('field1', 'field2');
+	public function testSqlSingleColumnAlias() {
+		$tableName = array('tb'=>'table_name');
+		$tableFields = 'field';
 		$obj = Fw_Db::i()->query()->from($tableName, $tableFields)->select()->getBehaviour();
 		$sql = $obj->sql();
-		$this->assertEquals('SELECT `table_name`.field1, `table_name`.field2 FROM `table_name`', $sql);
+		$this->assertEquals('SELECT tb.field FROM `table_name` tb', $sql);
+	}
+
+	public function testSqlMultiColumn() {
+		$select = $this->object->from('table_name', array('field1', 'field2'))->getBehaviour();
+		$this->assertEquals('SELECT `table_name`.field1, `table_name`.field2 FROM `table_name`', $select->sql());
+	}
+
+	public function testSqlMultiColumnAlias() {
+		$select = $this->object->from(array('tb'=>'table_name'), array('field1', 'field2'))->getBehaviour();
+		$this->assertEquals('SELECT tb.field1, tb.field2 FROM `table_name` tb', $select->sql());
+	}
+
+	public function testSqlMultiTables() {
+		$select = $this->object->from('table_name', 'field')->from('table_name1', 'field1')->getBehaviour();
+		$this->assertEquals('SELECT `table_name`.field, `table_name1`.field1 FROM `table_name`, `table_name1`', $select->sql());
+	}
+
+	public function testSqlMultiTablesAlias() {
+		$select = $this->object->from(array('tb'=>'table_name'), 'field')->from(array('tb1'=>'table_name1'), 'field1')->getBehaviour();
+		$this->assertEquals('SELECT tb.field, tb1.field1 FROM `table_name` tb, `table_name1` tb1', $select->sql());
+	}
+
+	/**
+	 * @assert 'SELECT `table_name`.field1, `table_name`.field2, `table_name1`.field1 FROM `table_name`, `table_name1`'
+	 */
+	public function testSqlMultiTablesMultiColumns() {
+		$select = $this->object->from('table_name', array('field1', 'field2'))->from('table_name1', 'field1')->getBehaviour();
+		$this->assertEquals('SELECT `table_name`.field1, `table_name`.field2, `table_name1`.field1 FROM `table_name`, `table_name1`', $select->sql());
+	}
+
+	/**
+	 * @assert 'SELECT tb.field1, tb.field2, tb1.field1 FROM `table_name` tb, `table_name1` tb1'
+	 */
+	public function testSqlMultiTablesMultiColumnsAlias() {
+		$select = $this->object->from(array('tb'=>'table_name'), array('field1', 'field2'))->from(array('tb1'=>'table_name1'), 'field1')->getBehaviour();
+		$this->assertEquals('SELECT tb.field1, tb.field2, tb1.field1 FROM `table_name` tb, `table_name1` tb1', $select->sql());
 	}
 
 }

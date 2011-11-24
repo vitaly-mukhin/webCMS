@@ -22,18 +22,19 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 				$fs[] = sprintf($template, $alias, $t['fields']);
 			}
 		}
-		foreach($fs as $k=>$f) {
-			$sql[] = $f. (($k+1) < count($fs) ? ',' : '');
-		}
+		$this->_addCommaAndPush($sql, $fs);
 
 		$sql[] = 'FROM';
 
+		$fs = array();
 		foreach ($params[Fw_Db_Query::PARAM_FROM] as $alias => $t) {
-			$sql[] = '`' . $t['table'] . '`';
+			$a = '`' . $t['table'] . '`';
 			if ($alias != $t['table']) {
-				$sql[] = $alias;
+				$a .= ' '.$alias;
 			}
+			$fs[] = $a;
 		}
+		$this->_addCommaAndPush($sql, $fs);
 
 		return implode(' ', $sql);
 	}

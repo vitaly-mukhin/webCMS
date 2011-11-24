@@ -57,9 +57,12 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($obj == $this->object);	//	returns same object link
 		$this->assertArrayHasKey('from', $this->object->export());
 		$this->assertEquals(array($tableName => array('table' => $tableName, 'fields' => '*')), $this->object->export(Fw_Db_Query::PARAM_FROM));
+	}
 		
+	public function testFromSimpleFields() {
+		$tableName = 'aaa';
 		$tableFields = 'fields';
-		$obj = $this->object->from($tableName, $tableFields);
+		$this->object->from($tableName, $tableFields);
 		$this->assertEquals(array($tableName => array('table' => $tableName, 'fields' => $tableFields)), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 		
@@ -76,8 +79,8 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$tableFields = 'fields';
 		$tableName1 = 'table_name1';
 		$tableFields1 = 'fields1';
-		$obj = $this->object->from($tableName, $tableFields);
-		$obj = $this->object->from($tableName1, $tableFields1);
+		$this->object->from($tableName, $tableFields);
+		$this->object->from($tableName1, $tableFields1);
 		$this->assertEquals(array($tableName => array('table' => $tableName, 'fields' => $tableFields), $tableName1 => array('table' => $tableName1, 'fields' => $tableFields1)), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 

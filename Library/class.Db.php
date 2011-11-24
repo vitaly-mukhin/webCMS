@@ -27,10 +27,6 @@ class Fw_Db {
 		return static::$_instance;
 	}
 
-	public static function reset() {
-		self::$_instance = null;
-	}
-
 	/**
 	 * 
 	 */
