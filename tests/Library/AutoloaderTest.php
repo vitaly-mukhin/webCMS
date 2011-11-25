@@ -26,12 +26,12 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase {
 	protected function tearDown() {
 		
 	}
-	
+
 	public function testI() {
 		$this->assertTrue(Autoloader::i() instanceof Autoloader);
 		$this->assertTrue(Autoloader::i() instanceof Autoloader);
 	}
-		
+
 	/**
 	 * 
 	 */

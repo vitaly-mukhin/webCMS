@@ -16,14 +16,14 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 	 */
 	protected function setUp() {
 		$this->object = new Fw_Config(array('db'=>array(
-					'driver' => 'mysql',
-					'server' => 'localhost',
-					'port' => '3306',
-					'name' => 'hb_dev',
-					'user' => 'root',
-					'password' => 'root',
-					'encoding' => 'utf8'
-				)));
+						'driver'=>'mysql',
+						'server'=>'localhost',
+						'port'=>'3306',
+						'name'=>'hb_dev',
+						'user'=>'root',
+						'password'=>'root',
+						'encoding'=>'utf8'
+						)));
 	}
 
 	/**
@@ -40,7 +40,7 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($obj instanceof Fw_Config);
 
 		//	Testing constructor with array argument
-		$obj = new Fw_Config(array('a' => 1));
+		$obj = new Fw_Config(array('a'=>1));
 		$this->assertTrue($obj instanceof Fw_Config);
 	}
 
@@ -76,23 +76,23 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 
 	public function testToArray() {
 		$obj = new Fw_Config(array(
-					'driver' => 'mysql',
-					'server' => 'localhost',
-					'port' => '3306',
-					'name' => 'hb_dev',
-					'user' => 'root',
-					'password' => 'root',
-					'encoding' => 'utf8'
+					'driver'=>'mysql',
+					'server'=>'localhost',
+					'port'=>'3306',
+					'name'=>'hb_dev',
+					'user'=>'root',
+					'password'=>'root',
+					'encoding'=>'utf8'
 				));
 
 		$this->assertEquals(array(
-			'driver' => 'mysql',
-			'server' => 'localhost',
-			'port' => '3306',
-			'name' => 'hb_dev',
-			'user' => 'root',
-			'password' => 'root',
-			'encoding' => 'utf8'
+			'driver'=>'mysql',
+			'server'=>'localhost',
+			'port'=>'3306',
+			'name'=>'hb_dev',
+			'user'=>'root',
+			'password'=>'root',
+			'encoding'=>'utf8'
 				), $obj->toArray());
 	}
 

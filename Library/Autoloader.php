@@ -26,7 +26,7 @@ class Autoloader {
 	 * @return Autoloader
 	 */
 	public static function i() {
-		if (!self::$_instance) {
+		if(!self::$_instance) {
 			self::$_instance = new static();
 		}
 		return self::$_instance;
@@ -56,12 +56,12 @@ class Autoloader {
 	public function invoke($class) {
 		$class_array = explode('_', $class);
 
-		if (count($class_array) > 1 && isset(self::$_stack[$class_array[0]])) {
+		if(count($class_array) > 1 && isset(self::$_stack[$class_array[0]])) {
 			$filename = $this->_invoke($class_array[0], array_slice($class_array, 1));
 		} else {
 			$filename = $this->_invoke('', $class_array);
 		}
-		if (file_exists($filename)) {
+		if(file_exists($filename)) {
 			include_once $filename;
 			return true;
 		} else {
