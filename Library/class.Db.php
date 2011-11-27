@@ -4,6 +4,9 @@
  * Description of class
  *
  * @author Vitaly Mukhin
+ * 
+ * @property-read PDO $pointer
+ * 
  */
 class Fw_Db {
 
@@ -33,6 +36,13 @@ class Fw_Db {
 	protected function __construct() {
 		
 	}
+	
+	public function __get($name) {
+		switch($name) {
+			case 'pointer':
+				return $this->_connection;
+		}
+	}
 
 	/**
 	 *
@@ -60,5 +70,7 @@ class Fw_Db {
 	public function query($tableName=null) {
 		return new Fw_Db_Query($this, $tableName);
 	}
+	
+//	public function 
 
 }

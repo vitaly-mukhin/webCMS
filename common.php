@@ -10,15 +10,19 @@ Autoloader::i()
 
 $Config = new Fw_Config(PATH_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
 
-$Db = Fw_Db::i($Config->db);
+$Db = Fw_Db::i()->connect($Config->db);
 
-register_shutdown_function(
-		function() {
-			$error = error_get_last();
-			if($error && !error_reporting()) {
-				$mesage = Common::formatErrorMessage($error);
-				$e = new Error($mesage);
-				echo $e;
-			}
-		}
-);
+//register_shutdown_function(
+//		function() {
+//			$error = error_get_last();
+//			if($error && !error_reporting()) {
+//				$mesage = Common::formatErrorMessage($error);
+//				$e = new Error($mesage);
+//				echo $e;
+//			}
+//		}
+//);
+
+$test = $Db->query()->select()->from('books')->exec();
+
+var_dump($test);

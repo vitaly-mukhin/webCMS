@@ -4,6 +4,9 @@
  * Description of Fw_Exception
  *
  * @author Mukhenok
+ * 
+ * @property-read string $sql
+ * @property-read array $binds
  */
 abstract class Fw_Db_Query_Behaviour {
 
@@ -15,6 +18,17 @@ abstract class Fw_Db_Query_Behaviour {
 
 	public function __construct(Fw_Db_Query $query) {
 		$this->_query = $query;
+	}
+
+	public function __get($name) {
+		switch ($name) {
+			case 'sql':
+			case 'binds':
+				if (empty($this->_sql)) {
+					$this->_build();
+				}
+				return $this->{'_' . $name};
+		}
 	}
 
 	protected function _build() {
