@@ -15,6 +15,8 @@ abstract class Fw_Db_Query_Behaviour {
 	 * @var Fw_Db_Query
 	 */
 	protected $_query;
+	protected $_sql;
+	protected $_binds;
 
 	public function __construct(Fw_Db_Query $query) {
 		$this->_query = $query;

@@ -66,6 +66,7 @@ class Fw_Db_Query {
 
 	const PARAM_FROM = 'from';
 	const PARAM_WHERE = 'where';
+	const PARAM_VALUES = 'values';
 
 	public function __construct(Fw_Db $db, $table = null) {
 		$this->_db = $db;
@@ -83,6 +84,15 @@ class Fw_Db_Query {
 
 	/**
 	 *
+	 * @return Fw_Db_Query 
+	 */
+	public function insert() {
+		$this->_behaviour = new Fw_Db_Query_Behaviour_Insert($this);
+		return $this;
+	}
+
+	/**
+	 *
 	 * @return Fw_Db_Query_Behaviour
 	 */
 	public function getBehaviour() {
@@ -90,8 +100,10 @@ class Fw_Db_Query {
 	}
 
 	/**
+	 * Adding one more 'from' value
 	 *
 	 * @param string|array $table
+	 * @param array $fields
 	 * @return Fw_Db_Query 
 	 */
 	public function from($table, $fields = null) {
@@ -115,6 +127,17 @@ class Fw_Db_Query {
 	}
 
 	/**
+	 * Alias of from() method
+	 *
+	 * @param string|array $table
+	 * @param array $fields
+	 * @return Fw_Db_Query 
+	 */
+	public function into($table, $fields = null) {
+		return $this->from($table, $fields);
+	}
+
+	/**
 	 *
 	 * @param mix $condition
 	 * @param mix $value
@@ -123,6 +146,18 @@ class Fw_Db_Query {
 	public function where($condition, $value = null) {
 		$this->_params[self::PARAM_WHERE][md5($condition)] = new Fw_Db_Query_Where($condition, $value);
 
+		return $this;
+	}
+
+	/**
+	 *
+	 * @return Fw_Db_Query 
+	 */
+	public function values() {
+		$params = func_get_args();
+		foreach ($params as $p) {
+			$this->_params[self::PARAM_VALUES][] = $p;
+		}
 		return $this;
 	}
 
@@ -141,7 +176,7 @@ class Fw_Db_Query {
 		return $this->_params;
 	}
 
-	protected function e($options=array()) {
+	protected function _execute($options=array()) {
 		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
 
 		$this->_Stmt = $this->_connection->prepare($this->getBehaviour()->sql, $options);
@@ -149,17 +184,17 @@ class Fw_Db_Query {
 
 		return $result;
 	}
-	
-	public function exec() {
-		if(!$this->e()) {
+
+	public function fetch() {
+		if (!$this->_execute()) {
 			throw new Fw_Exception_Db_Query('some problem with query');
 		}
-		
+
 		$this->_result = array();
 		while ($row = $this->_Stmt->fetch(PDO::FETCH_ASSOC)) {
 			$this->_result[] = $row;
 		}
-		
+
 		return $this->_result;
 	}
 

@@ -7,9 +7,6 @@
  */
 class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 
-	protected $_sql;
-	protected $_binds;
-
 	protected function _build() {
 		$params = $this->_query->export();
 		$sql = array('SELECT');

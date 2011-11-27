@@ -55,7 +55,7 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$tableName = 'aaa';
 		$obj = $this->object->from($tableName);
 		$this->assertTrue($obj == $this->object); //	returns same object link
-		$this->assertArrayHasKey('from', $this->object->export());
+		$this->assertArrayHasKey(Fw_Db_Query::PARAM_FROM, $this->object->export());
 		$this->assertEquals(array($tableName=>array('table'=>$tableName, 'fields'=>'*')), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 
@@ -89,6 +89,26 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$value = 'value';
 		$this->object->where($cond, $value);
 		$this->assertEquals(array(md5($cond)=>new Fw_Db_Query_Where($cond, $value)), $this->object->export(Fw_Db_Query::PARAM_WHERE));
+	}
+	
+	public function testValuesReturn() {
+		$obj = $this->object->values(array('a', 'b', 'c'));
+		$this->assertTrue($obj == $this->object); //	returns same object link
+	}
+	
+	public function testValuesExport() {
+		$obj = $this->object->values(array('a', 'b', 'c'));
+		$this->assertArrayHasKey(Fw_Db_Query::PARAM_VALUES, $this->object->export());
+	}
+	
+	public function testValuesValues() {
+		$obj = $this->object->values(array('a', 'b', 'c'));
+		$this->assertEquals(array(array('a', 'b', 'c')), $this->object->export(Fw_Db_Query::PARAM_VALUES));
+	}
+	
+	public function testValuesMultiValues() {
+		$obj = $this->object->values(array('a', 'b', 'c'), array('a1', 'b1', 'c1'));
+		$this->assertEquals(array(array('a', 'b', 'c'), array('a1', 'b1', 'c1')), $this->object->export(Fw_Db_Query::PARAM_VALUES));
 	}
 
 }
