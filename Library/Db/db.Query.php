@@ -94,6 +94,15 @@ class Fw_Db_Query {
 
 	/**
 	 *
+	 * @return Fw_Db_Query 
+	 */
+	public function update() {
+		$this->_behaviour = new Fw_Db_Query_Behaviour_Update($this);
+		return $this;
+	}
+
+	/**
+	 *
 	 * @return Fw_Db_Query_Behaviour
 	 */
 	public function getBehaviour() {
@@ -108,21 +117,21 @@ class Fw_Db_Query {
 	 * @return Fw_Db_Query 
 	 */
 	public function from($table, $fields = null) {
-		if(empty($table)) {
-			throw new Fw_Exception_Db_Query_From('Empty from parameter');
+		if (empty($table)) {
+			throw new Fw_Exception_Db_Query('Empty FROM parameter');
 		}
 
-		if(empty($this->_params[self::PARAM_FROM])) {
+		if (empty($this->_params[self::PARAM_FROM])) {
 			$this->_params[self::PARAM_FROM] = array();
 		}
 
 		$alias = $table_name = $table;
-		if(is_array($table)) {
+		if (is_array($table)) {
 			reset($table);
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_FROM][$alias] = array('table' => $table_name, 'fields' => (!empty($fields) ? $fields : '*'));
 
 		return $this;
 	}
@@ -168,8 +177,8 @@ class Fw_Db_Query {
 	 * @return mix
 	 */
 	public function export($param = null) {
-		if($param !== null) {
-			if(isset($this->_params[$param])) {
+		if ($param !== null) {
+			if (isset($this->_params[$param])) {
 				return $this->_params[$param];
 			}
 			throw new Fw_Exception_Db_Query('Unknown parameter: ' . $param);
@@ -187,7 +196,7 @@ class Fw_Db_Query {
 	}
 
 	public function fetch() {
-		if(!$this->_execute()) {
+		if (!$this->_execute()) {
 			throw new Fw_Exception_Db_Query('some problem with query');
 		}
 
@@ -200,21 +209,21 @@ class Fw_Db_Query {
 	}
 
 	public function join($table, $condition, $fields = null) {
-		if(empty($table)) {
+		if (empty($table)) {
 			throw new Fw_Exception_Db_Query_Join('Empty from parameter');
 		}
 
-		if(empty($this->_params[self::PARAM_JOIN])) {
+		if (empty($this->_params[self::PARAM_JOIN])) {
 			$this->_params[self::PARAM_JOIN] = array();
 		}
 
 		$alias = $table_name = $table;
-		if(is_array($table)) {
+		if (is_array($table)) {
 			reset($table);
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_JOIN][$alias] = array('table'=>$table_name, 'condition'=>$condition, 'fields'=>(!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_JOIN][$alias] = array('table' => $table_name, 'condition' => $condition, 'fields' => (!empty($fields) ? $fields : '*'));
 
 		return $this;
 	}
