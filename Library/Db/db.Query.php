@@ -65,22 +65,22 @@ class Fw_Db_Query {
 
 	public function __construct(Fw_Db $db, $sql = null, $binds = null) {
 		$this->_db = $db;
-		
-		if(!empty($sql) && is_string($sql)) {
+
+		if (!empty($sql) && is_string($sql)) {
 			$this->_sql = $sql;
 			$this->_binds = $binds;
 		}
 	}
-	
+
 	public function __get($name) {
-		switch($name) {
+		switch ($name) {
 			case 'sql':
-				if(empty($this->_sql)) {
+				if (empty($this->_sql)) {
 					$this->_sql = $this->getBehaviour()->sql;
 				}
 				return $this->_sql;
 			case 'binds':
-				if(empty($this->_binds)) {
+				if (empty($this->_binds)) {
 					$this->_binds = $this->getBehaviour()->binds;
 				}
 				return $this->_binds;
@@ -100,8 +100,13 @@ class Fw_Db_Query {
 	 *
 	 * @return Fw_Db_Query 
 	 */
-	public function insert() {
+	public function insert($table=null, $values=null) {
 		$this->_behaviour = new Fw_Db_Query_Behaviour_Insert($this);
+		if (!empty($table)) {
+//			$fields = (is_int(key($values))) ? $
+			$this->into($table, array_keys($values));
+			$this->values(array_values($values));
+		}
 		return $this;
 	}
 
@@ -227,7 +232,7 @@ class Fw_Db_Query {
 		}
 
 		$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
-		
+
 		return $this->_result;
 	}
 
