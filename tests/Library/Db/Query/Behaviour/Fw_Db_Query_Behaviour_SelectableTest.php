@@ -30,6 +30,11 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name`', $select->sql);
 	}
 
+//	public function testSqlSimpleJoin() {
+//		$select = $this->object->from('table_name')->join()->getBehaviour();
+//		$this->assertEquals('SELECT `table_name`.* FROM `table_name`', $select->sql);
+//	}
+
 	public function testSqlSimpleWhere() {
 		$select = $this->object->from('table_name')->where('field = ?', 'value')->getBehaviour();
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name` WHERE (field = ?)', $select->sql);
