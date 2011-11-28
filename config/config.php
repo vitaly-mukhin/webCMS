@@ -5,7 +5,7 @@ return array(
 		'driver' => 'mysql',
 		'server' => 'localhost',
 		'port' => '3306',
-		'name' => 'hb_dev',
+		'name' => 'fw',
 		'user' => 'root',
 		'password' => 'root',
 		'encoding' => 'utf8'

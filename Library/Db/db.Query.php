@@ -26,6 +26,12 @@ class Fw_Db_Query {
 	protected $_behaviour;
 
 	/**
+	 *
+	 * @var PDO
+	 */
+	protected $_connection;
+
+	/**
 	 * All params of query
 	 * array(
 	 * 		self::PARAM_FROM => array(
@@ -46,8 +52,21 @@ class Fw_Db_Query {
 	 */
 	protected $_params = array();
 
+	/**
+	 *
+	 * @var PDOStatement Prepared statement
+	 */
+	protected $_Stmt;
+
+	/**
+	 *
+	 * @var array Result of executing a query 
+	 */
+	protected $_result;
+
 	const PARAM_FROM = 'from';
 	const PARAM_WHERE = 'where';
+	const PARAM_VALUES = 'values';
 
 	public function __construct(Fw_Db $db, $table = null) {
 		$this->_db = $db;
@@ -65,6 +84,15 @@ class Fw_Db_Query {
 
 	/**
 	 *
+	 * @return Fw_Db_Query 
+	 */
+	public function insert() {
+		$this->_behaviour = new Fw_Db_Query_Behaviour_Insert($this);
+		return $this;
+	}
+
+	/**
+	 *
 	 * @return Fw_Db_Query_Behaviour
 	 */
 	public function getBehaviour() {
@@ -72,28 +100,41 @@ class Fw_Db_Query {
 	}
 
 	/**
+	 * Adding one more 'from' value
 	 *
 	 * @param string|array $table
+	 * @param array $fields
 	 * @return Fw_Db_Query 
 	 */
 	public function from($table, $fields = null) {
-		if(empty($table)) {
+		if (empty($table)) {
 			throw new Fw_Exception_Db_Query_From('Empty from parameter');
 		}
 
-		if(empty($this->_params[self::PARAM_FROM])) {
+		if (empty($this->_params[self::PARAM_FROM])) {
 			$this->_params[self::PARAM_FROM] = array();
 		}
 
 		$alias = $table_name = $table;
-		if(is_array($table)) {
+		if (is_array($table)) {
 			reset($table);
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_FROM][$alias] = array('table' => $table_name, 'fields' => (!empty($fields) ? $fields : '*'));
 
 		return $this;
+	}
+
+	/**
+	 * Alias of from() method
+	 *
+	 * @param string|array $table
+	 * @param array $fields
+	 * @return Fw_Db_Query 
+	 */
+	public function into($table, $fields = null) {
+		return $this->from($table, $fields);
 	}
 
 	/**
@@ -109,18 +150,52 @@ class Fw_Db_Query {
 	}
 
 	/**
+	 *
+	 * @return Fw_Db_Query 
+	 */
+	public function values() {
+		$params = func_get_args();
+		foreach ($params as $p) {
+			$this->_params[self::PARAM_VALUES][] = $p;
+		}
+		return $this;
+	}
+
+	/**
 	 * Method used for retrieving parameters from Query to Behaviour
 	 *
 	 * @return mix
 	 */
 	public function export($param = null) {
-		if($param !== null) {
-			if(isset($this->_params[$param])) {
+		if ($param !== null) {
+			if (isset($this->_params[$param])) {
 				return $this->_params[$param];
 			}
 			throw new Fw_Exception_Db_Query('Unknown parameter: ' . $param);
 		}
 		return $this->_params;
+	}
+
+	protected function _execute($options=array()) {
+		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
+
+		$this->_Stmt = $this->_connection->prepare($this->getBehaviour()->sql, $options);
+		$result = $this->_Stmt->execute($this->getBehaviour()->binds);
+
+		return $result;
+	}
+
+	public function fetch() {
+		if (!$this->_execute()) {
+			throw new Fw_Exception_Db_Query('some problem with query');
+		}
+
+		$this->_result = array();
+		while ($row = $this->_Stmt->fetch(PDO::FETCH_ASSOC)) {
+			$this->_result[] = $row;
+		}
+
+		return $this->_result;
 	}
 
 }
