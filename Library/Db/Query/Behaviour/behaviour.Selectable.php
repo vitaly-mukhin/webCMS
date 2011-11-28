@@ -78,11 +78,11 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 	 */
 	protected function _buildJoin(&$sql, $params) {
 		if (!empty($params[Fw_Db_Query::PARAM_JOIN])) {
-			$sql[] = 'JOIN';
 
 			$fs = array();
 			foreach ($params[Fw_Db_Query::PARAM_JOIN] as $alias => $t) {
-				$a = '`' . $t['table'] . '`';
+				$a = 'JOIN';
+				$a .= ' `' . $t['table'] . '`';
 				if ($alias != $t['table']) {
 					$a .= ' ' . $alias;
 				}

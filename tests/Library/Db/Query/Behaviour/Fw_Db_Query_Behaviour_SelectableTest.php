@@ -120,9 +120,12 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * @assert 'SELECT tb.field1, tb.field2, tb1.field1 FROM `table_name` tb, `table_name1` tb1'
 	 */
-	public function testSqlWithJoin() {
-		$select = $this->object->from(array('tb' => 'table_name'))->join(array('tb1' => 'table_name1'), 'tb.f = tb1.f')->getBehaviour();
-		$this->assertEquals('SELECT tb.*, tb1.* FROM `table_name` tb JOIN `table_name1` tb1 ON (tb.f = tb1.f)', $select->sql);
+	public function testSqlWithJoinMulti() {
+		$select = $this->object->from(array('tb' => 'table_name'))
+				->join(array('tb1' => 'table_name1'), 'tb.f = tb1.f')
+				->join(array('tb2' => 'table_name2'), 'tb.f = tb2.f')
+				->getBehaviour();
+		$this->assertEquals('SELECT tb.*, tb1.*, tb2.* FROM `table_name` tb JOIN `table_name1` tb1 ON (tb.f = tb1.f), JOIN `table_name2` tb2 ON (tb.f = tb2.f)', $select->sql);
 	}
 
 }
