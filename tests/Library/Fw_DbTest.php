@@ -81,14 +81,4 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($this->object->query() instanceof Fw_Db_Query);
 	}
 
-	/**
-	 * 
-	 */
-	public function testQueryTable() {
-		$tableName = 'testTableName';
-		$attr = new ReflectionProperty('Fw_Db_Query', '_table');
-		$attr->setAccessible(true);
-		$this->assertTrue($attr->getValue($this->object->query($tableName)) == $tableName);
-	}
-
 }

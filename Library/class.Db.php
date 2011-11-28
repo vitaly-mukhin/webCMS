@@ -67,8 +67,8 @@ class Fw_Db {
 	 *
 	 * @return Fw_Db_Query 
 	 */
-	public function query($tableName=null) {
-		return new Fw_Db_Query($this, $tableName);
+	public function query($sql=null, $binds=null) {
+		return new Fw_Db_Query($this, $sql, $binds);
 	}
 	
 //	public function 

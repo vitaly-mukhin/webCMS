@@ -15,12 +15,6 @@ class Fw_Db_Query {
 
 	/**
 	 *
-	 * @var string
-	 */
-	protected $_table;
-
-	/**
-	 *
 	 * @var Fw_Db_Query_Behaviour
 	 */
 	protected $_behaviour;
@@ -69,9 +63,28 @@ class Fw_Db_Query {
 	const PARAM_WHERE = 'where';
 	const PARAM_VALUES = 'values';
 
-	public function __construct(Fw_Db $db, $table = null) {
+	public function __construct(Fw_Db $db, $sql = null, $binds = null) {
 		$this->_db = $db;
-		$this->_table = $table;
+		
+		if(!empty($sql) && is_string($sql)) {
+			$this->_sql = $sql;
+			$this->_binds = $binds;
+		}
+	}
+	
+	public function __get($name) {
+		switch($name) {
+			case 'sql':
+				if(empty($this->_sql)) {
+					$this->_sql = $this->getBehaviour()->sql;
+				}
+				return $this->_sql;
+			case 'binds':
+				if(empty($this->_binds)) {
+					$this->_binds = $this->getBehaviour()->binds;
+				}
+				return $this->_binds;
+		}
 	}
 
 	/**
@@ -189,8 +202,8 @@ class Fw_Db_Query {
 	protected function _execute($options = array()) {
 		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
 
-		$this->_Stmt = $this->_connection->prepare($this->getBehaviour()->sql, $options);
-		$result = $this->_Stmt->execute($this->getBehaviour()->binds);
+		$this->_Stmt = $this->_connection->prepare($this->sql, $options);
+		$result = $this->_Stmt->execute($this->binds);
 
 		return $result;
 	}
@@ -205,6 +218,16 @@ class Fw_Db_Query {
 			$this->_result[] = $row;
 		}
 
+		return $this->_result;
+	}
+
+	public function fetchRow() {
+		if (!$this->_execute()) {
+			throw new Fw_Exception_Db_Query('some problem with query');
+		}
+
+		$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
+		
 		return $this->_result;
 	}
 
