@@ -12,6 +12,7 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 		$sql = array('SELECT');
 		$binds = array();
 		$this->_buildFields($sql, $params);
+		$sql[] = 'FROM';
 		$this->_buildFrom($sql, $params);
 		$this->_buildJoin($sql, $params);
 		$this->_buildWhere($sql, $params, $binds);
@@ -56,26 +57,6 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 	 * @param array $sql
 	 * @param type $params 
 	 */
-	protected function _buildFrom(&$sql, $params) {
-		$sql[] = 'FROM';
-
-		$fs = array();
-		foreach ($params[Fw_Db_Query::PARAM_FROM] as $alias => $t) {
-			$a = '`' . $t['table'] . '`';
-			if ($alias != $t['table']) {
-				$a .= ' ' . $alias;
-			}
-			$fs[] = $a;
-		}
-
-		$this->_addSymbolAndPush($sql, $fs);
-	}
-
-	/**
-	 *
-	 * @param array $sql
-	 * @param type $params 
-	 */
 	protected function _buildJoin(&$sql, $params) {
 		if (!empty($params[Fw_Db_Query::PARAM_JOIN])) {
 
@@ -90,27 +71,6 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 			}
 			$this->_addSymbolAndPush($sql, $fs);
 		}
-	}
-
-	/**
-	 *
-	 * @param array $sql
-	 * @param type $params 
-	 */
-	protected function _buildWhere(&$sql, $params, &$binds) {
-		if (!isset($params[Fw_Db_Query::PARAM_WHERE])) {
-			return;
-		}
-
-		$sql[] = 'WHERE';
-
-		$fs = array();
-		foreach ($params[Fw_Db_Query::PARAM_WHERE] as $W) {
-			/* @var $W Fw_Db_Query_Where */
-			$W->appendToQuery($fs, $binds);
-		}
-
-		$this->_addSymbolAndPush($sql, $fs, ' AND');
 	}
 
 }
