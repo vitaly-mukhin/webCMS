@@ -12,9 +12,7 @@ class Fw_Db_Query_Behaviour_Insert extends Fw_Db_Query_Behaviour {
 		$sql = array('INSERT');
 		$binds = array();
 		$this->_buildInto($sql, $params);
-		$sql[] = '(';
 		$this->_buildFields($sql, $params);
-		$sql[] = ')';
 		$this->_buildValues($sql, $params, $binds);
 
 
@@ -40,6 +38,7 @@ class Fw_Db_Query_Behaviour_Insert extends Fw_Db_Query_Behaviour {
 	}
 
 	protected function _buildFields(&$sql, $params) {
+		$sql[] = '(';
 		$fs = array();
 		foreach ($params[Fw_Db_Query::PARAM_FROM] as $t) {
 			if (is_array($t['fields'])) {
@@ -51,6 +50,7 @@ class Fw_Db_Query_Behaviour_Insert extends Fw_Db_Query_Behaviour {
 			}
 		}
 		$this->_addSymbolAndPush($sql, $fs);
+		$sql[] = ')';
 	}
 
 	/**
