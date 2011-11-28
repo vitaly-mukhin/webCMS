@@ -148,4 +148,9 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('t2'=>array('table'=>'table2', 'condition'=>'a=b', 'fields'=>array('f1', 'f2', 'f3'))), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
+	public function testJoinFieldsMulti() {
+		$this->object->from('table')->join(array('t1'=>'table1'), 'a=b', array('f1', 'f2', 'f3'))->join(array('t2'=>'table2'), 'a1=b1', array('f11', 'f12', 'f13'));
+		$this->assertEquals(array('t1'=>array('table'=>'table1', 'condition'=>'a=b', 'fields'=>array('f1', 'f2', 'f3')), 't2'=>array('table'=>'table2', 'condition'=>'a1=b1', 'fields'=>array('f11', 'f12', 'f13'))), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+	}
+
 }
