@@ -127,5 +127,10 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 				->getBehaviour();
 		$this->assertEquals('SELECT tb.*, tb1.*, tb2.* FROM `table_name` tb JOIN `table_name1` tb1 ON (tb.f = tb1.f), JOIN `table_name2` tb2 ON (tb.f = tb2.f)', $select->sql);
 	}
+	
+	public function testSqlCount() {
+		$sql = $this->object->from(TBL_FILM, 'COUNT(film_id) AS cnt')->sql;
+		$this->assertEquals('SELECT COUNT(film_id) AS cnt FROM `'.TBL_FILM.'`', $sql);
+	}
 
 }

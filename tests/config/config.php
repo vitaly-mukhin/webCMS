@@ -3,11 +3,11 @@
 return array(
 	'db' => array(
 		'driver' => 'mysql',
-		'server' => 'google.com',
+		'server' => 'localhost',
 		'port' => '3306',
-		'name' => 'hb_dev',
+		'name' => 'sakila',
 		'user' => 'root',
-		'password' => 'root',
+		'password' => 'mariadb',
 		'encoding' => 'utf8'
 	)
 );

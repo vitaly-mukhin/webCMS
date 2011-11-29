@@ -12,3 +12,6 @@ define('PATH_LIB', PATH_ROOT . DIRECTORY_SEPARATOR . 'Library');
 require_once PATH_LIB . DIRECTORY_SEPARATOR . 'Autoloader.php';
 
 Autoloader::i()->pushAutoload('Fw', PATH_LIB . DIRECTORY_SEPARATOR, 'class');
+
+define('TBL_CATEGORY', 'category');
+define('TBL_FILM', 'film');

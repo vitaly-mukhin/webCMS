@@ -57,6 +57,7 @@ class Fw_Db {
 		try {
 			$this->_connection = new PDO($dsn, $Config->user, $Config->password, $options);
 		} catch (PDOException $e) {
+			$this->_connection = null;
 			throw new Fw_Exception_Db_Connection($e->getMessage(), $e->getCode(), $e->getPrevious());
 		}
 

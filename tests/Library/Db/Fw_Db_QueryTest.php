@@ -10,14 +10,26 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	 * @var Fw_Db_Query
 	 */
 	protected $object;
+	
+	protected static $db;
+	
+	
+	
+	public static function setUpBeforeClass() {
+		parent::setUpBeforeClass();
+
+		$Config = new Fw_Config(PATH_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+
+		self::$db = Fw_Db::i()->connect($Config->db);
+	}
 
 	/**
 	 * 
 	 */
 	protected function setUp() {
-		$this->object = Fw_Db::i()->query();
+		$this->object = self::$db->query();
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -170,11 +182,21 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testFetch() {
+		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->fetch();
+		$this->assertEquals(array(array('category_id'=>'10', 'name'=>'Games', 'last_update'=>'2006-02-15 04:46:27')), $result);
 		return false;
 	}
 
 	public function testFetchRow() {
+		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->fetchRow();
+		$this->assertEquals(array('category_id'=>'10', 'name'=>'Games', 'last_update'=>'2006-02-15 04:46:27'), $result);
 		return false;
 	}
 
+	public function testFetchRowCount() {
+		$result = $this->object->select()->from(TBL_FILM, 'COUNT(film_id) AS cnt')->where('rental_rate = ?', 2.99)->fetchRow();
+		$this->assertEquals(array('cnt'=>'323'), $result);
+		return false;
+	}
+	
 }
