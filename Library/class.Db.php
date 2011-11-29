@@ -72,6 +72,8 @@ class Fw_Db {
 		return new Fw_Db_Query($this, $sql, $binds);
 	}
 	
-//	public function 
+//	public function addLogger() {
+//	
+//	}
 
 }

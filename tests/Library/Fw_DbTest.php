@@ -68,15 +68,6 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 		$this->object->connect(self::$configIncorrect);
 	}
 
-//	/**
-//	 * 
-//	 */
-//	public function testConnectCorrect() {
-//		$attr = new ReflectionProperty(get_class($this->object), '_connection');
-//		$attr->setAccessible(true);
-//		$this->assertTrue($attr->getValue($this->object->connect(self::$configCorrect)) instanceof PDO);
-//	}
-
 	public function testQuery() {
 		$this->assertTrue($this->object->query() instanceof Fw_Db_Query);
 	}

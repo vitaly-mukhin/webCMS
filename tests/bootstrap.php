@@ -15,3 +15,4 @@ Autoloader::i()->pushAutoload('Fw', PATH_LIB . DIRECTORY_SEPARATOR, 'class');
 
 define('TBL_CATEGORY', 'category');
 define('TBL_FILM', 'film');
+define('TBL_LOG', 'log');

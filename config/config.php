@@ -5,9 +5,9 @@ return array(
 		'driver' => 'mysql',
 		'server' => 'localhost',
 		'port' => '3306',
-		'name' => 'fw',
+		'name' => 'fw_test',
 		'user' => 'root',
-		'password' => 'root',
+		'password' => 'mariadb',
 		'encoding' => 'utf8'
 	)
 );

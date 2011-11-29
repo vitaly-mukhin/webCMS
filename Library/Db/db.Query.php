@@ -66,7 +66,7 @@ class Fw_Db_Query {
 	public function __construct(Fw_Db $db, $sql = null, $binds = null) {
 		$this->_db = $db;
 
-		if (!empty($sql) && is_string($sql)) {
+		if(!empty($sql) && is_string($sql)) {
 			$this->_sql = $sql;
 			$this->_binds = $binds;
 		}
@@ -75,12 +75,12 @@ class Fw_Db_Query {
 	public function __get($name) {
 		switch ($name) {
 			case 'sql':
-				if (empty($this->_sql)) {
+				if(empty($this->_sql)) {
 					$this->_sql = $this->getBehaviour()->sql;
 				}
 				return $this->_sql;
 			case 'binds':
-				if (empty($this->_binds)) {
+				if(empty($this->_binds)) {
 					$this->_binds = $this->getBehaviour()->binds;
 				}
 				return $this->_binds;
@@ -100,9 +100,9 @@ class Fw_Db_Query {
 	 *
 	 * @return Fw_Db_Query 
 	 */
-	public function insert($table=null, $values=null) {
+	public function insert($table = null, $values = null) {
 		$this->_behaviour = new Fw_Db_Query_Behaviour_Insert($this);
-		if (!empty($table)) {
+		if(!empty($table)) {
 //			$fields = (is_int(key($values))) ? $
 			$this->into($table, array_keys($values));
 			$this->values(array_values($values));
@@ -135,21 +135,21 @@ class Fw_Db_Query {
 	 * @return Fw_Db_Query 
 	 */
 	public function from($table, $fields = null) {
-		if (empty($table)) {
+		if(empty($table)) {
 			throw new Fw_Exception_Db_Query('Empty FROM parameter');
 		}
 
-		if (empty($this->_params[self::PARAM_FROM])) {
+		if(empty($this->_params[self::PARAM_FROM])) {
 			$this->_params[self::PARAM_FROM] = array();
 		}
 
 		$alias = $table_name = $table;
-		if (is_array($table)) {
+		if(is_array($table)) {
 			reset($table);
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_FROM][$alias] = array('table' => $table_name, 'fields' => (!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!empty($fields) ? $fields : '*'));
 
 		return $this;
 	}
@@ -195,8 +195,8 @@ class Fw_Db_Query {
 	 * @return mix
 	 */
 	public function export($param = null) {
-		if ($param !== null) {
-			if (isset($this->_params[$param])) {
+		if($param !== null) {
+			if(isset($this->_params[$param])) {
 				return $this->_params[$param];
 			}
 			throw new Fw_Exception_Db_Query('Unknown parameter: ' . $param);
@@ -204,18 +204,40 @@ class Fw_Db_Query {
 		return $this->_params;
 	}
 
+	public function join($table, $condition, $fields = null) {
+		if(empty($table)) {
+			throw new Fw_Exception_Db_Query_Join('Empty from parameter');
+		}
+
+		if(empty($this->_params[self::PARAM_JOIN])) {
+			$this->_params[self::PARAM_JOIN] = array();
+		}
+
+		$alias = $table_name = $table;
+		if(is_array($table)) {
+			reset($table);
+			$alias = key($table);
+			$table_name = $table[$alias];
+		}
+		$this->_params[self::PARAM_JOIN][$alias] = array('table'=>$table_name, 'condition'=>$condition, 'fields'=>(!empty($fields) ? $fields : '*'));
+
+		return $this;
+	}
+
 	protected function _execute($options = array()) {
 		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
 
 		$this->_Stmt = $this->_connection->prepare($this->sql, $options);
-		$result = $this->_Stmt->execute($this->binds);
-
-		return $result;
+		return $this->_Stmt->execute($this->binds);
 	}
 
 	public function fetch() {
-		if (!$this->_execute()) {
+		if(!$this->_execute()) {
 			throw new Fw_Exception_Db_Query('some problem with query');
+		}
+		
+		if($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
+			return $this->_connection->lastInsertId();
 		}
 
 		$this->_result = array();
@@ -227,33 +249,17 @@ class Fw_Db_Query {
 	}
 
 	public function fetchRow() {
-		if (!$this->_execute()) {
+		if(!($result = $this->_execute())) {
 			throw new Fw_Exception_Db_Query('some problem with query');
+		}
+		
+		if($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
+			return $this->_connection->lastInsertId();
 		}
 
 		$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
 
 		return $this->_result;
-	}
-
-	public function join($table, $condition, $fields = null) {
-		if (empty($table)) {
-			throw new Fw_Exception_Db_Query_Join('Empty from parameter');
-		}
-
-		if (empty($this->_params[self::PARAM_JOIN])) {
-			$this->_params[self::PARAM_JOIN] = array();
-		}
-
-		$alias = $table_name = $table;
-		if (is_array($table)) {
-			reset($table);
-			$alias = key($table);
-			$table_name = $table[$alias];
-		}
-		$this->_params[self::PARAM_JOIN][$alias] = array('table' => $table_name, 'condition' => $condition, 'fields' => (!empty($fields) ? $fields : '*'));
-
-		return $this;
 	}
 
 }
