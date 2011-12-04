@@ -62,6 +62,7 @@ class Fw_Db_Query {
 	const PARAM_JOIN = 'join';
 	const PARAM_WHERE = 'where';
 	const PARAM_VALUES = 'values';
+	const PARAM_ORDER_BY = 'order';
 
 	public function __construct(Fw_Db $db, $sql = null, $binds = null) {
 		$this->_db = $db;
@@ -253,6 +254,26 @@ class Fw_Db_Query {
 		}
 		$this->_params[self::PARAM_JOIN][$alias] = array('table' => $table_name, 'condition' => $condition, 'fields' => (!empty($fields) ? $fields : '*'));
 
+		return $this;
+	}
+	
+	/**
+	 *
+	 * @param string|array $data
+	 * @return Fw_Db_Query
+	 * @throws Fw_Exception_Db_Query_Join 
+	 */
+	public function orderBy($data) {
+		if (empty($data)) {
+			throw new Fw_Exception_Db_Query_Join('Empty orderBy parameter');
+		}
+
+		if (empty($this->_params[self::PARAM_ORDER_BY])) {
+			$this->_params[self::PARAM_ORDER_BY] = array();
+		}
+		
+		$this->_params[self::PARAM_ORDER_BY] = $data;
+		
 		return $this;
 	}
 

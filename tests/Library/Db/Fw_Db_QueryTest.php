@@ -176,5 +176,10 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	public function testFetchRow() {
 		return false;
 	}
+	
+	public function testOrderBy() {
+		$this->object->orderBy(array('field'=>false));
+		$this->assertEquals(array('field' =>false), $this->object->export(Fw_Db_Query::PARAM_ORDER_BY));
+	}
 
 }
