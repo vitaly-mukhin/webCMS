@@ -76,6 +76,33 @@ abstract class Fw_Db_Query_Behaviour {
 		$this->_addSymbolAndPush($sql, $fs, ' AND');
 	}
 
+	/**
+	 *
+	 * @param array $sql
+	 * @param type $params 
+	 */
+	protected function _buildOrderBy(&$sql, $params) {
+		if (!isset($params[Fw_Db_Query::PARAM_ORDER_BY])) {
+			return;
+		}
+
+		$fs = array();
+		$sql[] = 'ORDER BY';
+		$order = $params[Fw_Db_Query::PARAM_ORDER_BY];
+		if (!is_array($order)) {
+			$order = array($order);
+		}
+		foreach ($order as $k => $o) {
+			$str = (is_int($k)) ? $o : $k;
+			if (!is_int($k)) {
+				$str .= ' ' . ($o ? 'ASC' : 'DESC');
+			}
+			$fs[] = $str;
+		}
+
+		$this->_addSymbolAndPush($sql, $fs);
+	}
+
 	protected function _addSymbolAndPush(&$sql, $array, $symbol = ',') {
 		$l = count($array); //	array(f1, f2); $l = 2;
 		for ($i = 0; $i < $l; $i++) {

@@ -30,11 +30,6 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name`', $select->sql);
 	}
 
-//	public function testSqlSimpleJoin() {
-//		$select = $this->object->from('table_name')->join()->getBehaviour();
-//		$this->assertEquals('SELECT `table_name`.* FROM `table_name`', $select->sql);
-//	}
-
 	public function testSqlSimpleWhere() {
 		$select = $this->object->from('table_name')->where('field = ?', 'value')->getBehaviour();
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name` WHERE (field = ?)', $select->sql);
@@ -126,6 +121,16 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 				->join(array('tb2' => 'table_name2'), 'tb.f = tb2.f')
 				->getBehaviour();
 		$this->assertEquals('SELECT tb.*, tb1.*, tb2.* FROM `table_name` tb JOIN `table_name1` tb1 ON (tb.f = tb1.f), JOIN `table_name2` tb2 ON (tb.f = tb2.f)', $select->sql);
+	}
+
+	public function testSqlOrderBy() {
+		$select = $this->object->from('table_name')->orderBy('Db.Field')->getBehaviour();
+		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field', $select->sql);
+	}
+
+	public function testSqlOrderByBool() {
+		$select = $this->object->from('table_name')->orderBy(array('Db.Field' => false, 'Db.Field1' => true))->getBehaviour();
+		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field DESC, Db.Field1 ASC', $select->sql);
 	}
 
 }

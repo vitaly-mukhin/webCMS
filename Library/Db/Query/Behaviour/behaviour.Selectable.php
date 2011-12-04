@@ -16,6 +16,7 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 		$this->_buildFrom($sql, $params);
 		$this->_buildJoin($sql, $params);
 		$this->_buildWhere($sql, $params, $binds);
+		$this->_buildOrderBy($sql, $params);
 
 
 
@@ -58,19 +59,20 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 	 * @param type $params 
 	 */
 	protected function _buildJoin(&$sql, $params) {
-		if (!empty($params[Fw_Db_Query::PARAM_JOIN])) {
-
-			$fs = array();
-			foreach ($params[Fw_Db_Query::PARAM_JOIN] as $alias => $t) {
-				$a = 'JOIN';
-				$a .= ' `' . $t['table'] . '`';
-				if ($alias != $t['table']) {
-					$a .= ' ' . $alias;
-				}
-				$fs[] = $a . ' ON (' . $t['condition'] . ')';
-			}
-			$this->_addSymbolAndPush($sql, $fs);
+		if (empty($params[Fw_Db_Query::PARAM_JOIN])) {
+			return;
 		}
+
+		$fs = array();
+		foreach ($params[Fw_Db_Query::PARAM_JOIN] as $alias => $t) {
+			$a = 'JOIN';
+			$a .= ' `' . $t['table'] . '`';
+			if ($alias != $t['table']) {
+				$a .= ' ' . $alias;
+			}
+			$fs[] = $a . ' ON (' . $t['condition'] . ')';
+		}
+		$this->_addSymbolAndPush($sql, $fs);
 	}
 
 }
