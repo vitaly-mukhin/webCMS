@@ -133,4 +133,14 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field DESC, Db.Field1 ASC', $select->sql);
 	}
 
+	public function testSqlLimit() {
+		$select = $this->object->from('table_name')->limit('Db.Field');
+		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field', $select->getBehaviour()->sql);
+	}
+
+//	public function testSqlOrderByBool() {
+//		$select = $this->object->from('table_name')->orderBy(array('Db.Field' => false, 'Db.Field1' => true))->getBehaviour();
+//		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field DESC, Db.Field1 ASC', $select->sql);
+//	}
+
 }
