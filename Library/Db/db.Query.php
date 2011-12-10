@@ -63,6 +63,9 @@ class Fw_Db_Query {
 	const PARAM_WHERE = 'where';
 	const PARAM_VALUES = 'values';
 	const PARAM_ORDER_BY = 'order';
+	const PARAM_LIMIT = 'limit';
+	const LIMIT_START = 'start';
+	const LIMIT_COUNT = 'count';
 
 	public function __construct(Fw_Db $db, $sql = null, $binds = null) {
 		$this->_db = $db;
@@ -101,7 +104,7 @@ class Fw_Db_Query {
 	 *
 	 * @return Fw_Db_Query 
 	 */
-	public function insert($table=null, $values=null) {
+	public function insert($table = null, $values = null) {
 		$this->_behaviour = new Fw_Db_Query_Behaviour_Insert($this);
 		if (!empty($table)) {
 //			$fields = (is_int(key($values))) ? $
@@ -205,38 +208,6 @@ class Fw_Db_Query {
 		return $this->_params;
 	}
 
-	protected function _execute($options = array()) {
-		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
-
-		$this->_Stmt = $this->_connection->prepare($this->sql, $options);
-		$result = $this->_Stmt->execute($this->binds);
-
-		return $result;
-	}
-
-	public function fetch() {
-		if (!$this->_execute()) {
-			throw new Fw_Exception_Db_Query('some problem with query');
-		}
-
-		$this->_result = array();
-		while ($row = $this->_Stmt->fetch(PDO::FETCH_ASSOC)) {
-			$this->_result[] = $row;
-		}
-
-		return $this->_result;
-	}
-
-	public function fetchRow() {
-		if (!$this->_execute()) {
-			throw new Fw_Exception_Db_Query('some problem with query');
-		}
-
-		$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
-
-		return $this->_result;
-	}
-
 	public function join($table, $condition, $fields = null) {
 		if (empty($table)) {
 			throw new Fw_Exception_Db_Query_Join('Empty from parameter');
@@ -256,7 +227,45 @@ class Fw_Db_Query {
 
 		return $this;
 	}
-	
+
+	protected function _execute($options = array()) {
+		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
+
+		$this->_Stmt = $this->_connection->prepare($this->sql, $options);
+		return $this->_Stmt->execute($this->binds);
+	}
+
+	public function fetch() {
+		if (!$this->_execute()) {
+			throw new Fw_Exception_Db_Query('some problem with query');
+		}
+
+		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
+			return $this->_connection->lastInsertId();
+		}
+
+		$this->_result = array();
+		while ($row = $this->_Stmt->fetch(PDO::FETCH_ASSOC)) {
+			$this->_result[] = $row;
+		}
+
+		return $this->_result;
+	}
+
+	public function fetchRow() {
+		if (!($result = $this->_execute())) {
+			throw new Fw_Exception_Db_Query('some problem with query');
+		}
+
+		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
+			return $this->_connection->lastInsertId();
+		}
+
+		$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
+
+		return $this->_result;
+	}
+
 	/**
 	 *
 	 * @param string|array $data
@@ -271,9 +280,21 @@ class Fw_Db_Query {
 		if (empty($this->_params[self::PARAM_ORDER_BY])) {
 			$this->_params[self::PARAM_ORDER_BY] = array();
 		}
-		
+
 		$this->_params[self::PARAM_ORDER_BY] = $data;
-		
+
+		return $this;
+	}
+
+	public function limit($limit, $start = 0) {
+
+		if (empty($this->_params[self::PARAM_LIMIT])) {
+			$this->_params[self::PARAM_LIMIT] = array();
+		}
+
+		$this->_params[self::PARAM_LIMIT][self::LIMIT_COUNT] = $limit;
+		$this->_params[self::PARAM_LIMIT][self::LIMIT_START] = $start;
+
 		return $this;
 	}
 

@@ -25,6 +25,14 @@ class Fw_Db_Query_Behaviour_InsertTest extends PHPUnit_Framework_TestCase {
 		
 	}
 
+	/**
+	 * @expectedException Fw_Exception_Db_Query 
+	 */
+	public function testSqlNonArrayFields() {
+		$insert = $this->object->into('table_name', 'field')->getBehaviour();
+		$this->assertEquals('INSERT INTO `table_name` ( `a`, `b` )', $insert->sql);
+	}
+
 	public function testSql() {
 		$insert = $this->object->into('table_name', array('a', 'b'))->getBehaviour();
 		$this->assertEquals('INSERT INTO `table_name` ( `a`, `b` )', $insert->sql);
@@ -44,6 +52,7 @@ class Fw_Db_Query_Behaviour_InsertTest extends PHPUnit_Framework_TestCase {
 	public function testSqlShort() {
 		$obj = Fw_Db::i()->query()->insert('table_name', array('a' => 1, 'b' => 2));
 		$this->assertEquals('INSERT INTO `table_name` ( `a`, `b` ) VALUES (?, ?)', $obj->sql);
+		$this->assertEquals(array(1, 2), $obj->binds);
 	}
 
 }

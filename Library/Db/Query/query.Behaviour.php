@@ -103,6 +103,25 @@ abstract class Fw_Db_Query_Behaviour {
 		$this->_addSymbolAndPush($sql, $fs);
 	}
 
+	/**
+	 *
+	 * @param array $sql
+	 * @param type $params 
+	 */
+	protected function _buildLimit(&$sql, $params) {
+		if (!isset($params[Fw_Db_Query::PARAM_LIMIT])) {
+			return;
+		}
+
+		$sql[] = 'LIMIT';
+		$fs = array(
+			$params[Fw_Db_Query::PARAM_LIMIT][Fw_Db_Query::LIMIT_START],
+			$params[Fw_Db_Query::PARAM_LIMIT][Fw_Db_Query::LIMIT_COUNT]
+		);
+
+		$this->_addSymbolAndPush($sql, $fs);
+	}
+
 	protected function _addSymbolAndPush(&$sql, $array, $symbol = ',') {
 		$l = count($array); //	array(f1, f2); $l = 2;
 		for ($i = 0; $i < $l; $i++) {

@@ -123,6 +123,11 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('SELECT tb.*, tb1.*, tb2.* FROM `table_name` tb JOIN `table_name1` tb1 ON (tb.f = tb1.f), JOIN `table_name2` tb2 ON (tb.f = tb2.f)', $select->sql);
 	}
 
+	public function testSqlCount() {
+		$sql = $this->object->from(TBL_FILM, 'COUNT(film_id) AS cnt')->sql;
+		$this->assertEquals('SELECT COUNT(film_id) AS cnt FROM `' . TBL_FILM . '`', $sql);
+	}
+
 	public function testSqlOrderBy() {
 		$select = $this->object->from('table_name')->orderBy('Db.Field')->getBehaviour();
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field', $select->sql);
@@ -134,13 +139,13 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSqlLimit() {
-		$select = $this->object->from('table_name')->limit('Db.Field');
-		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field', $select->getBehaviour()->sql);
+		$select = $this->object->from('table_name')->limit(5);
+		$this->assertEquals('SELECT `table_name`.* FROM `table_name` LIMIT 0, 5', $select->getBehaviour()->sql);
 	}
 
-//	public function testSqlOrderByBool() {
-//		$select = $this->object->from('table_name')->orderBy(array('Db.Field' => false, 'Db.Field1' => true))->getBehaviour();
-//		$this->assertEquals('SELECT `table_name`.* FROM `table_name` ORDER BY Db.Field DESC, Db.Field1 ASC', $select->sql);
-//	}
+	public function testSqlLimitStart() {
+		$select = $this->object->from('table_name')->limit(5, 10);
+		$this->assertEquals('SELECT `table_name`.* FROM `table_name` LIMIT 10, 5', $select->getBehaviour()->sql);
+	}
 
 }

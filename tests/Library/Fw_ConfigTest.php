@@ -71,7 +71,7 @@ class Fw_ConfigTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testExceptionIncorrectFilename() {
 		//	Testing constructor with incorrect filename argument
-		$obj = new Fw_Config(PATH_CONFIG . 'ababagalamaga.php');
+		new Fw_Config(PATH_CONFIG . 'ababagalamaga.php');
 	}
 
 	public function testToArray() {
