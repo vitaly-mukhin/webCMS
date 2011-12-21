@@ -36,14 +36,14 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase {
 	 * 
 	 */
 	public function testInvoke() {
-		$this->object->pushAutoload('Fw', PATH_LIB . DIRECTORY_SEPARATOR, 'class');
+		$this->object->pushAutoload('Fw', PATH_FW . DIRECTORY_SEPARATOR, 'fw');
 		$this->assertTrue(class_exists('Fw_Config'));
 		$this->assertFalse(class_exists('FW_ConfigAbabagalamaga'));
 		$this->assertFalse(class_exists('Fw_Config_Ababagalamaga'));
 		
-		$this->object->pushAutoload('', PATH_LIB . DIRECTORY_SEPARATOR);
+		$this->object->pushAutoload('', PATH_FW . DIRECTORY_SEPARATOR);
 		$this->assertFalse(class_exists('Config'));
-		$this->object->pushAutoload('', PATH_LIB . DIRECTORY_SEPARATOR, false);
+		$this->object->pushAutoload('', PATH_FW . DIRECTORY_SEPARATOR, false);
 		$this->assertFalse(class_exists('Config'));
 	}
 

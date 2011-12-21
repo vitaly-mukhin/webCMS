@@ -55,4 +55,10 @@ class Fw_Db_Query_Behaviour_InsertTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(1, 2), $obj->binds);
 	}
 
+	public function testSqlShort2() {
+		$obj = Fw_Db::i()->query()->insert('table_name', array('a' => 'aa', 'b' => 'bb'));
+		$this->assertEquals('INSERT INTO `table_name` ( `a`, `b` ) VALUES (?, ?)', $obj->sql);
+		$this->assertEquals(array('aa', 'bb'), $obj->binds);
+	}
+
 }
