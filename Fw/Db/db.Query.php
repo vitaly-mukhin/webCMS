@@ -243,7 +243,9 @@ class Fw_Db_Query {
 
 	public function fetch() {
 		if (!$this->_execute()) {
-			throw new Fw_Exception_Db_Query('some problem with query');
+			$message = $this->_Stmt->errorInfo();
+			$code = $this->_Stmt->errorCode();
+			throw new Fw_Exception_Db_Query($message, $code);
 		}
 
 		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
