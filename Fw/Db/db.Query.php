@@ -245,7 +245,7 @@ class Fw_Db_Query {
 		if (!$this->_execute()) {
 			$error = $this->_Stmt->errorInfo();
 			$code = (int)$this->_Stmt->errorCode();
-			throw new Fw_Exception_Db_Query($message[2], $code);
+			throw new Fw_Exception_Db_Query($error[2], $code);
 		}
 
 		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
