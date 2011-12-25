@@ -36,8 +36,15 @@ class Fw_Db_Query_Behaviour_SelectableTest extends PHPUnit_Framework_TestCase {
 		$this->assertContains('value', $select->binds);
 	}
 
+	public function testSqlSimpleWhereOR() {
+		$select = $this->object->from('table_name')->where('field = ? OR field = ?', 'value1', 'value2')->getBehaviour();
+		$this->assertEquals('SELECT `table_name`.* FROM `table_name` WHERE (field = ? OR field = ?)', $select->sql);
+		$this->assertContains('value1', $select->binds);
+		$this->assertContains('value2', $select->binds);
+	}
+
 	public function testSqlSimpleWhereMulti() {
-		$select = $this->object->from('table_name')->where('field = ?', 'value')->where('field IS NOT NULL', null)->getBehaviour();
+		$select = $this->object->from('table_name')->where('field = ?', 'value')->where('field IS NOT NULL')->getBehaviour();
 		$this->assertEquals('SELECT `table_name`.* FROM `table_name` WHERE (field = ?) AND (field IS NOT NULL)', $select->sql);
 		$this->assertEquals(array('value'), $select->binds);
 	}

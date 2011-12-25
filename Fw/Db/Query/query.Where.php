@@ -21,7 +21,7 @@ class Fw_Db_Query_Where {
 	 *
 	 * @var mix
 	 */
-	protected $_value;
+	protected $_values = array();
 
 	/**
 	 * Type of value
@@ -30,25 +30,34 @@ class Fw_Db_Query_Where {
 	 */
 	protected $_cast;
 
-	public function __construct($condition, $value = null, $cast = PDO::PARAM_STR) {
+	public function __construct($condition) {
 		$this->_condition = $condition;
-		$this->_value = $value;
-		$this->_cast = $cast;
+		if (($a = func_get_args()) && count($a) > 1) {
+			array_shift($a);
+			foreach ($a as $v) {
+				$this->pushValue($v);
+			}
+		}
 	}
 
 	public function __get($name) {
 		switch ($name) {
 			case 'condition':
 			case 'value':
-			case 'cast':
 				return $this->{'_' . $name};
 		}
 	}
 
+	public function pushValue($value) {
+		$this->_values[] = $value;
+	}
+
 	public function appendToQuery(&$fs, &$binds) {
 		$fs[] = sprintf('(%s)', $this->_condition);
-		if(strpos($this->_condition, '?')) {
-			$binds[] = $this->_value;
+		if ($this->_values) {
+			foreach ($this->_values as $v) {
+				$binds[] = $v;
+			}
 		}
 	}
 

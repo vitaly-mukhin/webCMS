@@ -56,9 +56,9 @@ class Fw_Db_Query_Behaviour_InsertTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSqlShort2() {
-		$obj = Fw_Db::i()->query()->insert('table_name', array('a' => 'aa', 'b' => 'bb'));
-		$this->assertEquals('INSERT INTO `table_name` ( `a`, `b` ) VALUES (?, ?)', $obj->sql);
-		$this->assertEquals(array('aa', 'bb'), $obj->binds);
+		$obj = Fw_Db::i()->query()->insert('table_name', array('content' => 'Пользователь <b>Slevin, The Greatest </b> (ID:1) зашел', 'log_type' => 1));
+		$this->assertEquals('INSERT INTO `table_name` ( `content`, `log_type` ) VALUES (?, ?)', $obj->sql);
+		$this->assertEquals(array('Пользователь <b>Slevin, The Greatest </b> (ID:1) зашел', 1), $obj->binds);
 	}
 
 }

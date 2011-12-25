@@ -107,7 +107,6 @@ class Fw_Db_Query {
 	public function insert($table = null, $values = null) {
 		$this->_behaviour = new Fw_Db_Query_Behaviour_Insert($this);
 		if (!empty($table)) {
-//			$fields = (is_int(key($values))) ? $
 			$this->into($table, array_keys($values));
 			$this->values(array_values($values));
 		}
@@ -175,8 +174,15 @@ class Fw_Db_Query {
 	 * @param mix $value
 	 * @return Fw_Db_Query 
 	 */
-	public function where($condition, $value = null) {
-		$this->_params[self::PARAM_WHERE][md5($condition)] = new Fw_Db_Query_Where($condition, $value);
+	public function where($condition) {
+		$this->_params[self::PARAM_WHERE][md5($condition)] = new Fw_Db_Query_Where($condition);
+		$args = func_get_args();
+		array_shift($args);
+		if ($args) {
+			foreach ($args as $v) {
+				$this->_params[self::PARAM_WHERE][md5($condition)]->pushValue($v);
+			}
+		}
 
 		return $this;
 	}

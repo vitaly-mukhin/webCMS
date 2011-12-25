@@ -57,8 +57,8 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testInsertValues() {
-		$obj = Fw_Db::i()->query()->insert('table_name', array('a'=>1, 'b'=>2));
-		$this->assertEquals(array('table_name'=>array('table'=>'table_name', 'fields'=>array('a', 'b'))), $obj->export(Fw_Db_Query::PARAM_FROM));
+		$obj = Fw_Db::i()->query()->insert('table_name', array('a' => 1, 'b' => 2));
+		$this->assertEquals(array('table_name' => array('table' => 'table_name', 'fields' => array('a', 'b'))), $obj->export(Fw_Db_Query::PARAM_FROM));
 		$this->assertEquals(array(array(1, 2)), $obj->export(Fw_Db_Query::PARAM_VALUES));
 	}
 
@@ -87,34 +87,34 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$obj = $this->object->from($tableName);
 		$this->assertTrue($obj == $this->object); //	returns same object link
 		$this->assertArrayHasKey(Fw_Db_Query::PARAM_FROM, $this->object->export());
-		$this->assertEquals(array($tableName=>array('table'=>$tableName, 'fields'=>'*')), $this->object->export(Fw_Db_Query::PARAM_FROM));
+		$this->assertEquals(array($tableName => array('table' => $tableName, 'fields' => '*')), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 
 	public function testFromSimpleFields() {
 		$tableName = 'aaa';
 		$tableFields = 'fields';
 		$this->object->from($tableName, $tableFields);
-		$this->assertEquals(array($tableName=>array('table'=>$tableName, 'fields'=>$tableFields)), $this->object->export(Fw_Db_Query::PARAM_FROM));
+		$this->assertEquals(array($tableName => array('table' => $tableName, 'fields' => $tableFields)), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 
 	public function testFromWithAlias() {
 		$this->setUp();
-		$tableName = array('a'=>'table_name');
+		$tableName = array('a' => 'table_name');
 		$tableFields = 'fields';
 		$this->object->from($tableName, $tableFields);
-		$this->assertEquals(array('a'=>array('table'=>$tableName['a'], 'fields'=>$tableFields)), $this->object->export(Fw_Db_Query::PARAM_FROM));
+		$this->assertEquals(array('a' => array('table' => $tableName['a'], 'fields' => $tableFields)), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 
 	public function testFromWithFields() {
 		$this->object->from('table_name', 'fields')->from('table_name1', 'fields1');
-		$this->assertEquals(array('table_name'=>array('table'=>'table_name', 'fields'=>'fields'), 'table_name1'=>array('table'=>'table_name1', 'fields'=>'fields1')), $this->object->export(Fw_Db_Query::PARAM_FROM));
+		$this->assertEquals(array('table_name' => array('table' => 'table_name', 'fields' => 'fields'), 'table_name1' => array('table' => 'table_name1', 'fields' => 'fields1')), $this->object->export(Fw_Db_Query::PARAM_FROM));
 	}
 
 	public function testWhereAdds() {
 		$cond = 'field = ?';
 		$value = 'value';
 		$this->object->where($cond, $value);
-		$this->assertEquals(array(md5($cond)=>new Fw_Db_Query_Where($cond, $value)), $this->object->export(Fw_Db_Query::PARAM_WHERE));
+		$this->assertEquals(array(md5($cond) => new Fw_Db_Query_Where($cond, $value)), $this->object->export(Fw_Db_Query::PARAM_WHERE));
 	}
 
 	public function testValuesReturn() {
@@ -156,55 +156,55 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testJoin() {
 		$this->object->from('table1')->join('table2', 'a=b');
-		$this->assertEquals(array('table2'=>array('table'=>'table2', 'condition'=>'a=b', 'fields'=>'*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+		$this->assertEquals(array('table2' => array('table' => 'table2', 'condition' => 'a=b', 'fields' => '*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
 	public function testJoinMulti() {
 		$this->object->from('table1')->join('table2', 'a=b')->join('table3', 'b=c');
-		$this->assertEquals(array('table2'=>array('table'=>'table2', 'condition'=>'a=b', 'fields'=>'*'), 'table3'=>array('table'=>'table3', 'condition'=>'b=c', 'fields'=>'*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+		$this->assertEquals(array('table2' => array('table' => 'table2', 'condition' => 'a=b', 'fields' => '*'), 'table3' => array('table' => 'table3', 'condition' => 'b=c', 'fields' => '*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
 	public function testJoinAlias() {
-		$this->object->from('table1')->join(array('t2'=>'table2'), 'a=b');
-		$this->assertEquals(array('t2'=>array('table'=>'table2', 'condition'=>'a=b', 'fields'=>'*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+		$this->object->from('table1')->join(array('t2' => 'table2'), 'a=b');
+		$this->assertEquals(array('t2' => array('table' => 'table2', 'condition' => 'a=b', 'fields' => '*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
 	public function testJoinAliasMulti() {
-		$this->object->from('table1')->join(array('t2'=>'table2'), 'a=b')->join(array('t3'=>'table3'), 'c=b');
-		$this->assertEquals(array('t2'=>array('table'=>'table2', 'condition'=>'a=b', 'fields'=>'*'), 't3'=>array('table'=>'table3', 'condition'=>'c=b', 'fields'=>'*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+		$this->object->from('table1')->join(array('t2' => 'table2'), 'a=b')->join(array('t3' => 'table3'), 'c=b');
+		$this->assertEquals(array('t2' => array('table' => 'table2', 'condition' => 'a=b', 'fields' => '*'), 't3' => array('table' => 'table3', 'condition' => 'c=b', 'fields' => '*')), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
 	public function testJoinFields() {
-		$this->object->from('table1')->join(array('t2'=>'table2'), 'a=b', array('f1', 'f2', 'f3'));
-		$this->assertEquals(array('t2'=>array('table'=>'table2', 'condition'=>'a=b', 'fields'=>array('f1', 'f2', 'f3'))), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+		$this->object->from('table1')->join(array('t2' => 'table2'), 'a=b', array('f1', 'f2', 'f3'));
+		$this->assertEquals(array('t2' => array('table' => 'table2', 'condition' => 'a=b', 'fields' => array('f1', 'f2', 'f3'))), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
 	public function testJoinFieldsMulti() {
-		$this->object->from('table')->join(array('t1'=>'table1'), 'a=b', array('f1', 'f2', 'f3'))->join(array('t2'=>'table2'), 'a1=b1', array('f11', 'f12', 'f13'));
-		$this->assertEquals(array('t1'=>array('table'=>'table1', 'condition'=>'a=b', 'fields'=>array('f1', 'f2', 'f3')), 't2'=>array('table'=>'table2', 'condition'=>'a1=b1', 'fields'=>array('f11', 'f12', 'f13'))), $this->object->export(Fw_Db_Query::PARAM_JOIN));
+		$this->object->from('table')->join(array('t1' => 'table1'), 'a=b', array('f1', 'f2', 'f3'))->join(array('t2' => 'table2'), 'a1=b1', array('f11', 'f12', 'f13'));
+		$this->assertEquals(array('t1' => array('table' => 'table1', 'condition' => 'a=b', 'fields' => array('f1', 'f2', 'f3')), 't2' => array('table' => 'table2', 'condition' => 'a1=b1', 'fields' => array('f11', 'f12', 'f13'))), $this->object->export(Fw_Db_Query::PARAM_JOIN));
 	}
 
 	public function testFetch() {
 		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->fetch();
-		$this->assertEquals(array(array('category_id'=>'10', 'name'=>'Games', 'last_update'=>'2006-02-15 04:46:27')), $result);
+		$this->assertEquals(array(array('category_id' => '10', 'name' => 'Games', 'last_update' => '2006-02-15 04:46:27')), $result);
 		return false;
 	}
 
 	public function testFetchRow() {
 		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->fetchRow();
-		$this->assertEquals(array('category_id'=>'10', 'name'=>'Games', 'last_update'=>'2006-02-15 04:46:27'), $result);
+		$this->assertEquals(array('category_id' => '10', 'name' => 'Games', 'last_update' => '2006-02-15 04:46:27'), $result);
 		return false;
 	}
 
 	public function testFetchRowCount() {
 		$result = $this->object->select()->from(TBL_FILM, 'COUNT(film_id) AS cnt')->where('rental_rate = ?', 2.99)->fetchRow();
-		$this->assertEquals(array('cnt'=>'323'), $result);
+		$this->assertEquals(array('cnt' => '323'), $result);
 		return false;
 	}
-	
+
 	public function testOrderBy() {
-		$this->object->orderBy(array('field'=>false));
-		$this->assertEquals(array('field' =>false), $this->object->export(Fw_Db_Query::PARAM_ORDER_BY));
+		$this->object->orderBy(array('field' => false));
+		$this->assertEquals(array('field' => false), $this->object->export(Fw_Db_Query::PARAM_ORDER_BY));
 	}
 
 }

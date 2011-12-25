@@ -16,15 +16,12 @@ class Fw_Db_Query_WhereTest extends PHPUnit_Framework_TestCase {
 	 * This method is called before a test is executed.
 	 */
 	protected function setUp($condition = null, $value = null, $cast = null) {
-		if(is_null($condition)) {
+		if (is_null($condition)) {
 			$condition = 'field = ?';
 			$value = 'string';
 		}
-		if(!$cast) {
-			$this->object = new Fw_Db_Query_Where($condition, $value);
-		} else {
-			$this->object = new Fw_Db_Query_Where($condition, $value, $cast);
-		}
+
+		$this->object = new Fw_Db_Query_Where($condition, $value);
 	}
 
 	/**
@@ -36,24 +33,18 @@ class Fw_Db_Query_WhereTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testString() {
-		$obj = new Fw_Db_Query_Where('ababagalamaga ?', 'opa-pa');
+		$obj = new Fw_Db_Query_Where('ababagalamaga ?');
 		$this->assertEquals('ababagalamaga ?', $obj->condition);
 	}
 
-	public function testNullValue() {
-		$obj = new Fw_Db_Query_Where('ababagalamaga ?');
-		$fs = $binds = array();
-		$obj->appendToQuery($fs, $binds);
-		$this->assertContains('(ababagalamaga ?)', $fs);
-		$this->assertEquals(array(0=>null), $binds);
-	}
-
 	public function testMixValue() {
-		$obj = new Fw_Db_Query_Where('ababagalamaga = 123');
+		$obj = new Fw_Db_Query_Where('ababagalamaga = 123', 'value');
+
 		$fs = $binds = array();
 		$obj->appendToQuery($fs, $binds);
+
 		$this->assertContains('(ababagalamaga = 123)', $fs);
-		$this->assertEquals(array(), $binds);
+		$this->assertEquals(array('value'), $binds);
 	}
 
 }
