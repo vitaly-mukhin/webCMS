@@ -209,7 +209,7 @@ class Fw_Db_Query {
 			if (isset($this->_params[$param])) {
 				return $this->_params[$param];
 			}
-			throw new Fw_Exception_Db_Query('Unknown parameter: ' . $param);
+			throw new Fw_Exception_Db_Query('Unknown parameter: '.$param);
 		}
 		return $this->_params;
 	}
@@ -241,10 +241,14 @@ class Fw_Db_Query {
 		return $this->_Stmt->execute($this->binds);
 	}
 
-	public function fetch() {
+	/**
+	 *
+	 * @return PDOStatement
+	 */
+	protected function _fetch($row = false) {
 		if (!$this->_execute()) {
 			$error = $this->_Stmt->errorInfo();
-			$code = (int)$this->_Stmt->errorCode();
+			$code = (int) $this->_Stmt->errorCode();
 			throw new Fw_Exception_Db_Query($error[2], $code);
 		}
 
@@ -252,26 +256,35 @@ class Fw_Db_Query {
 			return $this->_connection->lastInsertId();
 		}
 
-		$this->_result = array();
-		while ($row = $this->_Stmt->fetch(PDO::FETCH_ASSOC)) {
-			$this->_result[] = $row;
+		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Update) {
+			return $this->_Stmt->rowCount();
 		}
 
+		$this->_result = array();
+		if ($row) {
+			$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
+		} else {
+			while ($row = $this->_Stmt->fetch(PDO::FETCH_ASSOC)) {
+				$this->_result[] = $row;
+			}
+		}
 		return $this->_result;
 	}
 
+	/**
+	 *
+	 * @return mix LAST_INSERT_ID for insert(), ROW_COUNT for update(), array(0=>array(f1=>v1, f2=>v2), 1=>array(f2, ...))
+	 */
+	public function fetch() {
+		return $this->_fetch();
+	}
+
+	/**
+	 *
+	 * @return mix LAST_INSERT_ID for insert(), ROW_COUNT for update(), array(f1=>v1, f2=>v2, ...)
+	 */
 	public function fetchRow() {
-		if (!($result = $this->_execute())) {
-			throw new Fw_Exception_Db_Query('some problem with query');
-		}
-
-		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
-			return $this->_connection->lastInsertId();
-		}
-
-		$this->_result = $this->_Stmt->fetch(PDO::FETCH_ASSOC);
-
-		return $this->_result;
+		return $this->_fetch(true);
 	}
 
 	/**
