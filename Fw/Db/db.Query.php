@@ -4,6 +4,10 @@
  * Description of Fw_Exception
  *
  * @author Mukhenok
+ * 
+ * @property-read Fw_Logger_Db $Logger
+ * @property-read string $sql
+ * @property-read array $binds
  */
 class Fw_Db_Query {
 
@@ -11,7 +15,13 @@ class Fw_Db_Query {
 	 *
 	 * @var Fw_Db
 	 */
-	protected $_db;
+	protected $_Db;
+
+	/**
+	 *
+	 * @var Fw_Logger_Db
+	 */
+	protected $_Logger;
 
 	/**
 	 *
@@ -67,8 +77,10 @@ class Fw_Db_Query {
 	const LIMIT_START = 'start';
 	const LIMIT_COUNT = 'count';
 
-	public function __construct(Fw_Db $db, $sql = null, $binds = null) {
-		$this->_db = $db;
+	public function __construct(Fw_Db $db, $sql = null, $binds = null, $logger = null) {
+		$this->_Db = $db;
+
+		$this->_Logger = $logger;
 
 		if (!empty($sql) && is_string($sql)) {
 			$this->_sql = $sql;
@@ -83,6 +95,8 @@ class Fw_Db_Query {
 					$this->_sql = $this->getBehaviour()->sql;
 				}
 				return $this->_sql;
+			case 'Logger':
+				return $this->_Logger;
 			case 'binds':
 				if (empty($this->_binds)) {
 					$this->_binds = $this->getBehaviour()->binds;
@@ -152,7 +166,7 @@ class Fw_Db_Query {
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_FROM][$alias] = array('table' => $table_name, 'fields' => (!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!empty($fields) ? $fields : '*'));
 
 		return $this;
 	}
@@ -209,7 +223,7 @@ class Fw_Db_Query {
 			if (isset($this->_params[$param])) {
 				return $this->_params[$param];
 			}
-			throw new Fw_Exception_Db_Query('Unknown parameter: '.$param);
+			throw new Fw_Exception_Db_Query('Unknown parameter: ' . $param);
 		}
 		return $this->_params;
 	}
@@ -229,13 +243,16 @@ class Fw_Db_Query {
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_JOIN][$alias] = array('table' => $table_name, 'condition' => $condition, 'fields' => (!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_JOIN][$alias] = array('table'=>$table_name, 'condition'=>$condition, 'fields'=>(!empty($fields) ? $fields : '*'));
 
 		return $this;
 	}
 
 	protected function _execute($options = array()) {
-		$this->_connection = empty($this->_connection) ? $this->_db->pointer : $this->_connection;
+		$this->_connection = empty($this->_connection) ? $this->_Db->pointer : $this->_connection;
+		if (empty($this->_connection)) {
+			throw new Fw_Exception_Db_Connection('No connection to database');
+		}
 
 		$this->_Stmt = $this->_connection->prepare($this->sql, $options);
 		return $this->_Stmt->execute($this->binds);

@@ -44,6 +44,36 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($this->object->ababagalamaga);
 	}
 
+	public function testLogger() {
+		$db = Fw_Db::i(true);
+		$L = new Fw_Logger_File(new Fw_Config(array()));
+		$db->setLogger($L);
+		$Q = $db->query();
+		$this->assertEquals($L, $Q->Logger);
+	}
+
+	public function testLoggerPassingValues() {
+		$db = Fw_Db::i(true);
+		$L = new Fw_Logger_File(new Fw_Config(array()));
+		$db->setLogger($L);
+		
+		$Q = $db->query();
+		$this->assertEquals($L, $Q->Logger);
+	}
+
+//	/**
+//	 * @todo add test for skipping logging query
+//	 */
+//	public function testSkipLogger() {
+//		$db = Fw_Db::i();
+//		$L = new Fw_Logger_File(new Fw_Config(array()));
+//		$db->setLogger($L);
+//		$Q = $db->query();
+//		$this->assertEquals($L, $Q->Logger);
+////		$this->assertTrue(Fw_Db::i()->query('sql', 'sql')->sql);
+////		$this->assertNull($this->object->ababagalamaga);
+//	}
+
 	public function testSelect() {
 		$obj = $this->object->select();
 		$this->assertTrue($obj == $this->object); //	returns same object link

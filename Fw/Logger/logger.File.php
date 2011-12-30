@@ -23,8 +23,6 @@ class Fw_Logger_File extends Fw_Logger {
 			throw new Fw_Exception_Logger('Filename not found');
 		}
 		if (!($f = fopen($this->_Config->file, 'a'))) {
-			print_r('not found');
-			print_r(error_reporting());
 			return $this;
 		}
 

@@ -6,6 +6,7 @@
  * @author Vitaly Mukhin
  * 
  * @property-read PDO $pointer
+ * @property-read Fw_Logger_Db $Logger
  * 
  */
 class Fw_Db {
@@ -20,10 +21,16 @@ class Fw_Db {
 
 	/**
 	 *
+	 * @var Fw_Logger_Db
+	 */
+	protected $_logger;
+
+	/**
+	 *
 	 * @return Fw_Db
 	 */
-	public static function i() {
-		if (empty(static::$_instance)) {
+	public static function i($reset = false) {
+		if (empty(static::$_instance) || $reset) {
 			static::$_instance = new static();
 		}
 
@@ -36,11 +43,13 @@ class Fw_Db {
 	protected function __construct() {
 		
 	}
-	
+
 	public function __get($name) {
-		switch($name) {
+		switch ($name) {
 			case 'pointer':
 				return $this->_connection;
+			case 'Logger':
+				return $this->_logger;
 		}
 	}
 
@@ -69,11 +78,18 @@ class Fw_Db {
 	 * @return Fw_Db_Query 
 	 */
 	public function query($sql=null, $binds=null) {
-		return new Fw_Db_Query($this, $sql, $binds);
+		return new Fw_Db_Query($this, $sql, $binds, $this->Logger);
 	}
-	
-//	public function addLogger() {
-//	
-//	}
+
+	/**
+	 *
+	 * @param Fw_Logger_Db $Logger
+	 * @return Fw_Db 
+	 */
+	public function setLogger(Fw_Logger_Db $Logger) {
+		$this->_logger = $Logger;
+		
+		return $this;
+	}
 
 }

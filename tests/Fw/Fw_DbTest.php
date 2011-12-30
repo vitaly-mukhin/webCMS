@@ -34,7 +34,7 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 					'user' => 'root',
 					'password' => 'root',
 					'encoding' => 'utf8'
-				));
+			));
 
 		self::$configIncorrect = new Fw_Config(array(
 					'driver' => 'mysql',
@@ -44,21 +44,14 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 					'user' => 'root',
 					'password' => 'root',
 					'encoding' => 'utf8'
-				));
+			));
 	}
 
 	/**
 	 * 
 	 */
 	protected function setUp() {
-		$this->object = Fw_Db::i();
-	}
-
-	/**
-	 * 
-	 */
-	protected function tearDown() {
-		Fw_Db::i();
+		$this->object = Fw_Db::i(true);
 	}
 
 	/**
@@ -70,6 +63,11 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 
 	public function testQuery() {
 		$this->assertTrue($this->object->query() instanceof Fw_Db_Query);
+	}
+
+	public function testSetGetLogger() {
+		$this->assertTrue($this->object->setLogger(new Fw_Logger_File(new Fw_Config(array()))) instanceof Fw_Db);
+		$this->assertTrue($this->object->Logger instanceof Fw_Logger_Db);
 	}
 
 }
