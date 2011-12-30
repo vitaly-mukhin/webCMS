@@ -27,6 +27,15 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 		
 	}
 
+	public static function tearDownAfterClass() {
+		$dir_handle = opendir(PATH_LOGS);
+		while (false !== ($file = readdir($dir_handle))) {
+			if ($file != "." && $file != "..") {
+				file_put_contents(PATH_LOGS . DIRECTORY_SEPARATOR . $file, '');
+			}
+		}
+	}
+
 	/**
 	 * @covers Fw_Logger_File::_prepare
 	 */

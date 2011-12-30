@@ -7,7 +7,7 @@ return array(
 		'port' => '3306',
 		'name' => 'sakila',
 		'user' => 'root',
-		'password' => 'root',
+		'password' => 'mariadb',
 		'encoding' => 'utf8'
 	)
 );

@@ -44,13 +44,15 @@ class Fw_Config {
 			}
 		}
 
-		throw new Fw_Exception_Config('Unknown config property: ' . $name);
+		if ($e = error_reporting()) {
+			throw new Fw_Exception_Config('Unknown config property: ' . $name);
+		}
 	}
 
 	public function __isset($name) {
 		return isset($this->_data[$name]);
 	}
-	
+
 	public function toArray() {
 		return $this->_data;
 	}
