@@ -34,15 +34,15 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 	public function testPrepare() {
 		$data = array('aaaa' => 'bbbb');
 		$this->object->save($data);
-		
+
 		$got = $this->object->getData();
 		$this->assertTrue(is_array($got));
-		
+
 		//	checking 'time' param
 		$this->assertArrayHasKey('time', $got);
 		$expected_time = date(Fw_Logger_File::TIME_FORMAT, strtotime($got['time']));
 		$this->assertEquals($expected_time, $got['time']);
-		
+
 		//	checking 'string' param
 		$this->assertArrayHasKey('string', $got);
 		$this->assertEquals(print_r($data, true), $got['string']);
