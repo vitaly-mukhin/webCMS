@@ -78,12 +78,13 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 	 * 
 	 */
 	public function testWrite() {
-		$this->object = new Fw_Logger_File(new Fw_Config(array('file' => PATH_LOGS . DIRECTORY_SEPARATOR . 'testLoggerFile.log')));
+		$log_file = PATH_LOGS . DIRECTORY_SEPARATOR . 'testLoggerFile.log';
+		$this->object = new Fw_Logger_File(new Fw_Config(array('file' => $log_file)));
 		$data = 'bbbb';
+
+		$file_content_before = file_get_contents($log_file);
 		@$this->object->save($data);
+		$this->assertGreaterThan(strlen($file_content_before), strlen(file_get_contents($log_file)));
 	}
 
-//	public function testWrite() {
-//		$this->object = new Fw_Logger_File(new Fw_Config(array()));
-//	}
 }
