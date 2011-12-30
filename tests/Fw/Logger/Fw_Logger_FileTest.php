@@ -28,12 +28,11 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers {className}::{origMethodName}
-	 * @todo After implementing 
+	 * @covers Fw_Logger_File::_prepare
 	 */
 	public function testPrepare() {
 		$data = array('aaaa' => 'bbbb');
-		$this->object->save($data);
+		@$this->object->save($data);
 
 		$got = $this->object->getData();
 		$this->assertTrue(is_array($got));
@@ -49,16 +48,33 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers {className}::{origMethodName}
-	 * @todo Implement testGetData().
+	 * @expectedException Fw_Exception_Config
 	 */
-	public function testGetData() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+	public function testWriteExceptionNoFileInConfig() {
+		$this->object = new Fw_Logger_File(new Fw_Config(array()));
+		$data = array('aaaa' => 'bbbb');
+		$this->object->save($data);
 	}
 
-}
+	/**
+	 * @expectedException Fw_Exception_Logger
+	 */
+	public function testWriteExceptionNoFileForWriting() {
+		$this->object = new Fw_Logger_File(new Fw_Config(array('file' => 'bbbbbbb')));
+		$data = array('aaaa' => 'bbbb');
+		$this->object->save($data);
+	}
 
-?>
+	/**
+	 * 
+	 */
+	public function testWrite() {
+		$this->object = new Fw_Logger_File(new Fw_Config(array('file' => PATH_LOGS . DIRECTORY_SEPARATOR . 'testLoggerFile.log')));
+		$data = 'bbbb';
+		@$this->object->save($data);
+	}
+
+//	public function testWrite() {
+//		$this->object = new Fw_Logger_File(new Fw_Config(array()));
+//	}
+}
