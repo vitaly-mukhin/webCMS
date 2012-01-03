@@ -33,7 +33,7 @@ class Fw_Db_Query_Behaviour_Selectable extends Fw_Db_Query_Behaviour {
 				$t['fields'] = array($t['fields']);
 			}
 			foreach ($t['fields'] as $f) {
-				$fs[] = (!preg_match('/^[a-z0-9]*$/i', $f) && $f != '*') ? $f : sprintf($template, $alias, $f);
+				$fs[] = (!preg_match('/^[a-z_0-9]*$/i', $f) && $f != '*') ? $f : sprintf($template, $alias, $f);
 			}
 		}
 

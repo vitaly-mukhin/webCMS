@@ -175,7 +175,7 @@ class Fw_Db_Query {
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!is_null($fields) ? $fields : '*'));
 
 		return $this;
 	}
@@ -252,7 +252,7 @@ class Fw_Db_Query {
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_JOIN][$alias] = array('table'=>$table_name, 'condition'=>$condition, 'fields'=>(!empty($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_JOIN][$alias] = array('table'=>$table_name, 'condition'=>$condition, 'fields'=>(!is_null($fields) ? $fields : '*'));
 
 		return $this;
 	}
