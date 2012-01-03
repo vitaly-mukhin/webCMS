@@ -138,6 +138,15 @@ class Fw_Db_Query {
 
 	/**
 	 *
+	 * @return Fw_Db_Query 
+	 */
+	public function delete() {
+		$this->_behaviour = new Fw_Db_Query_Behaviour_Delete($this);
+		return $this;
+	}
+
+	/**
+	 *
 	 * @return Fw_Db_Query_Behaviour
 	 */
 	public function getBehaviour() {
