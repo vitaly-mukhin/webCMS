@@ -272,7 +272,15 @@ class Fw_Db_Query {
 	 * @return PDOStatement
 	 */
 	protected function _fetch($row = false) {
-		if (!$this->_execute()) {
+		$time_start = microtime(true);
+		$result = $this->_execute();
+		$time_end = microtime(true);
+
+		if ($this->Logger) {
+			@$this->_Logger->save(array('sql'=>$this->_Stmt->queryString, 'binds'=>$this->binds, 'result'=>(int) $result, 'duration'=>($time_end - $time_start)));
+		}
+
+		if (!$result) {
 			$error = $this->_Stmt->errorInfo();
 			$code = (int) $this->_Stmt->errorCode();
 			throw new Fw_Exception_Db_Query($error[2], $code);

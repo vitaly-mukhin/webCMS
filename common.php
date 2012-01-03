@@ -7,7 +7,7 @@ define('TBL_LOG', 'log');
 define('PATH_CONFIG', PATH_ROOT . DIRECTORY_SEPARATOR . 'config');
 define('PATH_FW', PATH_ROOT . DIRECTORY_SEPARATOR . 'Fw');
 
-require(PATH_FW . DIRECTORY_SEPARATOR . 'Autoloader.php');
+require('./Autoloader.php');
 
 Autoloader::i()
 	->pushAutoload('Fw', PATH_FW . DIRECTORY_SEPARATOR, 'fw');

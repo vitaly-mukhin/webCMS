@@ -27,24 +27,24 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 		parent::setUpBeforeClass();
 
 		self::$configCorrect = new Fw_Config(array(
-					'driver' => 'mysql',
-					'server' => 'localhost',
-					'port' => '3306',
-					'name' => 'fw_testing',
-					'user' => 'root',
-					'password' => 'root',
-					'encoding' => 'utf8'
-			));
+					'driver'=>'mysql',
+					'server'=>'localhost',
+					'port'=>'3306',
+					'name'=>'fw_testing',
+					'user'=>'root',
+					'password'=>'root',
+					'encoding'=>'utf8'
+				));
 
 		self::$configIncorrect = new Fw_Config(array(
-					'driver' => 'mysql',
-					'server' => 'ababagalamaga',
-					'port' => '3306',
-					'name' => 'fw_testing',
-					'user' => 'root',
-					'password' => 'root',
-					'encoding' => 'utf8'
-			));
+					'driver'=>'mysql',
+					'server'=>'ababagalamaga',
+					'port'=>'3306',
+					'name'=>'fw_testing',
+					'user'=>'root',
+					'password'=>'root',
+					'encoding'=>'utf8'
+				));
 	}
 
 	/**
@@ -66,7 +66,9 @@ class Fw_DbTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSetGetLogger() {
-		$this->assertTrue($this->object->setLogger(new Fw_Logger_File(new Fw_Config(array()))) instanceof Fw_Db);
+		$this->assertTrue($this->object->setLogger(new Fw_Logger_Db(new Fw_Config(array()), function($data) {
+							return $data;
+						})) instanceof Fw_Db);
 		$this->assertTrue($this->object->Logger instanceof Fw_Logger_Db);
 	}
 

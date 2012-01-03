@@ -11,7 +11,7 @@ define('PATH_LOGS', PATH_TESTS . DIRECTORY_SEPARATOR . 'logs');
 define('PATH_ROOT', PATH_TESTS . DIRECTORY_SEPARATOR . '..');
 define('PATH_FW', PATH_ROOT . DIRECTORY_SEPARATOR . 'Fw');
 
-require_once PATH_FW . DIRECTORY_SEPARATOR . 'Autoloader.php';
+require_once PATH_ROOT . DIRECTORY_SEPARATOR . 'Autoloader.php';
 
 Autoloader::i()->pushAutoload('Fw', PATH_FW . DIRECTORY_SEPARATOR, 'fw');
 

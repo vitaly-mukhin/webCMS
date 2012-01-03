@@ -43,9 +43,8 @@ class Fw_Logger_Db extends Fw_Logger {
 		if ($this->_Config->db && $this->_Config->table) {
 			try {
 				$db = $this->_Config->db;
-				$query = $db->query()->insert($this->_Config->table, $this->_data);
+				$query = $db->query(null, null, true)->insert($this->_Config->table, $this->_data);
 				if (!$query || !$query->fetchRow()) {
-					var_dump('1');
 					throw new Fw_Db_Query('Insert doesnt work');
 				}
 			} catch (Fw_Exception_Db $e) {

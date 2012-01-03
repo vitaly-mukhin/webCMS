@@ -61,7 +61,7 @@ class Fw_Db {
 	public function connect(Fw_Config $Config) {
 		$dsn = $Config->driver . ':host=' . $Config->server . ';port=' . $Config->port . ';dbname=' . $Config->name;
 
-		$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $Config->encoding);
+		$options = array(PDO::MYSQL_ATTR_INIT_COMMAND=>'SET NAMES ' . $Config->encoding);
 
 		try {
 			$this->_connection = new PDO($dsn, $Config->user, $Config->password, $options);
@@ -77,8 +77,8 @@ class Fw_Db {
 	 *
 	 * @return Fw_Db_Query 
 	 */
-	public function query($sql=null, $binds=null) {
-		return new Fw_Db_Query($this, $sql, $binds, $this->Logger);
+	public function query($sql=null, $binds=null, $skip_logger = false) {
+		return new Fw_Db_Query($this, $sql, $binds, ($skip_logger ? null : $this->Logger));
 	}
 
 	/**
@@ -86,9 +86,9 @@ class Fw_Db {
 	 * @param Fw_Logger_Db $Logger
 	 * @return Fw_Db 
 	 */
-	public function setLogger(Fw_Logger_Db $Logger) {
+	public function setLogger(Fw_Logger $Logger) {
 		$this->_logger = $Logger;
-		
+
 		return $this;
 	}
 

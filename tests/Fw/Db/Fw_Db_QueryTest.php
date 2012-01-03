@@ -44,7 +44,15 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($this->object->ababagalamaga);
 	}
 
-	public function testLogger() {
+	public function testLoggerDb() {
+		$db = Fw_Db::i(true);
+		$L = new Fw_Logger_Db(new Fw_Config(array()), function($data){return $data;});
+		$db->setLogger($L);
+		$Q = $db->query();
+		$this->assertEquals($L, $Q->Logger);
+	}
+
+	public function testLoggerFile() {
 		$db = Fw_Db::i(true);
 		$L = new Fw_Logger_File(new Fw_Config(array()));
 		$db->setLogger($L);
@@ -61,18 +69,18 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($L, $Q->Logger);
 	}
 
-//	/**
-//	 * @todo add test for skipping logging query
-//	 */
-//	public function testSkipLogger() {
-//		$db = Fw_Db::i();
-//		$L = new Fw_Logger_File(new Fw_Config(array()));
+	/**
+	 * @todo add test for skipping logging query
+	 */
+	public function testSkipLogger() {
+		$L = new Fw_Logger_File(new Fw_Config(array()));
+//		$L->save(array('sql' =>))
+		$db = Fw_Db::i(true);
+		$Q = $db->query('SELECT * FROM `table_name` WHERE `a` = ?', array(1));
 //		$db->setLogger($L);
-//		$Q = $db->query();
-//		$this->assertEquals($L, $Q->Logger);
-////		$this->assertTrue(Fw_Db::i()->query('sql', 'sql')->sql);
-////		$this->assertNull($this->object->ababagalamaga);
-//	}
+//		$this->assertTrue(Fw_Db::i()->query('sql', 'sql')->sql);
+//		$this->assertNull($this->object->ababagalamaga);
+	}
 
 	public function testSelect() {
 		$obj = $this->object->select();
