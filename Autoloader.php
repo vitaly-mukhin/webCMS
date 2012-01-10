@@ -26,7 +26,7 @@ class Autoloader {
 	 * @return Autoloader
 	 */
 	public static function i() {
-		if(!self::$_instance) {
+		if (!self::$_instance) {
 			self::$_instance = new static();
 		}
 		return self::$_instance;
@@ -56,17 +56,22 @@ class Autoloader {
 	public function invoke($class) {
 		$class_array = explode('_', $class);
 
-		if(count($class_array) > 1 && isset(self::$_stack[$class_array[0]])) {
+		if (count($class_array) > 1 && isset(self::$_stack[$class_array[0]])) {
 			$filename = $this->_invoke($class_array[0], array_slice($class_array, 1));
 		} else {
 			$filename = $this->_invoke('', $class_array);
 		}
-		if(file_exists($filename)) {
-			include_once $filename;
-			return true;
-		} else {
-			return false;
+		foreach(array('class', 'interface') as $ci) {
+			$f = sprintf($filename, $ci);
+			echo $f;
+			if (file_exists($f)) {
+				include_once $f;
+				return true;
+			} else {
+				echo ' ::::: not found', PHP_EOL;
+			}
 		}
+		return false;
 	}
 
 	protected function _invoke($pref, $array) {
@@ -74,7 +79,10 @@ class Autoloader {
 		$cls = (count($array) > 1) ? array(strtolower($array[count($array) - 2]), $array[count($array) - 1]) : array($this->_getSubprefix($pref), $array[0]);
 		$path = (count($array) > 1) ? array_slice($array, 0, count($array) - 1) : array();
 
-		return $this->_getPathPrefix($pref) . ($path ? implode('/', $path) . '/' : '') . ($cls[0] ? strtolower($cls[0]) . '.' : '') . $cls[1] . '.php';
+		$path = $this->_getPathPrefix($pref) . ($path ? implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR : '');
+		
+		return ($path ? $path : DIRECTORY_SEPARATOR) . ($cls[0] ? strtolower($cls[0]) . '.' : '') . $cls[1] . '.php';
+//		return $this->_getPathPrefix($pref) . ($path ? implode('/', $path) . '/' : '') . ($cls[0] ? strtolower($cls[0]) . '.' : '') . $cls[1] . '.php';
 	}
 
 	protected function _getSubprefix($pref) {
@@ -82,7 +90,7 @@ class Autoloader {
 
 		switch (true) {
 			case is_null($a[1]):
-				return 'class';
+				return '%s';
 
 			case $a[1] == false:
 				return '';
@@ -94,6 +102,10 @@ class Autoloader {
 
 	protected function _getPathPrefix($pref) {
 		return (isset(self::$_stack[$pref]) ? self::$_stack[$pref][0] : '');
+	}
+
+	public function clear() {
+		self::$_instance = null;
 	}
 
 }

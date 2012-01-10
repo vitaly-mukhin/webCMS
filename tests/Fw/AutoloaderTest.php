@@ -24,18 +24,17 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase {
 	 * This method is called after a test is executed.
 	 */
 	protected function tearDown() {
-		
+		$this->object->clear();
 	}
 
 	public function testI() {
-		$this->assertTrue(Autoloader::i() instanceof Autoloader);
 		$this->assertTrue(Autoloader::i() instanceof Autoloader);
 	}
 
 	/**
 	 * 
 	 */
-	public function testInvoke() {
+	public function testInvokeClass() {
 		$this->object->pushAutoload('Fw', PATH_FW . DIRECTORY_SEPARATOR, 'fw');
 		$this->assertTrue(class_exists('Fw_Config'));
 		$this->assertFalse(class_exists('FW_ConfigAbabagalamaga'));
@@ -45,6 +44,15 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse(class_exists('Config'));
 		$this->object->pushAutoload('', PATH_FW . DIRECTORY_SEPARATOR, false);
 		$this->assertFalse(class_exists('Config'));
+	}
+	
+	/**
+	 * Testing interfaces finding
+	 */
+	public function testInvokeInterface() {
+		$this->assertFalse(interface_exists('InterfaceConfig'));
+		$this->object->pushAutoload('', realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR, false);
+		$this->assertTrue(interface_exists('InterfaceConfig'));
 	}
 
 }
