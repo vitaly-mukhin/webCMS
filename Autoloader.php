@@ -61,14 +61,11 @@ class Autoloader {
 		} else {
 			$filename = $this->_invoke('', $class_array);
 		}
-		foreach(array('class', 'interface') as $ci) {
+		foreach (array('class', 'interface') as $ci) {
 			$f = sprintf($filename, $ci);
-			echo $f;
 			if (file_exists($f)) {
 				include_once $f;
 				return true;
-			} else {
-				echo ' ::::: not found', PHP_EOL;
 			}
 		}
 		return false;
@@ -80,9 +77,8 @@ class Autoloader {
 		$path = (count($array) > 1) ? array_slice($array, 0, count($array) - 1) : array();
 
 		$path = $this->_getPathPrefix($pref) . ($path ? implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR : '');
-		
+
 		return ($path ? $path : DIRECTORY_SEPARATOR) . ($cls[0] ? strtolower($cls[0]) . '.' : '') . $cls[1] . '.php';
-//		return $this->_getPathPrefix($pref) . ($path ? implode('/', $path) . '/' : '') . ($cls[0] ? strtolower($cls[0]) . '.' : '') . $cls[1] . '.php';
 	}
 
 	protected function _getSubprefix($pref) {
