@@ -275,6 +275,8 @@ class Fw_Db_Query {
 		$time_start = microtime(true);
 		$result = $this->_execute();
 		$time_end = microtime(true);
+		
+		$last_insert_id = $this->_connection->lastInsertId();
 
 		if ($this->Logger) {
 			@$this->_Logger->save(array('sql'=>$this->_Stmt->queryString, 'binds'=>$this->binds, 'result'=>(int) $result, 'duration'=>($time_end - $time_start)));
@@ -287,7 +289,7 @@ class Fw_Db_Query {
 		}
 
 		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Insert) {
-			return $this->_connection->lastInsertId();
+			return $last_insert_id;
 		}
 
 		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Update) {
