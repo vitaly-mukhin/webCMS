@@ -37,9 +37,6 @@ class Fw_Logger_Db extends Fw_Logger_Abstract {
 		if (!$this->_Config->table && error_reporting()) {
 			throw new Fw_Exception_Logger('Table name has to be set in Logger config');
 		}
-
-
-
 		/* @var $db Fw_Db */
 		if ($this->_Config->db && $this->_Config->table) {
 			try {

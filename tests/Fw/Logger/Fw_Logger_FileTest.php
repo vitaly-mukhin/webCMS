@@ -67,9 +67,20 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @expectedException Fw_Exception_Logger
+	 * @expectedExceptionMessage Filename not found
 	 */
 	public function testWriteExceptionNoFileForWriting() {
 		$this->object = new Fw_Logger_File(new Fw_Config(array('file' => 'bbbbbbb')));
+		$data = array('aaaa' => 'bbbb');
+		$this->object->save($data);
+	}
+	
+	/**
+	 * @expectedException Fw_Exception_Logger
+	 * @expectedExceptionMessage Full filename has to be set in Logger config
+	 */
+	public function testWriteExceptionFileFalse() {
+		$this->object = new Fw_Logger_File(new Fw_Config(array('file' => '')));
 		$data = array('aaaa' => 'bbbb');
 		$this->object->save($data);
 	}

@@ -31,30 +31,28 @@ class Fw_Logger_DbTest extends PHPUnit_Framework_TestCase {
 //	}
 
 	/**
-	 * @covers Fw_Logger_Db::_prepare
 	 * @expectedException Fw_Exception_Logger
 	 */
 	public function testPrepareExceptionEmptyCallback() {
-		$data = array('var1'=>'aaaa', 'var2'=>array('a', 'b'));
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
 		$this->object->save($data);
 	}
 
 	/**
-	 * @covers Fw_Logger_Db::_prepare
 	 * @expectedException Fw_Exception_Logger
 	 */
 	public function testPrepareExceptionNotCallable() {
 		$this->setUp('aaaaaa');
-		$data = array('var1'=>'aaaa', 'var2'=>array('a', 'b'));
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
 		$this->object->save($data);
 	}
 
 	public function testPrepare() {
-		$data = array('var1'=>'aaaa', 'var2'=>array('a', 'b'));
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
 		$func = function($input) {
 					return array(
-						'col1'=>$input['var1'],
-						'col2'=>json_encode($input['var2'])
+						'col1' => $input['var1'],
+						'col2' => json_encode($input['var2'])
 					);
 				};
 		$this->setUp($func);
@@ -74,11 +72,11 @@ class Fw_Logger_DbTest extends PHPUnit_Framework_TestCase {
 	public function testWriteExceptionNoDbInConfig() {
 		$this->object = new Fw_Logger_Db(new Fw_Config(array()), function($input) {
 							return array(
-								'col1'=>$input['var1'],
-								'col2'=>json_encode($input['var2'])
+								'col1' => $input['var1'],
+								'col2' => json_encode($input['var2'])
 							);
 						});
-		$data = array('var1'=>'aaaa', 'var2'=>array('a', 'b'));
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
 		$this->object->save($data);
 	}
 
@@ -86,27 +84,58 @@ class Fw_Logger_DbTest extends PHPUnit_Framework_TestCase {
 	 * @expectedException Fw_Exception_Config
 	 */
 	public function testWriteExceptionNoTableInConfig() {
-		$this->object = new Fw_Logger_Db(new Fw_Config(array('db'=>Fw_Db::i())), function($input) {
+		$this->object = new Fw_Logger_Db(new Fw_Config(array('db' => Fw_Db::i())), function($input) {
 							return array(
-								'col1'=>$input['var1'],
-								'col2'=>json_encode($input['var2'])
+								'col1' => $input['var1'],
+								'col2' => json_encode($input['var2'])
 							);
 						});
-		$data = array('var1'=>'aaaa', 'var2'=>array('a', 'b'));
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
 		$this->object->save($data);
 	}
 
 	/**
 	 * @expectedException Fw_Exception_Logger
+	 * @expectedExceptionMessage Cannot save data to a database: 
 	 */
 	public function testWriteExceptionCannotInsert() {
-		$this->object = new Fw_Logger_Db(new Fw_Config(array('db'=>Fw_Db::i(), 'table'=>'aaaaa')), function($input) {
+		$this->object = new Fw_Logger_Db(new Fw_Config(array('db' => Fw_Db::i(), 'table' => 'aaaaa')), function($input) {
 							return array(
-								'col1'=>$input['var1'],
-								'col2'=>json_encode($input['var2'])
+								'col1' => $input['var1'],
+								'col2' => json_encode($input['var2'])
 							);
 						});
-		$data = array('var1'=>'aaaa', 'var2'=>array('a', 'b'));
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
+		$this->object->save($data);
+	}
+
+	/**
+	 * @expectedException Fw_Exception_Logger
+	 * @expectedExceptionMessage db parameter in config must be set, and has to be an instance of Fw_Db
+	 */
+	public function testWriteExceptionFalseDb() {
+		$this->object = new Fw_Logger_Db(new Fw_Config(array('db' => false, 'table' => 'aaaaa')), function($input) {
+							return array(
+								'col1' => $input['var1'],
+								'col2' => json_encode($input['var2'])
+							);
+						});
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
+		$this->object->save($data);
+	}
+
+	/**
+	 * @expectedException Fw_Exception_Logger
+	 * @expectedExceptionMessage Table name has to be set in Logger config
+	 */
+	public function testWriteExceptionFalseTable() {
+		$this->object = new Fw_Logger_Db(new Fw_Config(array('db' => Fw_Db::i(), 'table' => false)), function($input) {
+							return array(
+								'col1' => $input['var1'],
+								'col2' => json_encode($input['var2'])
+							);
+						});
+		$data = array('var1' => 'aaaa', 'var2' => array('a', 'b'));
 		$this->object->save($data);
 	}
 

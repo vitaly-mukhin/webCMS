@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of class
+ * Description of Fw_Db
  *
  * @author Vitaly Mukhin
  * 
  * @property-read PDO $pointer
- * @property-read Fw_Logger_Db $Logger
+ * @property-read Fw_Logger_Abstract $Logger
  * 
  */
 class Fw_Db {
@@ -21,9 +21,9 @@ class Fw_Db {
 
 	/**
 	 *
-	 * @var Fw_Logger_Db
+	 * @var Fw_Logger_Abstract
 	 */
-	protected $_logger;
+	protected $_Logger;
 
 	/**
 	 *
@@ -49,7 +49,7 @@ class Fw_Db {
 			case 'pointer':
 				return $this->_connection;
 			case 'Logger':
-				return $this->_logger;
+				return $this->_Logger;
 		}
 	}
 
@@ -61,7 +61,7 @@ class Fw_Db {
 	public function connect(Fw_Config $Config) {
 		$dsn = $Config->driver . ':host=' . $Config->server . ';port=' . $Config->port . ';dbname=' . $Config->name;
 
-		$options = array(PDO::MYSQL_ATTR_INIT_COMMAND=>'SET NAMES ' . $Config->encoding);
+		$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $Config->encoding);
 
 		try {
 			$this->_connection = new PDO($dsn, $Config->user, $Config->password, $options);
@@ -77,17 +77,27 @@ class Fw_Db {
 	 *
 	 * @return Fw_Db_Query 
 	 */
-	public function query($sql=null, $binds=null, $skip_logger = false) {
+	public function query($sql = null, $binds = null, $skip_logger = false) {
 		return new Fw_Db_Query($this, $sql, $binds, ($skip_logger ? null : $this->Logger));
 	}
 
 	/**
 	 *
-	 * @param Fw_Logger_Db $Logger
+	 * @param Fw_Logger_Abstract $Logger
 	 * @return Fw_Db 
 	 */
 	public function setLogger(Fw_Logger_Abstract $Logger) {
-		$this->_logger = $Logger;
+		$this->_Logger = $Logger;
+
+		return $this;
+	}
+
+	/**
+	 *
+	 * @return \Fw_Db 
+	 */
+	public function unsetLogger() {
+		$this->_Logger = null;
 
 		return $this;
 	}

@@ -29,6 +29,10 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	 * 
 	 */
 	protected function setUp() {
+		if (!self::$db->pointer) {
+			$Config = new Fw_Config(PATH_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+			self::$db->connect($Config->db);
+		}
 		$this->object = self::$db->query();
 	}
 
@@ -39,14 +43,37 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		
 	}
 
+	/**
+	 *  @expectedException Fw_Exception_Db_Connection
+	 *  @expectedExceptionMessage No connection to database
+	 */
+	public function testNoConnection() {
+		Fw_Db::i(true)->query('SET NAMES "utf8" COLLATE "utf8_general_ci"')->fetchRow();
+	}
+
+	/**
+	 * 
+	 */
+	public function testLogger() {
+		echo '!';
+		$L = new Fw_Logger_File(new Fw_Config(array('file' => 'aaaaa')));
+		self::$db->setLogger($L);
+		$this->assertEquals(self::$db->Logger, $L);
+		self::$db->query('SET NAMES "utf8" COLLATE "utf8_general_ci"')->fetchRow();
+		self::$db->unsetLogger();
+		echo '!';
+	}
+
 	public function testQuery() {
 		$this->assertEquals('SET NAMES "utf8" COLLATE "utf8_general_ci"', Fw_Db::i()->query('SET NAMES "utf8" COLLATE "utf8_general_ci"')->sql);
 		$this->assertNull($this->object->ababagalamaga);
 	}
 
-	public function testLoggerDb() {
+	public function testLoggerPassesFromDbToQuery() {
 		$db = Fw_Db::i(true);
-		$L = new Fw_Logger_Db(new Fw_Config(array()), function($data){return $data;});
+		$L = new Fw_Logger_Db(new Fw_Config(array()), function($data) {
+							return $data;
+						});
 		$db->setLogger($L);
 		$Q = $db->query();
 		$this->assertEquals($L, $Q->Logger);
@@ -64,7 +91,7 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 		$db = Fw_Db::i(true);
 		$L = new Fw_Logger_File(new Fw_Config(array()));
 		$db->setLogger($L);
-		
+
 		$Q = $db->query();
 		$this->assertEquals($L, $Q->Logger);
 	}
@@ -74,12 +101,8 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testSkipLogger() {
 		$L = new Fw_Logger_File(new Fw_Config(array()));
-//		$L->save(array('sql' =>))
 		$db = Fw_Db::i(true);
 		$Q = $db->query('SELECT * FROM `table_name` WHERE `a` = ?', array(1));
-//		$db->setLogger($L);
-//		$this->assertTrue(Fw_Db::i()->query('sql', 'sql')->sql);
-//		$this->assertNull($this->object->ababagalamaga);
 	}
 
 	public function testSelect() {
@@ -223,21 +246,49 @@ class Fw_Db_QueryTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testFetch() {
-		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->fetch();
+		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->limit(10, 0)->fetch();
 		$this->assertEquals(array(array('category_id' => '10', 'name' => 'Games', 'last_update' => '2006-02-15 04:46:27')), $result);
-		return false;
 	}
 
 	public function testFetchRow() {
 		$result = $this->object->select()->from(TBL_CATEGORY)->where('category_id = ?', 10)->fetchRow();
 		$this->assertEquals(array('category_id' => '10', 'name' => 'Games', 'last_update' => '2006-02-15 04:46:27'), $result);
-		return false;
+	}
+
+	/**
+	 * @expectedException Fw_Exception_Db_Query
+	 * @expectedExceptionMessage Data too long for column
+	 */
+	public function testFetchUpdateException() {
+		$this->object->update()->from(TBL_CATEGORY)->values(array('name' => 'TooLongStringForThisColumnInTable'))->where('category_id = ?', 16)->fetchRow();
+	}
+
+	public function testFetchUpdate() {
+		$result = $this->object->update()->from(TBL_CATEGORY)->values(array('name' => (string) microtime()))->where('category_id = ?', 16)->fetchRow();
+		$this->assertEquals(1, $result);
+	}
+
+	public function testFetchInsert() {
+		$result = $this->object->insert(TBL_CATEGORY, array('name' => 'Custom'))->fetchRow();
+		$this->assertGreaterThanOrEqual(17, $result);
+	}
+
+	public function testFetchDelete() {
+		$result = $this->object->delete()->from(TBL_CATEGORY)->where('name = ?', 'Custom')->fetchRow();
+		$this->assertEquals(1, $result);
 	}
 
 	public function testFetchRowCount() {
 		$result = $this->object->select()->from(TBL_FILM, 'COUNT(film_id) AS cnt')->where('rental_rate = ?', 2.99)->fetchRow();
 		$this->assertEquals(array('cnt' => '323'), $result);
-		return false;
+	}
+
+	/**
+	 * @expectedException Fw_Exception_Db_Query
+	 * @expectedExceptionMessage Empty orderBy parameter 
+	 */
+	public function testEmptyOrderBy() {
+		$this->object->orderBy(array());
 	}
 
 	public function testOrderBy() {

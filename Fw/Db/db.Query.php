@@ -5,7 +5,7 @@
  *
  * @author Mukhenok
  * 
- * @property-read Fw_Logger_Db $Logger
+ * @property-read Fw_Logger_Abstract $Logger
  * @property-read string $sql
  * @property-read array $binds
  */
@@ -19,7 +19,7 @@ class Fw_Db_Query {
 
 	/**
 	 *
-	 * @var Fw_Logger_Db
+	 * @var Fw_Logger_Abstract
 	 */
 	protected $_Logger;
 
@@ -77,7 +77,7 @@ class Fw_Db_Query {
 	const LIMIT_START = 'start';
 	const LIMIT_COUNT = 'count';
 
-	public function __construct(Fw_Db $db, $sql = null, $binds = null, $logger = null) {
+	public function __construct(Fw_Db $db, $sql = null, $binds = null, Fw_Logger_Abstract $logger = null) {
 		$this->_Db = $db;
 
 		$this->_Logger = $logger;
@@ -98,7 +98,7 @@ class Fw_Db_Query {
 			case 'Logger':
 				return $this->_Logger;
 			case 'binds':
-				if (empty($this->_binds)) {
+				if (empty($this->_binds) && $this->getBehaviour()) {
 					$this->_binds = $this->getBehaviour()->binds;
 				}
 				return $this->_binds;
@@ -175,7 +175,7 @@ class Fw_Db_Query {
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_FROM][$alias] = array('table'=>$table_name, 'fields'=>(!is_null($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_FROM][$alias] = array('table' => $table_name, 'fields' => (!is_null($fields) ? $fields : '*'));
 
 		return $this;
 	}
@@ -252,7 +252,7 @@ class Fw_Db_Query {
 			$alias = key($table);
 			$table_name = $table[$alias];
 		}
-		$this->_params[self::PARAM_JOIN][$alias] = array('table'=>$table_name, 'condition'=>$condition, 'fields'=>(!is_null($fields) ? $fields : '*'));
+		$this->_params[self::PARAM_JOIN][$alias] = array('table' => $table_name, 'condition' => $condition, 'fields' => (!is_null($fields) ? $fields : '*'));
 
 		return $this;
 	}
@@ -275,11 +275,11 @@ class Fw_Db_Query {
 		$time_start = microtime(true);
 		$result = $this->_execute();
 		$time_end = microtime(true);
-		
+
 		$last_insert_id = $this->_connection->lastInsertId();
 
 		if ($this->Logger) {
-			@$this->_Logger->save(array('sql'=>$this->_Stmt->queryString, 'binds'=>$this->binds, 'result'=>(int) $result, 'duration'=>($time_end - $time_start)));
+			@$this->_Logger->save(array('sql' => $this->_Stmt->queryString, 'binds' => $this->binds, 'result' => (int) $result, 'duration' => ($time_end - $time_start)));
 		}
 
 		if (!$result) {
@@ -292,7 +292,8 @@ class Fw_Db_Query {
 			return $last_insert_id;
 		}
 
-		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Update) {
+		if ($this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Update
+				|| $this->getBehaviour() instanceof Fw_Db_Query_Behaviour_Delete) {
 			return $this->_Stmt->rowCount();
 		}
 
@@ -331,7 +332,7 @@ class Fw_Db_Query {
 	 */
 	public function orderBy($data) {
 		if (empty($data)) {
-			throw new Fw_Exception_Db_Query_Join('Empty orderBy parameter');
+			throw new Fw_Exception_Db_Query('Empty orderBy parameter');
 		}
 
 		if (empty($this->_params[self::PARAM_ORDER_BY])) {
