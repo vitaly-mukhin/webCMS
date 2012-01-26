@@ -37,7 +37,7 @@ class Fw_Logger_FileTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers Fw_Logger_File::_prepare
+	 * 
 	 */
 	public function testPrepare() {
 		$data = array('aaaa' => 'bbbb');

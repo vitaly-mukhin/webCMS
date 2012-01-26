@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Fw_Logger {
+class Fw_Logger_Abstract implements Fw_Logger_Interface {
 
 	/**
 	 *
@@ -27,7 +27,7 @@ class Fw_Logger {
 	 * Preparing data for writing with self::_prepare(), and call self::_write() for writing data
 	 *
 	 * @param mix $data 
-	 * @return Fw_Logger
+	 * @return Fw_Logger_Abstract
 	 */
 	public function save($data) {
 		$this->_prepare($data);
@@ -53,7 +53,7 @@ class Fw_Logger {
 
 	/**
 	 *
-	 * @return Fw_Logger
+	 * @return Fw_Logger_Abstract
 	 */
 	protected function _write() {
 		return $this;

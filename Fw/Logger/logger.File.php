@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Fw_Logger_File extends Fw_Logger {
+class Fw_Logger_File extends Fw_Logger_Abstract {
 	const TIME_FORMAT = 'Y-m-d H:i:s';
 
 	protected function _prepare($data) {

@@ -86,7 +86,7 @@ class Fw_Db {
 	 * @param Fw_Logger_Db $Logger
 	 * @return Fw_Db 
 	 */
-	public function setLogger(Fw_Logger $Logger) {
+	public function setLogger(Fw_Logger_Abstract $Logger) {
 		$this->_logger = $Logger;
 
 		return $this;
