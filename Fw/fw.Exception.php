@@ -6,5 +6,5 @@
  * @author Mukhenok
  */
 class Fw_Exception extends Exception {
-//put your code here
+
 }
