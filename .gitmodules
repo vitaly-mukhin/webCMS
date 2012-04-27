@@ -1,0 +1,3 @@
+[submodule "autoloader"]
+	path = autoloader
+	url = git@bitbucket.org:maglorchik/autoloader.git
