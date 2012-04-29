@@ -1,7 +1,8 @@
 <?php
 
 /**
- * This is a basic class, which will provide a basic features of accepting requests and 
+ * This is a basic class, which will provide a basic features for providing
+ * a convenient read access to array of data 
  *
  * @author Vitaliy_Mukhin
  */
