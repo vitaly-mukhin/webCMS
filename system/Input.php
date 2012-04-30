@@ -26,6 +26,14 @@ class Input implements Input_I {
 
 		$this->data = $data;
 	}
+    
+    /**
+     *
+     * @return array
+     */
+    public function export() {
+        return $this->data;
+    }
 
 	/**
 	 * Get a value from a holded data array.

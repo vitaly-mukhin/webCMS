@@ -6,6 +6,11 @@
  * @author Mukhenok
  */
 class Router {
+    
+    /**
+     * Default route mask 
+     */
+    const DEFAULT_MASK = '/(?<p>[^\/]*)(\/(?<a>[^\/]+))?(\/(?<s>[^\/]+))?/i';
 
 	/**
 	 * 

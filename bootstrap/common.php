@@ -1,6 +1,8 @@
 <?php
 
 define('PATH_SYSTEM', PATH_ROOT . DIRECTORY_SEPARATOR . 'system');
+define('PATH_CONFIG', PATH_ROOT . DIRECTORY_SEPARATOR . 'config');
+define('PATH_MODES', PATH_ROOT . DIRECTORY_SEPARATOR . 'modes');
 
 require PATH_ROOT . DIRECTORY_SEPARATOR . 'autoloader' . DIRECTORY_SEPARATOR . 'ILoader.php';
 require PATH_ROOT . DIRECTORY_SEPARATOR . 'autoloader' . DIRECTORY_SEPARATOR . 'Loader.php';

@@ -7,7 +7,9 @@
 interface Flow_I {
 
 	/**
-	 * @return Output_I 
+     * Returns a string if a next Flow is required, or TRUE if request is processed
+     * 
+	 * @return boolean|string 
 	 */
 	public function process();
 	

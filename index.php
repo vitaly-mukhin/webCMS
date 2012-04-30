@@ -5,12 +5,8 @@ define('PATH_BOOTSTRAP', PATH_ROOT . DIRECTORY_SEPARATOR . 'bootstrap');
 
 require PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'common.php';
 
-$Input = new Input(array('page'=>'home', 'sub'=>'2'));
-$Output = new Output();
+$Config = Input_Config::init('config.php');
 
-$Flow = new Flow_Root();
-$Flow->init($Input, $Output);
-
-$Flow->process();
-
-var_dump($Output);
+$Dispatcher = Dispatcher::i();
+$Dispatcher->init($Config);
+$Dispatcher->flow();

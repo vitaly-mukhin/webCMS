@@ -33,6 +33,11 @@ abstract class Flow implements Flow_I {
 		$this->Output = $Output;
 	}
 	
+    /**
+     *
+     * @param string $action
+     * @return boolean|string 
+     */
 	protected function getAction($action) {
 		if (method_exists($this, static::ACTION_PREFIX . $action)) {
 			return static::ACTION_PREFIX . $action;
@@ -40,5 +45,20 @@ abstract class Flow implements Flow_I {
 		
 		return false;
 	}
+    
+    /**
+     *
+     * @param string $step
+     * @return boolean 
+     */
+    protected function redirect($step) {
+        $action = $this->getAction($step);
+        
+        if ($action) {
+            return $this->$action();
+        }
+        
+        return false;
+    }
 
 }
