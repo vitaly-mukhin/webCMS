@@ -77,6 +77,12 @@ class Dispatcher {
 
     }
     
+    /**
+     * Setting up the mode Router
+     *
+     * @param Input_Config $routerConfig
+     * @return \Dispatcher 
+     */
     private function setModeRouter(Input_Config $routerConfig) {
         $this->Router = new Router();
         $this->Router->setRouteMask($routerConfig->get('mask'));
