@@ -39,6 +39,9 @@ class Dispatcher {
     const OUTPUT_HTML = 'output as HTML';
     const OUTPUT_DATA = 'output data';
     const NO_FLOW = 'noFlowFound';
+    const MODE_FLOW = 'flow';
+    const MODE_FOLDER = 'mode';
+    const MODE_ROUTER = 'router';
 
     private function __construct() {
         
@@ -58,39 +61,57 @@ class Dispatcher {
 
     /**
      *
-     * @param Input_Config $Config 
+     * @param Input_Config $Config
+     * @return \Dispatcher 
      */
     public function init(Input_Config $Config) {
         $this->Config = $Config;
+        
+        $this->setModeFolder($this->Config->get(Dispatcher::MODE_FOLDER));
+        
+        $this->setModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
+        
+        $this->setRootFlow($this->Config->get(Dispatcher::MODE_FLOW));
+        
+        return $this;
+
+    }
+    
+    private function setModeRouter(Input_Config $routerConfig) {
         $this->Router = new Router();
-
-
-        foreach (array_keys($Config->export()) as $key) {
-            switch (strtolower($key)) {
-                case 'mode':
-                    if (!$modeFolder = $this->Config->get($key)) {
-                        throw new ErrorException('mode must be set!');
-                    }
-
-                    define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
-
-                    $this->addModeAutoloaders(PATH_MODE);
-                    break;
-
-                case 'router':
-                    $defaultRouterConfig = new Input_Config(array(
-                                'mask' => Router::DEFAULT_MASK
-                        ));
-                    $this->Router->setRouteMask($Config->get($key, $defaultRouterConfig)->get('mask'));
-                    break;
-
-                case 'flow':
-                    $flow = $this->Config->get($key);
-                    $flowObject = $this->getFlow($flow);
-                    $this->RootFlow = $flowObject;
-                    break;
-            }
+        $this->Router->setRouteMask($routerConfig->get('mask'));
+        
+        return $this;
+    }
+    
+    /**
+     *
+     * @param string $modeFolder
+     * @return \Dispatcher
+     * @throws ErrorException 
+     */
+    private function setModeFolder($modeFolder) {
+        if (!$modeFolder) {
+            throw new ErrorException('mode folder must be set!');
         }
+
+        define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
+
+        $this->addModeAutoloaders(PATH_MODE);
+        
+        return $this;
+    }
+    
+    /**
+     *
+     * @param string $flow
+     * @return \Dispatcher 
+     */
+    private function setRootFlow($flow) {
+        $flowObject = $this->getFlow($flow);
+        $this->RootFlow = $flowObject;
+        
+        return $this;
     }
 
     /**
@@ -110,7 +131,7 @@ class Dispatcher {
     /**
      *
      * @param string $flowString
-     * @return Flow_I
+     * @return Flow
      * @throws ErrorException 
      */
     private function getFlow($flowString, $BaseFlow = null) {
@@ -130,7 +151,7 @@ class Dispatcher {
         $InputGet = new Input($_GET);
 
         $Input = new Input(array(
-                    static::INPUT_ROUTE => new Input($this->Router->parse($InputGet->get('route', ''))),
+                    static::INPUT_ROUTE => new Input($this->Router->parse($InputGet->get(self::ROUTE, ''))),
                     static::INPUT_GET => $InputGet,
                     static::INPUT_POST => new Input($_POST)
             ));
@@ -169,7 +190,11 @@ class Dispatcher {
         $this->render($Output);
     }
     
-    public function render($Output) {
+    /**
+     *
+     * @param Output $Output 
+     */
+    public function render(Output $Output) {
         switch ($Output->appender()) {
             case static::OUTPUT_HTML:
                 $Renderer = new Renderer_Html();

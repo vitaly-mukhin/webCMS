@@ -23,15 +23,20 @@ class Input_Config extends Input {
         return $result;
     }
 
+    /**
+     *
+     * @param type $configFile
+     * @return Input_Config
+     * @throws ErrorException 
+     */
     public static function init($configFile) {
-        $pathConfig = PATH_CONFIG . DIRECTORY_SEPARATOR . $configFile;
-        if (!file_exists($pathConfig)) {
+        if (!file_exists($configFile)) {
             throw new ErrorException(sprintf('Config file not found at <b>%s</b>', $configFile));
         }
 
         ob_start();
 
-        $data = require $pathConfig;
+        $data = require $configFile;
 
         ob_end_clean();
 
