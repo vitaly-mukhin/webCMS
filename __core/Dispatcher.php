@@ -66,17 +66,16 @@ class Dispatcher {
      */
     public function init(Input_Config $Config) {
         $this->Config = $Config;
-        
-        $this->setModeFolder($this->Config->get(Dispatcher::MODE_FOLDER));
-        
-        $this->setModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
-        
-        $this->setRootFlow($this->Config->get(Dispatcher::MODE_FLOW));
-        
-        return $this;
 
+        $this->setModeFolder($this->Config->get(Dispatcher::MODE_FOLDER));
+
+        $this->setModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
+
+        $this->setRootFlow($this->Config->get(Dispatcher::MODE_FLOW));
+
+        return $this;
     }
-    
+
     /**
      * Setting up the mode Router
      *
@@ -86,10 +85,10 @@ class Dispatcher {
     private function setModeRouter(Input_Config $routerConfig) {
         $this->Router = new Router();
         $this->Router->setRouteMask($routerConfig->get('mask'));
-        
+
         return $this;
     }
-    
+
     /**
      *
      * @param string $modeFolder
@@ -104,10 +103,10 @@ class Dispatcher {
         define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
 
         $this->addModeAutoloaders(PATH_MODE);
-        
+
         return $this;
     }
-    
+
     /**
      *
      * @param string $flow
@@ -116,7 +115,7 @@ class Dispatcher {
     private function setRootFlow($flow) {
         $flowObject = $this->getFlow($flow);
         $this->RootFlow = $flowObject;
-        
+
         return $this;
     }
 
@@ -141,11 +140,24 @@ class Dispatcher {
      * @throws ErrorException 
      */
     private function getFlow($flowString, $BaseFlow = null) {
-        $class = !is_null($BaseFlow) && !get_class($BaseFlow) == 'Flow' ? get_class($object) : 'Flow';
-        
+        $class = (!is_null($BaseFlow) && get_class($BaseFlow) !== 'Flow') ? get_class($BaseFlow) : 'Flow';
+
         $flowClass = $class . '_' . ucfirst($flowString);
+
         if (!class_exists($flowClass)) {
-            throw new ErrorException(sprintf('Flow not found %s', $flowClass));
+            $flowClass .= '_NoFlowFound';
+            while (true) {
+                if (class_exists($flowClass)) {
+                    break;
+                }
+                
+                $flowArray = explode('_', $flowClass);
+                unset($flowArray[count($flowArray) - 2]);
+                if (count($flowArray) < 2) {
+                    throw new ErrorException(sprintf('Flow not found %s', $flowClass));
+                }
+                $flowClass = implode('_', $flowArray);
+            }
         }
         /* @var $Flow Flow */
         $Flow = new $flowClass();
@@ -185,17 +197,14 @@ class Dispatcher {
                     $Flow = false;
                 }
                 if (!$Flow) {
-                    var_dump('cannot find proper flow');
                     $result = false;
                 }
             }
         }
-        
-        $Output->flow($Flow);
-        
+
         $this->render($Output);
     }
-    
+
     /**
      *
      * @param Output $Output 
@@ -206,7 +215,7 @@ class Dispatcher {
                 $Renderer = new Renderer_Html();
                 $Renderer->render($Output);
                 break;
-                
+
             default:
                 echo 'Unknown output appender';
         }

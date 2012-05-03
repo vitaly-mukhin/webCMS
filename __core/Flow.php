@@ -58,7 +58,7 @@ abstract class Flow {
             return $this->$action();
         }
         
-        return false;
+        return $step;
     }
 
 }

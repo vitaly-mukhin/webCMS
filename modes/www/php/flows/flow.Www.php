@@ -8,13 +8,9 @@
 class Flow_Www extends Flow {
     
     public function process() {
-        return $this->redirect($this->Input->get(Dispatcher::ROUTE, 'index'));
-    }
-    
-    public function action_aindex() {
-        var_dump('aaaaaaa');
-        
-        return true;
+        $next = $this->Input->get(Dispatcher::INPUT_ROUTE)->get('page', 'index');
+        $next = ($next) ? $next : 'index';
+        return $this->redirect($next);
     }
     
 }

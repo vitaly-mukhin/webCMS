@@ -24,12 +24,6 @@ class Output {
      * @var array
      */
     protected $headers = array();
-
-    /**
-     *
-     * @var Flow
-     */
-    protected $Flow;
     
     /**
      *
@@ -76,21 +70,6 @@ class Output {
         }
 
         $this->appender = $name;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param Flow $Flow
-     * @return \Output 
-     */
-    public function flow(Flow $Flow = null) {
-        if (is_null($Flow)) {
-            return $this->Flow;
-        }
-
-        $this->Flow = $Flow;
 
         return $this;
     }

@@ -35,10 +35,6 @@ class Autoloader {
 			}
 			$paths[] = $file;
 		}
-		
-		var_dump($paths);
-		
-		throw new Exception(sprintf('Class <b>%s</b> not found', $class));
 	}
 
 	/**
