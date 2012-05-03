@@ -5,7 +5,7 @@
  *
  * @author Mukhenok
  */
-class Output implements Output_I {
+class Output {
 
     /**
      *

@@ -7,6 +7,6 @@
 
 
 define('PATH_ROOT', __DIR__ . DIRECTORY_SEPARATOR . '..');
-define('PATH_BOOTSTRAP', PATH_ROOT . DIRECTORY_SEPARATOR . 'bootstrap');
+define('PATH_BOOTSTRAP', PATH_ROOT . DIRECTORY_SEPARATOR . '__bootstrap');
 
 require PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'common.php';

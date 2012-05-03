@@ -5,29 +5,29 @@
  *
  * @author Mukhenok
  */
-abstract class Flow implements Flow_I {
+abstract class Flow {
 	
 	const ACTION_PREFIX = 'action_';
 	
 	/**
 	 *
-	 * @var Input_I
+	 * @var Input
 	 */
 	protected $Input;
 	
 	/**
 	 *
-	 * @var Output_I 
+	 * @var Output 
 	 */
 	protected $Output;
 
 	/**
 	 * Set input/output objects
 	 *
-	 * @param Input_I $Input
-	 * @param Output_I $Output 
+	 * @param Input $Input
+	 * @param Output $Output 
 	 */
-	public function init(Input_I $Input, Output_I $Output) {
+	public function init(Input $Input, Output $Output) {
 		$this->Input = $Input;
 		
 		$this->Output = $Output;

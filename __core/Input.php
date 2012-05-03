@@ -6,7 +6,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Input implements Input_I {
+class Input {
 
 	/**
 	 *
