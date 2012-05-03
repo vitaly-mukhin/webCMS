@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Www_Index extends Flow {
+class Flow_Index extends Flow {
     
     public function process() {
         return $this->redirect($this->Input->get(Dispatcher::INPUT_ROUTE)->get('action', 'index'));

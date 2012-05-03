@@ -7,15 +7,18 @@
  */
 class Renderer_Html extends Renderer {
     
-    public function render(Output $Output) {
+    public function render(Output $Output, $templatePath) {
         if($Output->headers()) {
             foreach($Output->headers() as $header => $v) {
                 header($header);
             }
         }
-        foreach ($Output->export() as $k => $v) {
-            echo '<pre>' . $k . ': '. print_r($v, true), '</pre>';
-        }
+		
+		$Template = $this->Engine->loadTemplate($templatePath);
+		
+		$content = $Template->render($Output->export());
+		
+		echo $content;
     }
     
 }

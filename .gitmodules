@@ -1,3 +1,6 @@
 [submodule "autoloader"]
 	path = autoloader
 	url = git@bitbucket.org:maglorchik/autoloader.git
+[submodule "__libs/Fw1"]
+	path = __libs/Fw1
+	url = git@bitbucket.org:maglorchik/fw.git

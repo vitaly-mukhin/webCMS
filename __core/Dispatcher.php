@@ -29,7 +29,7 @@ class Dispatcher {
      *
      * @var Flow
      */
-    private $RootFlow;
+    private $ModeFlow;
 
     const INPUT_ROUTE = 'route_data';
     const INPUT_GET = 'get_data';
@@ -67,11 +67,11 @@ class Dispatcher {
     public function init(Input_Config $Config) {
         $this->Config = $Config;
 
-        $this->setModeFolder($this->Config->get(Dispatcher::MODE_FOLDER));
+        $this->initModeEnv($this->Config->get(Dispatcher::MODE_FOLDER));
 
-        $this->setModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
+        $this->initModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
 
-        $this->setRootFlow($this->Config->get(Dispatcher::MODE_FLOW));
+        $this->initModeFlow($this->Config->get(Dispatcher::MODE_FLOW));
 
         return $this;
     }
@@ -82,7 +82,7 @@ class Dispatcher {
      * @param Input_Config $routerConfig
      * @return \Dispatcher 
      */
-    private function setModeRouter(Input_Config $routerConfig) {
+    private function initModeRouter(Input_Config $routerConfig) {
         $this->Router = new Router();
         $this->Router->setRouteMask($routerConfig->get('mask'));
 
@@ -95,12 +95,14 @@ class Dispatcher {
      * @return \Dispatcher
      * @throws ErrorException 
      */
-    private function setModeFolder($modeFolder) {
+    private function initModeEnv($modeFolder) {
         if (!$modeFolder) {
             throw new ErrorException('mode folder must be set!');
         }
 
         define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
+        define('PATH_MODE_TEMPLATES', PATH_MODE . DIRECTORY_SEPARATOR . 'templates');
+        define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c');
 
         $this->addModeAutoloaders(PATH_MODE);
 
@@ -112,9 +114,9 @@ class Dispatcher {
      * @param string $flow
      * @return \Dispatcher 
      */
-    private function setRootFlow($flow) {
+    private function initModeFlow($flow) {
         $flowObject = $this->getFlow($flow);
-        $this->RootFlow = $flowObject;
+        $this->ModeFlow = $flowObject;
 
         return $this;
     }
@@ -129,7 +131,7 @@ class Dispatcher {
         $FlowLoader
             ->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')
             ->setIgnoreFirstPart(true)
-            ->setPrefix('flow.');
+            ->useFilePrefix(false);
         Autoloader::add($FlowLoader);
     }
 
@@ -140,7 +142,7 @@ class Dispatcher {
      * @throws ErrorException 
      */
     private function getFlow($flowString, $BaseFlow = null) {
-        $class = (!is_null($BaseFlow) && get_class($BaseFlow) !== 'Flow') ? get_class($BaseFlow) : 'Flow';
+        $class = (!is_null($BaseFlow) && get_class($BaseFlow) !== 'Flow' && $BaseFlow != $this->ModeFlow) ? get_class($BaseFlow) : 'Flow';
 
         $flowClass = $class . '_' . ucfirst($flowString);
 
@@ -180,8 +182,9 @@ class Dispatcher {
 
 
         $result = null;
-        $Flow = $this->RootFlow;
-        while (is_null($result) || is_string($result)) {
+		$i = 0;
+        $Flow = $this->ModeFlow;
+        while ((is_null($result) || is_string($result)) && ++$i) {
             $Flow->init($Input, $Output);
 
             $result = $Flow->process();
@@ -200,25 +203,57 @@ class Dispatcher {
                     $result = false;
                 }
             }
+			
+			if ($i > 100) {
+				throw new ErrorException('Too much iterations');
+			}
         }
-
-        $this->render($Output);
+		
+        $this->render($Output, $this->getTemplate($Flow));
     }
+	
+	private function getTemplate(Flow $Flow) {
+		$array = explode('_', str_replace('Flow_', '', get_class($Flow)));
+		
+		array_walk($array, function(&$v){
+			$v = strtolower($v);
+		});
+		
+		return implode(DIRECTORY_SEPARATOR, $array) . '.tpl';
+	}
 
     /**
      *
      * @param Output $Output 
      */
-    public function render(Output $Output) {
+    public function render(Output $Output, $templatePath) {
         switch ($Output->appender()) {
             case static::OUTPUT_HTML:
-                $Renderer = new Renderer_Html();
-                $Renderer->render($Output);
+                $Renderer = new Renderer_Html($this->getTemplateEngine());
+                $Renderer->render($Output, $templatePath);
                 break;
 
             default:
                 echo 'Unknown output appender';
         }
     }
+	
+	/**
+	 *
+	 * @return \Twig_Environment 
+	 */
+	private function getTemplateEngine() {
+		require_once PATH_LIBS . DIRECTORY_SEPARATOR . 'Twig' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+		Twig_Autoloader::register();
+		
+		$Twig_Loader = new Twig_Loader_Filesystem(PATH_MODE_TEMPLATES);
+		
+		$Twig_Env = new Twig_Environment($Twig_Loader, array(
+			'cache' => PATH_MODE_TEMPLATES_C,
+			'debug' => ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
+			));
+		
+		return $Twig_Env;
+	}
 
 }

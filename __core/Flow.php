@@ -60,5 +60,10 @@ abstract class Flow {
         
         return $step;
     }
+	
+	/**
+	 * @return boolean|null|string 
+	 */
+	abstract public function process();
 
 }
