@@ -18,6 +18,12 @@ class Output {
      * @var mixed
      */
     protected $appender;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $headers = array();
 
     /**
      *
@@ -35,6 +41,28 @@ class Output {
         $this->data[$name] = $value;
 
         return $this;
+    }
+    
+    /**
+     *
+     * @param string $value
+     * @param boolean $remove
+     * @return Output 
+     */
+    public function header($value, $remove = false) {
+        if($remove) {
+            if(array_key_exists($value, $this->headers)) {
+                unset($this->headers[$value]);
+            }
+        } else {
+            $this->headers[$value] = true;
+        }
+        
+        return $this;
+    }
+    
+    public function headers() {
+        return $this->headers;
     }
 
     /**
@@ -65,6 +93,14 @@ class Output {
         $this->Flow = $Flow;
 
         return $this;
+    }
+    
+    /**
+     *
+     * @return array
+     */
+    public function export() {
+        return $this->data;
     }
 
 }

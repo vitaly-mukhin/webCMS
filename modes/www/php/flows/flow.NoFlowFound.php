@@ -12,6 +12,8 @@ class Flow_NoFlowFound extends Flow {
     }
     
     public function action_default() {
+        $this->Output->header('HTTP/1.1 404 Not Found');
+        
         $this->Output->bind('result', 'no flow found');
         
         return true;
