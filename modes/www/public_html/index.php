@@ -11,4 +11,4 @@ $ModeConfig = Input_Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'confi
 $Dispatcher = Dispatcher::i();
 $Dispatcher->init($ModeConfig);
 
-$Dispatcher->flow();
+echo $Dispatcher->flow();

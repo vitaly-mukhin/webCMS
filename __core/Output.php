@@ -7,79 +7,50 @@
  */
 class Output {
 
-    /**
-     *
-     * @var array
-     */
-    protected $data = array();
+	/**
+	 *
+	 * @var array
+	 */
+	protected $data = array();
 
-    /**
-     *
-     * @var mixed
-     */
-    protected $appender;
-    
-    /**
-     *
-     * @var array
-     */
-    protected $headers = array();
-    
-    /**
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return Output 
-     */
-    public function bind($name, $value) {
-        $this->data[$name] = $value;
+	/**
+	 *
+	 * @var Renderer
+	 */
+	protected $Renderer;
 
-        return $this;
-    }
-    
-    /**
-     *
-     * @param string $value
-     * @param boolean $remove
-     * @return Output 
-     */
-    public function header($value, $remove = false) {
-        if($remove) {
-            if(array_key_exists($value, $this->headers)) {
-                unset($this->headers[$value]);
-            }
-        } else {
-            $this->headers[$value] = true;
-        }
-        
-        return $this;
-    }
-    
-    public function headers() {
-        return $this->headers;
-    }
+	/**
+	 *
+	 * @param string $name
+	 * @param mixed|null $value
+	 * @return Output 
+	 */
+	public function bind($name, $value = null) {
+		$this->data[$name] = $value;
 
-    /**
-     *
-     * @param null|mixed $name
-     * @return \Output 
-     */
-    public function appender($name = null) {
-        if (is_null($name)) {
-            return $this->appender;
-        }
+		return $this;
+	}
 
-        $this->appender = $name;
+	/**
+	 *
+	 * @param null|Renderer $Renderer
+	 * @return Renderer
+	 */
+	public function renderer(Renderer $Renderer = null) {
+		if (!is_null($Renderer)) {
+			$this->Renderer = $Renderer;
+		}
 
-        return $this;
-    }
-    
-    /**
-     *
-     * @return array
-     */
-    public function export() {
-        return $this->data;
-    }
+
+		return $this->Renderer;
+	}
+
+	/**
+	 *
+	 * @return array
+	 */
+	public function export() {
+		return $this->data;
+	}
 
 }

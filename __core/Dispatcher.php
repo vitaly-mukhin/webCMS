@@ -7,253 +7,248 @@
  */
 class Dispatcher {
 
-    /**
-     *
-     * @var Dispatcher
-     */
-    private static $instance;
+	/**
+	 *
+	 * @var Dispatcher
+	 */
+	private static $instance;
 
-    /**
-     *
-     * @var Router
-     */
-    private $Router;
+	/**
+	 *
+	 * @var Router
+	 */
+	private $Router;
 
-    /**
-     *
-     * @var Input_Config
-     */
-    private $Config;
+	/**
+	 *
+	 * @var Input_Config
+	 */
+	private $Config;
 
-    /**
-     *
-     * @var Flow
-     */
-    private $ModeFlow;
+	/**
+	 *
+	 * @var Flow
+	 */
+	private $ModeFlow;
 
-    const INPUT_ROUTE = 'route_data';
-    const INPUT_GET = 'get_data';
-    const INPUT_POST = 'post_data';
-    const INPUT_COOKIE = 'coockie_data';
-    const ROUTE = 'route';
-    const OUTPUT_HTML = 'output as HTML';
-    const OUTPUT_DATA = 'output data';
-    const NO_FLOW = 'noFlowFound';
-    const MODE_FLOW = 'flow';
-    const MODE_FOLDER = 'mode';
-    const MODE_ROUTER = 'router';
+	const ROUTE_IN_GET = 'route';
+	const NO_FLOW = 'noFlowFound';
+	const MODE_FLOW = 'flow';
+	const MODE_FOLDER = 'mode';
+	const MODE_ROUTER = 'router';
 
-    private function __construct() {
-        
-    }
+	private function __construct() {
+		
+	}
 
-    /**
-     *
-     * @return Dispatcher
-     */
-    public static function i() {
-        if (empty(static::$instance)) {
-            static::$instance = new static();
-        }
+	/**
+	 *
+	 * @return Dispatcher
+	 */
+	public static function i() {
+		if (empty(static::$instance)) {
+			static::$instance = new static();
+		}
 
-        return static::$instance;
-    }
+		return static::$instance;
+	}
 
-    /**
-     *
-     * @param Input_Config $Config
-     * @return \Dispatcher 
-     */
-    public function init(Input_Config $Config) {
-        $this->Config = $Config;
+	/**
+	 *
+	 * @param Input_Config $Config
+	 * @return \Dispatcher 
+	 */
+	public function init(Input_Config $Config) {
+		$this->Config = $Config;
 
-        $this->initModeEnv($this->Config->get(Dispatcher::MODE_FOLDER));
+		$this->initModeEnv($this->Config->get(Dispatcher::MODE_FOLDER));
 
-        $this->initModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
+		$this->initModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
 
-        $this->initModeFlow($this->Config->get(Dispatcher::MODE_FLOW));
+		$this->initModeFlow($this->Config->get(Dispatcher::MODE_FLOW));
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Setting up the mode Router
-     *
-     * @param Input_Config $routerConfig
-     * @return \Dispatcher 
-     */
-    private function initModeRouter(Input_Config $routerConfig) {
-        $this->Router = new Router();
-        $this->Router->setRouteMask($routerConfig->get('mask'));
+	/**
+	 * Setting up the mode Router
+	 *
+	 * @param Input_Config $routerConfig
+	 * @return \Dispatcher 
+	 */
+	private function initModeRouter(Input_Config $routerConfig) {
+		$this->Router = new Router();
+		$this->Router->setRouteMask($routerConfig->get('mask'));
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     *
-     * @param string $modeFolder
-     * @return \Dispatcher
-     * @throws ErrorException 
-     */
-    private function initModeEnv($modeFolder) {
-        if (!$modeFolder) {
-            throw new ErrorException('mode folder must be set!');
-        }
+	/**
+	 *
+	 * @param string $modeFolder
+	 * @return \Dispatcher
+	 * @throws ErrorException 
+	 */
+	private function initModeEnv($modeFolder) {
+		if (!$modeFolder) {
+			throw new ErrorException('mode folder must be set!');
+		}
 
-        define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
-        define('PATH_MODE_TEMPLATES', PATH_MODE . DIRECTORY_SEPARATOR . 'templates');
-        define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c');
+		define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
+		define('PATH_MODE_TEMPLATES', PATH_MODE . DIRECTORY_SEPARATOR . 'templates');
+		define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c');
 
-        $this->addModeAutoloaders(PATH_MODE);
+		$this->addModeAutoloaders(PATH_MODE);
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     *
-     * @param string $flow
-     * @return \Dispatcher 
-     */
-    private function initModeFlow($flow) {
-        $flowObject = $this->getFlow($flow);
-        $this->ModeFlow = $flowObject;
+	/**
+	 *
+	 * @param string $flow
+	 * @return \Dispatcher 
+	 */
+	private function initModeFlow($flow) {
+		$flowObject = $this->getFlow($flow);
+		$this->ModeFlow = $flowObject;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     *
-     * @param type $modeFolder 
-     */
-    private function addModeAutoloaders($modeFolder) {
-        $baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
-        $FlowLoader = new Loader();
-        $FlowLoader
-            ->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')
-            ->setIgnoreFirstPart(true)
-            ->useFilePrefix(false);
-        Autoloader::add($FlowLoader);
-    }
+	/**
+	 *
+	 * @param type $modeFolder 
+	 */
+	private function addModeAutoloaders($modeFolder) {
+		$baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
+		$FlowLoader = new Loader();
+		$FlowLoader
+				->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')
+				->setIgnoreFirstPart(true)
+				->useFilePrefix(false);
+		Autoloader::add($FlowLoader);
+	}
 
-    /**
-     *
-     * @param string $flowString
-     * @return Flow
-     * @throws ErrorException 
-     */
-    private function getFlow($flowString, $BaseFlow = null) {
-        $class = (!is_null($BaseFlow) && get_class($BaseFlow) !== 'Flow' && $BaseFlow != $this->ModeFlow) ? get_class($BaseFlow) : 'Flow';
+	/**
+	 *
+	 * @param string $flowString
+	 * @return Flow
+	 * @throws ErrorException 
+	 */
+	private function getFlow($flowString, $BaseFlow = null) {
+		$class = (!is_null($BaseFlow) && get_class($BaseFlow) !== 'Flow' && $BaseFlow != $this->ModeFlow) ? get_class($BaseFlow) : 'Flow';
 
-        $flowClass = $class . '_' . ucfirst($flowString);
+		$flowClass = $class . '_' . ucfirst($flowString);
 
-        if (!class_exists($flowClass)) {
-            $flowClass .= '_NoFlowFound';
-            while (true) {
-                if (class_exists($flowClass)) {
-                    break;
-                }
-                
-                $flowArray = explode('_', $flowClass);
-                unset($flowArray[count($flowArray) - 2]);
-                if (count($flowArray) < 2) {
-                    throw new ErrorException(sprintf('Flow not found %s', $flowClass));
-                }
-                $flowClass = implode('_', $flowArray);
-            }
-        }
-        /* @var $Flow Flow */
-        $Flow = new $flowClass();
+		if (!class_exists($flowClass)) {
+			$flowClass .= '_NoFlowFound';
+			while (true) {
+				if (class_exists($flowClass)) {
+					break;
+				}
 
-        return $Flow;
-    }
+				$flowArray = explode('_', $flowClass);
+				unset($flowArray[count($flowArray) - 2]);
+				if (count($flowArray) < 2) {
+					throw new ErrorException(sprintf('Flow not found %s', $flowClass));
+				}
+				$flowClass = implode('_', $flowArray);
+			}
+		}
+		/* @var $Flow Flow */
+		$Flow = new $flowClass();
 
-    public function flow() {
-        $InputGet = new Input($_GET);
+		return $Flow;
+	}
 
-        $Input = new Input(array(
-                    static::INPUT_ROUTE => new Input($this->Router->parse($InputGet->get(self::ROUTE, ''))),
-                    static::INPUT_GET => $InputGet,
-                    static::INPUT_POST => new Input($_POST)
-            ));
+	/**
+	 *
+	 * @return string
+	 * @throws ErrorException 
+	 */
+	public function flow() {
+		$InputGet = new Input($_GET);
+		$uparsedRoute = $InputGet->get(self::ROUTE_IN_GET, '');
+		$InputRouter = new Input($this->Router->parse($uparsedRoute));
 
-        // initiating a Output object, and setting its default params
-        $Output = new Output();
-        $Output->appender(Dispatcher::OUTPUT_HTML);
+		$Input = new Input_Http(array(
+					Input_Http::INPUT_ROUTE=>$InputRouter,
+					Input_Http::INPUT_GET=>$InputGet,
+					Input_Http::INPUT_POST=>$_POST,
+					Input_Http::INPUT_COOKIE=>$_COOKIE
+				));
+
+		// initiating a Output_Http object, and setting its default params
+		$Output = new Output_Http();
+		$Output->renderer(new Renderer_Http);
 
 
-        $result = null;
+		$result = null;
 		$i = 0;
-        $Flow = $this->ModeFlow;
-        while ((is_null($result) || is_string($result)) && ++$i) {
-            $Flow->init($Input, $Output);
+		$Flow = $this->ModeFlow;
+		while ((is_null($result) || is_string($result)) && ++$i) {
+			/* @var $Flow Flow */
+			$Flow->init($Input, $Output);
 
-            $result = $Flow->process();
+			$result = $Flow->process();
 
-            if ($result === false) {
-                $result = Dispatcher::NO_FLOW;
-            }
+			if ($result === true) {
+				break;
+			}
 
-            if (!empty($result) && is_string($result)) {
-                try {
-                    $Flow = $this->getFlow($result, $Flow);
-                } catch (ErrorException $E) {
-                    $Flow = false;
-                }
-                if (!$Flow) {
-                    $result = false;
-                }
-            }
-			
+			if ($result === false) {
+				$result = Dispatcher::NO_FLOW;
+			}
+
+			if (!empty($result) && is_string($result)) {
+				try {
+					$Flow = $this->getFlow($result, $Flow);
+				} catch (ErrorException $E) {
+					$Flow = false;
+				}
+				if (!$Flow) {
+					$result = false;
+				}
+			}
+
 			if ($i > 100) {
 				throw new ErrorException('Too much iterations');
 			}
-        }
-		
-        $this->render($Output, $this->getTemplate($Flow));
-    }
-	
+		}
+
+		return $this->render($Output, $this->getTemplate($Flow));
+	}
+
 	private function getTemplate(Flow $Flow) {
 		$array = explode('_', str_replace('Flow_', '', get_class($Flow)));
-		
-		array_walk($array, function(&$v){
-			$v = strtolower($v);
-		});
-		
+
+		array_walk($array, function(&$v) {
+					$v = strtolower($v);
+				});
+
 		return implode(DIRECTORY_SEPARATOR, $array) . '.tpl';
 	}
 
-    /**
-     *
-     * @param Output $Output 
-     */
-    public function render(Output $Output, $templatePath) {
-        switch ($Output->appender()) {
-            case static::OUTPUT_HTML:
-                $Renderer = new Renderer_Html($this->getTemplateEngine());
-                $Renderer->render($Output, $templatePath);
-                break;
+	/**
+	 *
+	 * @param Output $Output 
+	 */
+	public function render(Output $Output, $templatePath) {
+		$Renderer = $Output->renderer();
+		$Renderer->engine($this->getRendererEngine());
+		$Renderer->render($Output, $templatePath);
+	}
 
-            default:
-                echo 'Unknown output appender';
-        }
-    }
-	
 	/**
 	 *
 	 * @return \Twig_Environment 
 	 */
-	private function getTemplateEngine() {
-		require_once PATH_LIBS . DIRECTORY_SEPARATOR . 'Twig' . DIRECTORY_SEPARATOR . 'Autoloader.php';
-		Twig_Autoloader::register();
-		
-		$Twig_Loader = new Twig_Loader_Filesystem(PATH_MODE_TEMPLATES);
-		
-		$Twig_Env = new Twig_Environment($Twig_Loader, array(
-			'cache' => PATH_MODE_TEMPLATES_C,
-			'debug' => ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
-			));
-		
-		return $Twig_Env;
+	private function getRendererEngine() {
+
+		$Engine = new Renderer_Engine();
+		$Engine->init();
+
+		return $Engine;
 	}
 
 }

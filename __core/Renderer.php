@@ -6,17 +6,34 @@
  * @author Vitaliy_Mukhin
  */
 abstract class Renderer {
-	
+
 	/**
 	 *
-	 * @var Twig_Environment
+	 * @var Renderer_Engine
 	 */
 	protected $Engine;
-	
-	public function __construct($Engine) {
+
+	/**
+	 *
+	 * @param Renderer_Engine $Engine
+	 * @return \Renderer 
+	 */
+	public function engine(Renderer_Engine $Engine) {
 		$this->Engine = $Engine;
+
+		return $this;
 	}
-    
-    abstract public function render(Output $Output, $templatePath);
-    
+
+	/**
+	 *
+	 * @param Output $Output
+	 * @param string $templatePath
+	 * @return string
+	 */
+	public function render(Output $Output, $templatePath) {
+		$content = $this->Engine->render($templatePath, $Output->export());
+
+		return $content;
+	}
+
 }
