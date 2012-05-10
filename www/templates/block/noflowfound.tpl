@@ -1,0 +1,3 @@
+<div class="no-block-found">
+	<h4>Block {{ block_name }} not found</h4>
+</div>

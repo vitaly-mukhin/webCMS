@@ -20,6 +20,28 @@ class Input_Http extends Input {
 
 	/**
 	 *
+	 * @var Input_Http
+	 */
+	private static $defaultInput;
+
+	/**
+	 *
+	 * @param Input_Http $Input 
+	 */
+	public static function setDefault(Input_Http $Input) {
+		self::$defaultInput = $Input;
+	}
+
+	/**
+	 *
+	 * @return Input_Http
+	 */
+	public static function getDefault() {
+		return self::$defaultInput;
+	}
+
+	/**
+	 *
 	 * @param string $key
 	 * @return \Input
 	 * @throws Exception 
@@ -36,8 +58,8 @@ class Input_Http extends Input {
 
 			self::$inputs[$key] = $Input;
 		} else {
-            $Input = self::$inputs[$key];
-        }
+			$Input = self::$inputs[$key];
+		}
 
 		return self::$inputs[$key] = $Input;
 	}

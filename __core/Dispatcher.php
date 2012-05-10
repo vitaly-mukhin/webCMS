@@ -9,27 +9,9 @@ class Dispatcher {
 
 	/**
 	 *
-	 * @var Dispatcher
-	 */
-	private static $instance;
-
-	/**
-	 *
-	 * @var Router
-	 */
-	private $Router;
-
-	/**
-	 *
-	 * @var Input_Config
-	 */
-	private $Config;
-
-	/**
-	 *
 	 * @var Flow
 	 */
-	private $ModeFlow;
+	private $initialFlow;
 
 	const ROUTE_IN_GET = 'route';
 	const NO_FLOW = 'noFlowFound';
@@ -47,26 +29,9 @@ class Dispatcher {
 	 * @return \Dispatcher 
 	 */
 	public function init(Input_Config $Config) {
-		$this->Config = $Config;
+		$this->initModeEnv($Config->get(Dispatcher::MODE_FOLDER));
 
-		$this->initModeEnv($this->Config->get(Dispatcher::MODE_FOLDER));
-
-		$this->initModeRouter($this->Config->get(Dispatcher::MODE_ROUTER));
-
-		$this->initModeFlow($this->Config->get(Dispatcher::MODE_FLOW));
-
-		return $this;
-	}
-
-	/**
-	 * Setting up the mode Router
-	 *
-	 * @param Input_Config $routerConfig
-	 * @return \Dispatcher 
-	 */
-	private function initModeRouter(Input_Config $routerConfig) {
-		$this->Router = new Router();
-		$this->Router->setRouteMask($routerConfig->get('mask'));
+		$this->setInitialFlow($Config->get(Dispatcher::MODE_FLOW));
 
 		return $this;
 	}
@@ -81,9 +46,6 @@ class Dispatcher {
 		if (!$modeFolder) {
 			throw new ErrorException('mode folder must be set!');
 		}
-        
-		define('PATH_MODE_TEMPLATES', PATH_MODE . DIRECTORY_SEPARATOR . 'templates');
-		define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c');
 
 		$this->addModeAutoloaders(PATH_MODE);
 
@@ -92,12 +54,12 @@ class Dispatcher {
 
 	/**
 	 *
-	 * @param string $flow
+	 * @param string $flowString
 	 * @return \Dispatcher 
 	 */
-	private function initModeFlow($flow) {
-		$flowObject = $this->getFlow($flow);
-		$this->ModeFlow = $flowObject;
+	public function setInitialFlow($flowString) {
+		$flowObject = $this->getFlow($flowString);
+		$this->initialFlow = $flowObject;
 
 		return $this;
 	}
@@ -108,12 +70,22 @@ class Dispatcher {
 	 */
 	private function addModeAutoloaders($modeFolder) {
 		$baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
+
+		// autoloader for Flow_*
 		$FlowLoader = new Loader();
 		$FlowLoader
 				->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')
 				->setIgnoreFirstPart(true)
 				->useFilePrefix(false);
 		Autoloader::add($FlowLoader);
+
+		// autoloader for Block_*
+		$BlockLoader = new Loader();
+		$BlockLoader
+				->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'blocks')
+				->setIgnoreFirstPart(true)
+				->useFilePrefix(false);
+		Autoloader::add($BlockLoader);
 	}
 
 	/**
@@ -123,7 +95,14 @@ class Dispatcher {
 	 * @throws ErrorException 
 	 */
 	private function getFlow($flowString, $BaseFlow = null) {
-		$class = (!is_null($BaseFlow) && get_class($BaseFlow) !== 'Flow' && $BaseFlow != $this->ModeFlow) ? get_class($BaseFlow) : 'Flow';
+		$class = 'Flow';
+		if (
+				!is_null($BaseFlow) &&
+				get_class($BaseFlow) !== 'Flow' &&
+				($BaseFlow != $this->initialFlow || get_class($BaseFlow) == 'Flow_Block')
+		) {
+			$class = get_class($BaseFlow);
+		}
 
 		$flowClass = $class . '_' . ucfirst($flowString);
 
@@ -153,18 +132,7 @@ class Dispatcher {
 	 * @return string
 	 * @throws ErrorException 
 	 */
-	public function flow() {
-		$InputGet = new Input($_GET);
-		$uparsedRoute = $InputGet->get(self::ROUTE_IN_GET, '');
-		$InputRouter = new Input($this->Router->parse($uparsedRoute));
-
-		$Input = new Input_Http(array(
-					Input_Http::INPUT_ROUTE=>$InputRouter,
-					Input_Http::INPUT_GET=>$InputGet,
-					Input_Http::INPUT_POST=>$_POST,
-					Input_Http::INPUT_COOKIE=>$_COOKIE
-				));
-
+	public function flow(Input_Http $Input = null) {
 		// initiating a Output_Http object, and setting its default params
 		$Output = new Output_Http();
 		$Output->renderer(new Renderer_Http);
@@ -172,7 +140,7 @@ class Dispatcher {
 
 		$result = null;
 		$i = 0;
-		$Flow = $this->ModeFlow;
+		$Flow = $this->initialFlow;
 		while ((is_null($result) || is_string($result)) && ++$i) {
 			/* @var $Flow Flow */
 			$Flow->init($Input, $Output);

@@ -2,6 +2,7 @@
 	<head>
 	</head>
 	<body>
+		{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}
 		{% block head %}
 		<h1>Hello, World!</h1>
 		{% endblock %}
