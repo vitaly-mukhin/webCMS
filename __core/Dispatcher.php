@@ -37,20 +37,8 @@ class Dispatcher {
 	const MODE_FOLDER = 'mode';
 	const MODE_ROUTER = 'router';
 
-	private function __construct() {
+	public function __construct() {
 		
-	}
-
-	/**
-	 *
-	 * @return Dispatcher
-	 */
-	public static function i() {
-		if (empty(static::$instance)) {
-			static::$instance = new static();
-		}
-
-		return static::$instance;
 	}
 
 	/**
@@ -93,8 +81,7 @@ class Dispatcher {
 		if (!$modeFolder) {
 			throw new ErrorException('mode folder must be set!');
 		}
-
-		define('PATH_MODE', PATH_MODES . DIRECTORY_SEPARATOR . $modeFolder);
+        
 		define('PATH_MODE_TEMPLATES', PATH_MODE . DIRECTORY_SEPARATOR . 'templates');
 		define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c');
 
@@ -236,7 +223,7 @@ class Dispatcher {
 	public function render(Output $Output, $templatePath) {
 		$Renderer = $Output->renderer();
 		$Renderer->engine($this->getRendererEngine());
-		$Renderer->render($Output, $templatePath);
+		return $Renderer->render($Output, $templatePath);
 	}
 
 	/**

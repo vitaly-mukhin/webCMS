@@ -8,7 +8,7 @@
 class Flow_Index extends Flow {
     
     public function process() {
-        return $this->redirect($this->Input->get(Dispatcher::INPUT_ROUTE)->get('action', 'index'));
+        return $this->redirect($this->Input->get(Input_Http::INPUT_ROUTE)->get('action', 'index'));
     }
     
     public function action_index() {
