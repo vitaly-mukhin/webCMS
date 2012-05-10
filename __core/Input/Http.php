@@ -35,7 +35,9 @@ class Input_Http extends Input {
 			$Input = $Input instanceof Input ? $Input : new Input($Input);
 
 			self::$inputs[$key] = $Input;
-		}
+		} else {
+            $Input = self::$inputs[$key];
+        }
 
 		return self::$inputs[$key] = $Input;
 	}
