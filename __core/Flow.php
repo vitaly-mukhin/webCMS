@@ -22,6 +22,12 @@ abstract class Flow {
 	protected $Output;
 
 	/**
+	 *
+	 * @var string
+	 */
+	protected $runnedAction;
+
+	/**
 	 * Set input/output objects
 	 *
 	 * @param Input $Input
@@ -36,14 +42,62 @@ abstract class Flow {
 	/**
 	 *
 	 * @param string $action
-	 * @return boolean|string 
+	 * @return string|boolean
+	 */
+	public function action($action) {
+
+		$this->callPre($action);
+
+		$result = $this->call($action);
+
+		$this->callPost($result);
+
+		return $result;
+	}
+
+	/**
+	 *
+	 * @param string $action 
+	 */
+	protected function callPre($action) {
+		$this->runnedAction = $action;
+	}
+
+	/**
+	 *
+	 * @param string|boolean $result 
+	 */
+	protected function callPost($result) {
+		if ($result !== true) {
+			$this->runnedAction = false;
+		}
+	}
+
+	/**
+	 *
+	 * @param string $action
+	 * @return string|boolean 
+	 */
+	protected function call($action) {
+		return $this->{$this->getAction($action)}();
+	}
+
+	/**
+	 *
+	 * @param string $action
+	 * @return boolean
+	 */
+	protected function existsAction($action) {
+		return method_exists($this, $this->getAction($action));
+	}
+
+	/**
+	 *
+	 * @param string $action
+	 * @return string
 	 */
 	protected function getAction($action) {
-		if (method_exists($this, static::ACTION_PREFIX . $action)) {
-			return static::ACTION_PREFIX . $action;
-		}
-
-		return false;
+		return static::ACTION_PREFIX . $action;
 	}
 
 	/**
@@ -52,17 +106,15 @@ abstract class Flow {
 	 * @return boolean 
 	 */
 	protected function redirect($step) {
-		$action = $this->getAction($step);
-
-		if ($action) {
-			return $this->$action();
+		if ($this->existsAction($step)) {
+			return $this->action($step);
 		}
 
 		return $step;
 	}
 
 	/**
-	 * @return boolean|null|string 
+	 * @return boolean|string 
 	 */
 	abstract public function process();
 

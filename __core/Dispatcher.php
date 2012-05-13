@@ -14,10 +14,11 @@ class Dispatcher {
 	private $initialFlow;
 
 	const ROUTE_IN_GET = 'route';
-	const NO_FLOW = 'noFlowFound';
+	const NO_FLOW_FOUND = 'noFlowFound';
 	const MODE_FLOW = 'flow';
 	const MODE_FOLDER = 'mode';
 	const MODE_ROUTER = 'router';
+	const FLOW_FINISHED = true;
 
 	public function __construct() {
 		
@@ -29,7 +30,7 @@ class Dispatcher {
 	 * @return \Dispatcher 
 	 */
 	public function init(Input_Config $Config) {
-		$this->initModeEnv($Config->get(Dispatcher::MODE_FOLDER));
+		$this->initModeEnv();
 
 		$this->setInitialFlow($Config->get(Dispatcher::MODE_FLOW));
 
@@ -38,14 +39,9 @@ class Dispatcher {
 
 	/**
 	 *
-	 * @param string $modeFolder
-	 * @return \Dispatcher
-	 * @throws ErrorException 
+	 * @return Dispatcher
 	 */
-	private function initModeEnv($modeFolder) {
-		if (!$modeFolder) {
-			throw new ErrorException('mode folder must be set!');
-		}
+	private function initModeEnv() {
 
 		$this->addModeAutoloaders(PATH_MODE);
 
@@ -66,7 +62,7 @@ class Dispatcher {
 
 	/**
 	 *
-	 * @param type $modeFolder 
+	 * @param string $modeFolder 
 	 */
 	private function addModeAutoloaders($modeFolder) {
 		$baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
@@ -107,24 +103,38 @@ class Dispatcher {
 		$flowClass = $class . '_' . ucfirst($flowString);
 
 		if (!class_exists($flowClass)) {
-			$flowClass .= '_NoFlowFound';
-			while (true) {
-				if (class_exists($flowClass)) {
-					break;
-				}
-
-				$flowArray = explode('_', $flowClass);
-				unset($flowArray[count($flowArray) - 2]);
-				if (count($flowArray) < 2) {
-					throw new ErrorException(sprintf('Flow not found %s', $flowClass));
-				}
-				$flowClass = implode('_', $flowArray);
-			}
+			$flowClass = $this->getNoFlowFound($flowClass);
 		}
 		/* @var $Flow Flow */
 		$Flow = new $flowClass();
 
 		return $Flow;
+	}
+
+	/**
+	 *
+	 * @param string $flowClass
+	 * @return string
+	 * @throws ErrorException 
+	 */
+	private function getNoFlowFound($flowClass) {
+		$flowClass .= '_NoFlowFound';
+		while (true) {
+			if (class_exists($flowClass)) {
+				break;
+			}
+
+			$flowArray = explode('_', $flowClass);
+			unset($flowArray[count($flowArray) - 2]);
+
+			if (count($flowArray) < 2) {
+				throw new ErrorException(sprintf('Flow not found %s', $flowClass));
+			}
+
+			$flowClass = implode('_', $flowArray);
+		}
+
+		return $flowClass;
 	}
 
 	/**
@@ -140,20 +150,19 @@ class Dispatcher {
 
 		$result = null;
 		$i = 0;
+
 		$Flow = $this->initialFlow;
-		while ((is_null($result) || is_string($result)) && ++$i) {
+		while ((is_null($result) || is_string($result))) {
 			/* @var $Flow Flow */
 			$Flow->init($Input, $Output);
 
 			$result = $Flow->process();
 
-			if ($result === true) {
+			if ($result === self::FLOW_FINISHED) {
 				break;
 			}
 
-			if ($result === false) {
-				$result = Dispatcher::NO_FLOW;
-			}
+			$result = $result ? : self::NO_FLOW_FOUND;
 
 			if (!empty($result) && is_string($result)) {
 				try {
@@ -166,20 +175,22 @@ class Dispatcher {
 				}
 			}
 
-			if ($i > 100) {
-				throw new ErrorException('Too much iterations');
+			if (++$i > 100) {
+				throw new ErrorException('Too much iterations - proper flow not found');
 			}
 		}
 
-		return $this->render($Output, $this->getTemplate($Flow));
+		return $this->render($Output, $this->getTemplatePath($Flow));
 	}
 
-	private function getTemplate(Flow $Flow) {
-		$array = explode('_', str_replace('Flow_', '', get_class($Flow)));
-
-		array_walk($array, function(&$v) {
-					$v = strtolower($v);
-				});
+	/**
+	 *
+	 * @param Flow $Flow
+	 * @return string 
+	 */
+	private function getTemplatePath(Flow $Flow) {
+//		$Flow->getTemplatePath();
+		$array = explode('_', strtolower(str_replace('Flow_', '', get_class($Flow))));
 
 		return implode(DIRECTORY_SEPARATOR, $array) . '.tpl';
 	}
@@ -196,7 +207,7 @@ class Dispatcher {
 
 	/**
 	 *
-	 * @return \Twig_Environment 
+	 * @return Renderer_Engine 
 	 */
 	private function getRendererEngine() {
 
