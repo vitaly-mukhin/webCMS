@@ -4,3 +4,6 @@
 [submodule "__libs/Fw1"]
 	path = __libs/Fw1
 	url = git@bitbucket.org:maglorchik/fw.git
+[submodule "__libs/Fw"]
+	path = __libs/Fw
+	url = git@bitbucket.org:maglorchik/Fw.git
