@@ -10,6 +10,8 @@ class Flow_Index extends Flow {
 	const DEFAULT_ACTION = 'index';
 
 	public function action_index() {
+		Block_Head::addPageTitle('index');
+
 		$this->Output->bind('result', 'OK');
 
 		return true;

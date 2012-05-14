@@ -152,6 +152,18 @@ class Dispatcher {
 		$i = 0;
 
 		$Flow = $this->initialFlow;
+		// TODO 2012-05-15: move Flow processing inside the Flow class, for next time diagramm:
+		//	FlowRoot::pre()
+		//	FlowRoot::call() {
+		//		FlowInner::pre()
+		//		FlowInner::call() {
+		//			FlowSubInner::pre()
+		//			FlowSubInner::call()
+		//			FlowSubInner::past()
+		//		}
+		//		FlowInner::past()
+		//	}
+		//	FlowRoot::past()
 		while ((is_null($result) || is_string($result))) {
 			/* @var $Flow Flow */
 			$Flow->init($Input, $Output);
@@ -192,7 +204,7 @@ class Dispatcher {
 //		$Flow->getTemplatePath();
 		$array = explode('_', strtolower(str_replace('Flow_', '', get_class($Flow))));
 
-		return implode(DIRECTORY_SEPARATOR, $array) . '.tpl';
+		return implode(DIRECTORY_SEPARATOR, $array) . '.twig';
 	}
 
 	/**
