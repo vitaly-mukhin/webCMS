@@ -1,16 +1,12 @@
 <?php
 
 /**
- * Description of Login
+ * Description of Head
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Block_Login extends Flow {
+class Flow_Block_Head extends Flow_Block {
 
-	/**
-	 *
-	 * @return boolean 
-	 */
 	public function action_default() {
 		return true;
 	}

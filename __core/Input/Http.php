@@ -16,7 +16,7 @@ class Input_Http extends Input {
 	 *
 	 * @var array
 	 */
-	private static $inputs = array();
+	private $inputs = array();
 
 	/**
 	 *
@@ -48,7 +48,7 @@ class Input_Http extends Input {
 	 */
 	public function get($key) {
 		//	first time called this data - should create proxy Input, save it and return it
-		if (!key_exists($key, self::$inputs)) {
+		if (!key_exists($key, $this->inputs)) {
 			$Input = parent::get($key, null);
 			if (is_null($Input)) {
 				throw new Exception('No such data provided');
@@ -56,12 +56,12 @@ class Input_Http extends Input {
 
 			$Input = $Input instanceof Input ? $Input : new Input($Input);
 
-			self::$inputs[$key] = $Input;
+			$this->inputs[$key] = $Input;
 		} else {
-			$Input = self::$inputs[$key];
+			$Input = $this->inputs[$key];
 		}
 
-		return self::$inputs[$key] = $Input;
+		return $this->inputs[$key] = $Input;
 	}
 
 }

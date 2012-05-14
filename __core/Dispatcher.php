@@ -156,7 +156,7 @@ class Dispatcher {
 			/* @var $Flow Flow */
 			$Flow->init($Input, $Output);
 
-			$result = $Flow->process();
+			$result = $Flow->action();
 
 			if ($result === self::FLOW_FINISHED) {
 				break;

@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 	<head>
+		{{ Block_Head | default('<!-- here should be the Block_Head -->') | raw }}
 	</head>
 	<body>
 		{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}

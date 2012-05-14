@@ -5,7 +5,7 @@
  *
  * @author Mukhenok
  */
-abstract class Flow {
+class Flow {
 
 	const ACTION_PREFIX = 'action_';
 
@@ -27,6 +27,8 @@ abstract class Flow {
 	 */
 	protected $runnedAction;
 
+	const DEFAULT_ACTION = 'default';
+
 	/**
 	 * Set input/output objects
 	 *
@@ -44,11 +46,16 @@ abstract class Flow {
 	 * @param string $action
 	 * @return string|boolean
 	 */
-	public function action($action) {
+	public function action($action = null) {
+		$action = is_null($action) ? static::DEFAULT_ACTION : $action;
 
 		$this->callPre($action);
 
-		$result = $this->call($action);
+		if ($this->existsAction($action)) {
+			$result = $this->call($action);
+		} else {
+			$result = $action;
+		}
 
 		$this->callPost($result);
 
@@ -112,10 +119,5 @@ abstract class Flow {
 
 		return $step;
 	}
-
-	/**
-	 * @return boolean|string 
-	 */
-	abstract public function process();
 
 }
