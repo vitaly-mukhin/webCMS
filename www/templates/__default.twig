@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{{ Block_Head | default('<!-- here should be the Block_Head -->') | raw }}
+	</head>
+	<body>
+		<div class="container">
+			<div class="navbar navbar-fixed-top">
+				<div class="navbar-inner">
+					<div class="container">
+						<a class="brand" href="">***</a>
+						<ul class="nav">
+							<li><a href="{rss_url}">rss</a></li>
+						</ul>
+						<ul class="nav pull-right">
+							<li class="dropdown">
+								{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}
+			{% block head %}
+			<h1>Hello, World!</h1>
+			{% endblock %}
+			<h2>{{ result }}</h2>
+		</div>
+	</body>
+</html>

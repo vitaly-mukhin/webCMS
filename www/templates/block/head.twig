@@ -1,0 +1,6 @@
+<title>{{ pageTitle | join(' | ') }}</title>
+{% for jsLink in jsLinks %}
+<script src="{{jsLink}}"></script>
+{% endfor %}
+{% for cssLink in cssLinks %}<link rel="stylesheet" href="{{cssLink}}" type="text/css" />
+{% endfor %}

@@ -1,1 +1,0 @@
-<div id="login"><h3>User Login Block {{username|default('')}} </h3></div>
