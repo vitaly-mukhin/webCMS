@@ -28,6 +28,12 @@ class Output_Http extends Output {
 	 */
 	protected $cookies;
 
+	/**
+	 *
+	 * @var string
+	 */
+	protected $templatePath;
+
 	public function __construct() {
 //		parent::__construct();
 
@@ -88,6 +94,25 @@ class Output_Http extends Output {
 	 */
 	public function cookies() {
 		return $this->cookies->export();
+	}
+
+	/**
+	 *
+	 * @param string $templatePath
+	 * @return \Output_Http 
+	 */
+	public function setTemplatePath($templatePath) {
+		$this->templatePath = $templatePath;
+
+		return $this;
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getTemplatePath() {
+		return $this->templatePath;
 	}
 
 }

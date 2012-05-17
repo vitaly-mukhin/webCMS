@@ -54,8 +54,7 @@ class Dispatcher {
 	 * @return \Dispatcher 
 	 */
 	public function setInitialFlow($flowString) {
-		$flowObject = $this->getFlow($flowString);
-		$this->initialFlow = $flowObject;
+		$this->initialFlow = $flowString;
 
 		return $this;
 	}
@@ -86,59 +85,6 @@ class Dispatcher {
 
 	/**
 	 *
-	 * @param string $flowString
-	 * @return Flow
-	 * @throws ErrorException 
-	 */
-	private function getFlow($flowString, $BaseFlow = null) {
-		$class = 'Flow';
-		if (
-				!is_null($BaseFlow) &&
-				get_class($BaseFlow) !== 'Flow' &&
-				($BaseFlow != $this->initialFlow || get_class($BaseFlow) == 'Flow_Block')
-		) {
-			$class = get_class($BaseFlow);
-		}
-
-		$flowClass = $class . '_' . ucfirst($flowString);
-
-		if (!class_exists($flowClass)) {
-			$flowClass = $this->getNoFlowFound($flowClass);
-		}
-		/* @var $Flow Flow */
-		$Flow = new $flowClass();
-
-		return $Flow;
-	}
-
-	/**
-	 *
-	 * @param string $flowClass
-	 * @return string
-	 * @throws ErrorException 
-	 */
-	private function getNoFlowFound($flowClass) {
-		$flowClass .= '_NoFlowFound';
-		while (true) {
-			if (class_exists($flowClass)) {
-				break;
-			}
-
-			$flowArray = explode('_', $flowClass);
-			unset($flowArray[count($flowArray) - 2]);
-
-			if (count($flowArray) < 2) {
-				throw new ErrorException(sprintf('Flow not found %s', $flowClass));
-			}
-
-			$flowClass = implode('_', $flowArray);
-		}
-
-		return $flowClass;
-	}
-
-	/**
-	 *
 	 * @return string
 	 * @throws ErrorException 
 	 */
@@ -147,74 +93,24 @@ class Dispatcher {
 		$Output = new Output_Http();
 		$Output->renderer(new Renderer_Http);
 
+		$Flow = new Flow();
+		$Flow->init($Input, $Output);
 
-		$result = null;
-		$i = 0;
+		$Flow->action($this->initialFlow);
 
-		$Flow = $this->initialFlow;
-		// TODO 2012-05-15: move Flow processing inside the Flow class, for next time diagramm:
-		//	FlowRoot::pre()
-		//	FlowRoot::call() {
-		//		FlowInner::pre()
-		//		FlowInner::call() {
-		//			FlowSubInner::pre()
-		//			FlowSubInner::call()
-		//			FlowSubInner::past()
-		//		}
-		//		FlowInner::past()
-		//	}
-		//	FlowRoot::past()
-		while ((is_null($result) || is_string($result))) {
-			/* @var $Flow Flow */
-			$Flow->init($Input, $Output);
-
-			$result = $Flow->action();
-
-			if ($result === self::FLOW_FINISHED) {
-				break;
-			}
-
-			$result = $result ? : self::NO_FLOW_FOUND;
-
-			if (!empty($result) && is_string($result)) {
-				try {
-					$Flow = $this->getFlow($result, $Flow);
-				} catch (ErrorException $E) {
-					$Flow = false;
-				}
-				if (!$Flow) {
-					$result = false;
-				}
-			}
-
-			if (++$i > 100) {
-				throw new ErrorException('Too much iterations - proper flow not found');
-			}
-		}
-
-		return $this->render($Output, $this->getTemplatePath($Flow));
+		return $this->render($Output);
 	}
 
 	/**
 	 *
-	 * @param Flow $Flow
-	 * @return string 
+	 * @param Output_Http $Output 
 	 */
-	private function getTemplatePath(Flow $Flow) {
-//		$Flow->getTemplatePath();
-		$array = explode('_', strtolower(str_replace('Flow_', '', get_class($Flow))));
-
-		return implode(DIRECTORY_SEPARATOR, $array) . '.twig';
-	}
-
-	/**
-	 *
-	 * @param Output $Output 
-	 */
-	public function render(Output $Output, $templatePath) {
+	public function render(Output_Http $Output) {
+		// TODO 2012-05-18: move this logic to a Output::render() ?
 		$Renderer = $Output->renderer();
 		$Renderer->engine($this->getRendererEngine());
-		return $Renderer->render($Output, $templatePath);
+
+		return $Renderer->render($Output);
 	}
 
 	/**

@@ -12,14 +12,13 @@ class Renderer_Http extends Renderer {
 	 * @param Output_Http $Output
 	 * @param string $templatePath 
 	 */
-	public function render(Output_Http $Output, $templatePath) {
+	public function render(Output_Http $Output) {
 		if ($Output instanceof Output_Http) {
 			$this->renderHeaders($Output);
-
 			$this->renderCookie($Output);
 		}
 
-		return parent::render($Output, $templatePath);
+		return parent::render($Output);
 	}
 
 	protected function renderHeaders(Output_Http $Output) {
