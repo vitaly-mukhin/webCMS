@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Block_Login extends Flow_Block {
+class Flow_Block_Login extends Flow_AbstractBlock {
 
 	/**
 	 *

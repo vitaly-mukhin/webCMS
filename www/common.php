@@ -33,5 +33,15 @@ Input_Http::setDefault($InputHttp);
 
 $Dispatcher = new Dispatcher;
 $Dispatcher->init($ModeConfig);
+// TODO 2012-05-22: hard-coded 'page' key
+switch ($InputRoute->get('page')) {
+	case 'block':
+		$initialFlow = 'block';
+		break;
+	default:
+		$initialFlow = 'www';
+}
+
+$Dispatcher->setInitialFlow($initialFlow);
 
 echo $Dispatcher->flow($InputHttp);

@@ -5,14 +5,14 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Login extends Block {
-	
+class Block_Nav extends Block {
+
 	/**
 	 *
 	 * @return type 
 	 */
 	protected function getRoute() {
-		return array('action'=>'login');
+		return array('action'=>'nav');
 	}
-	
+
 }

@@ -19,7 +19,7 @@ class Flow_Www extends Flow {
 		Block_Head::addJsLink('js/bootstrap-2.0.3.js');
 		Block_Head::addCssLink('css/bootstrap-2.0.3.css');
 
-		Block_Head::addJsLink('js/test.js');
+//		Block_Head::addJsLink('js/test.js');
 		Block_Head::addCssLink('css/main.css');
 
 		Block_Login::process($this->Output);
@@ -27,6 +27,8 @@ class Flow_Www extends Flow {
 
 	protected function callPost($result) {
 		Block_Head::process($this->Output);
+
+		Block_Nav::process($this->Output);
 
 		return parent::callPost($result);
 	}

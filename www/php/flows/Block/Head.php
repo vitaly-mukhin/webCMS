@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Block_Head extends Flow_Block {
+class Flow_Block_Head extends Flow_AbstractBlock {
 
 	public function action_default() {
 		$this->Output->bind('pageTitle', Block_Head::getPageTitle());

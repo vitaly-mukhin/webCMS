@@ -14,11 +14,7 @@ class Dispatcher {
 	private $initialFlow;
 
 	const ROUTE_IN_GET = 'route';
-	const NO_FLOW_FOUND = 'noFlowFound';
-	const MODE_FLOW = 'flow';
-	const MODE_FOLDER = 'mode';
 	const MODE_ROUTER = 'router';
-	const FLOW_FINISHED = true;
 
 	public function __construct() {
 		
@@ -31,8 +27,6 @@ class Dispatcher {
 	 */
 	public function init(Input_Config $Config) {
 		$this->initModeEnv();
-
-		$this->setInitialFlow($Config->get(Dispatcher::MODE_FLOW));
 
 		return $this;
 	}

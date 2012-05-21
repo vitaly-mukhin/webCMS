@@ -9,9 +9,7 @@
 				<div class="navbar-inner">
 					<div class="container">
 						<a class="brand" href="">***</a>
-						<ul class="nav">
-							<li><a href="{rss_url}">rss</a></li>
-						</ul>
+						{{ Block_Nav | default('<!-- here should be the Block_Nav -->') | raw }}
 						<ul class="nav pull-right">
 							<li class="dropdown">
 								{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}
@@ -20,7 +18,6 @@
 					</div>
 				</div>
 			</div>
-			{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}
 			{% block head %}
 			<h1>Hello, World!</h1>
 			{% endblock %}

@@ -26,17 +26,17 @@ class Block_Head extends Block {
 	public static function getCssLinks() {
 		return self::$cssLinks;
 	}
-	
+
 	public static function addPageTitle($string) {
 		self::$pageTitle[] = $string;
 	}
-	
+
 	public static function getPageTitle() {
 		return self::$pageTitle;
 	}
 
 	public function getRoute() {
-		return array('head');
+		return array('action'=>'head');
 	}
 
 }
