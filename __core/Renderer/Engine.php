@@ -39,6 +39,10 @@ class Renderer_Engine {
 	 * @return string
 	 */
 	public function render($templatePath, $data) {
+		
+		if (!file_exists(PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . $templatePath)) {
+			return '<!-- template "'.htmlspecialchars($templatePath, ENT_IGNORE, 'UTF-8').'" not found -->';
+		}
 
 		$Template = $this->core->loadTemplate($templatePath);
 
