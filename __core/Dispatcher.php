@@ -50,7 +50,7 @@ class Dispatcher {
 	protected function setOptions($params) {
 		foreach ($params as $k => $v) {
 			$method = 'set' . ucfirst($k);
-			if (method_exists($this, $method) && $method != __FUNCTION__) {
+			if (method_exists($this, $method) && ($method != __FUNCTION__)) {
 				$this->$method($v);
 			}
 		}
