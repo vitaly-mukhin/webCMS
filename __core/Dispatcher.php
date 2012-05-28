@@ -15,9 +15,45 @@ class Dispatcher {
 
 	const ROUTE_IN_GET = 'route';
 	const MODE_ROUTER = 'router';
+	const PARAM_MODE_CONFIG = 'modeConfig';
+	const PARAM_INITIAL_FLOW = 'initialFlow';
 
-	public function __construct() {
+	/**
+	 *
+	 * @var Input_Config 
+	 */
+	private $modeConfig;
+
+	private function __construct() {
 		
+	}
+
+	private function __clone() {
+		
+	}
+
+	/**
+	 *
+	 * @param Input $Input
+	 * @param Input_Config $ModeConfig
+	 * @param type $params
+	 * @return \Dispatcher 
+	 */
+	public static function di($params = array()) {
+		$Dispatcher = new self();
+		$Dispatcher->init();
+		$Dispatcher->setOptions($params);
+
+		return $Dispatcher;
+	}
+
+	protected function setOptions($params) {
+		foreach ($params as $k => $v) {
+			$method = 'set' . ucfirst($k);
+			if (method_exists($this, $method) && $method != __FUNCTION__) {
+				$this->$method($v);
+			}
+		}
 	}
 
 	/**
@@ -25,7 +61,7 @@ class Dispatcher {
 	 * @param Input_Config $Config
 	 * @return \Dispatcher 
 	 */
-	public function init(Input_Config $Config) {
+	public function init() {
 		$this->initModeEnv();
 
 		return $this;
@@ -49,6 +85,17 @@ class Dispatcher {
 	 */
 	public function setInitialFlow($flowString) {
 		$this->initialFlow = $flowString;
+
+		return $this;
+	}
+
+	/**
+	 *
+	 * @param Input_Config $ModeConfig
+	 * @return \Dispatcher 
+	 */
+	public function setModeConfig(Input_Config $ModeConfig) {
+		$this->modeConfig = $ModeConfig;
 
 		return $this;
 	}

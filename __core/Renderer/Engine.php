@@ -25,8 +25,8 @@ class Renderer_Engine {
 		$Twig_Loader = new Twig_Loader_Filesystem(PATH_MODE_TEMPLATES);
 
 		$this->core = new Twig_Environment($Twig_Loader, array(
-					'cache'=>PATH_MODE_TEMPLATES_C,
-					'debug'=>($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
+					'cache' => PATH_MODE_TEMPLATES_C,
+					'debug' => ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
 				));
 
 		return $this;
@@ -39,9 +39,9 @@ class Renderer_Engine {
 	 * @return string
 	 */
 	public function render($templatePath, $data) {
-		
+
 		if (!file_exists(PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . $templatePath)) {
-			return '<!-- template "'.htmlspecialchars($templatePath, ENT_IGNORE, 'UTF-8').'" not found -->';
+			return '<!-- template "' . htmlspecialchars($templatePath, ENT_IGNORE, 'UTF-8') . '" not found -->';
 		}
 
 		$Template = $this->core->loadTemplate($templatePath);

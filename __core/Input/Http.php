@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Http
+ * Description of Input_Http
  *
  * @author Mukhenok
  */

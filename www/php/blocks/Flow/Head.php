@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Head extends Block {
+class Block_Flow_Head extends Block_Flow {
 
 	private static $jsLinks = array();
 	private static $cssLinks = array();
@@ -35,8 +35,8 @@ class Block_Head extends Block {
 		return self::$pageTitle;
 	}
 
-	public function getRoute() {
-		return array('action'=>'head');
+	public function getRoute(Input $InputRoute) {
+		return array('action' => 'head');
 	}
 
 }

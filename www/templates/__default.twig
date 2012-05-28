@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		{{ Block_Head | default('<!-- here should be the Block_Head -->') | raw }}
+		{{ Block_Flow_Head | default('<!-- here should be the Block_Flow_Head -->') | raw }}
 	</head>
 	<body>
 		<div class="container">
@@ -9,10 +9,10 @@
 				<div class="navbar-inner">
 					<div class="container">
 						<a class="brand" href="">***</a>
-						{{ Block_Nav | default('<!-- here should be the Block_Nav -->') | raw }}
+						{{ Block_Flow_Nav | default('<!-- here should be the Block_Flow_Nav -->') | raw }}
 						<ul class="nav pull-right">
 							<li class="dropdown">
-								{{ Block_Login | default('<!-- here should be the Block_Login -->') | raw }}
+								{{ Block_Flow_Login | default('<!-- here should be the Block_Flow_Login -->') | raw }}
 							</li>
 						</ul>
 					</div>

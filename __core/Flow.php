@@ -57,11 +57,7 @@ class Flow {
 
 		$this->callPre($action);
 
-//		if ($this->existsAction($action)) {
 		$result = $this->call($action);
-//		} else {
-//			$result = $action;
-//		}
 
 		$this->callPost($result);
 
@@ -122,8 +118,12 @@ class Flow {
 	 */
 	protected function runChildFlow($action) {
 		$Flow = $this->getFlow($action);
-		$Flow->init($this->Input, $this->Output);
-		$Flow->action();
+		if ($Flow != $this) {
+			$Flow->init($this->Input, $this->Output);
+			$Flow->action();
+		} else {
+			$this->action($action);
+		}
 	}
 
 	/**

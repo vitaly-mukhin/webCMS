@@ -31,8 +31,6 @@ $InputHttp = new Input_Http(array(
 		));
 Input_Http::setDefault($InputHttp);
 
-$Dispatcher = new Dispatcher;
-$Dispatcher->init($ModeConfig);
 // TODO 2012-05-22: hard-coded 'page' key
 switch ($InputRoute->get('page')) {
 	case 'block':
@@ -42,6 +40,9 @@ switch ($InputRoute->get('page')) {
 		$initialFlow = 'www';
 }
 
-$Dispatcher->setInitialFlow($initialFlow);
+$Dispatcher = Dispatcher::di(array(
+			'modeConfig' => $ModeConfig,
+			'initialFlow' => $initialFlow
+		));
 
 echo $Dispatcher->flow($InputHttp);
