@@ -13,6 +13,8 @@ class Flow_Www extends Flow {
 	protected function callPre($action) {
 		parent::callPre($action);
 
+		Block_Auth::process();
+
 		Block_Flow_Head::addPageTitle('webCMS');
 
 		Block_Flow_Head::addJsLink('js/jquery-1.7.2.min.js');
