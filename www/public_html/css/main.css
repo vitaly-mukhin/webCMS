@@ -1,10 +1,11 @@
 /**
  * @outputFile ../public_html/css/main.css
  */
-.notification .error {
-  font: 1em;
-  color: #e3e3e3;
+ 
+body {
+  padding: 92px;
 }
-.notification .error .source {
-  font: bold;
+
+a.logo {
+  margin: 20px 0;
 }

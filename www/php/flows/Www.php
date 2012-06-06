@@ -36,7 +36,7 @@ class Flow_Www extends Flow {
 
 	public function action_default() {
 		$next = $this->Input->get(Input_Http::INPUT_ROUTE)->get('page', 'index');
-		$next = ($next) ? $next : 'index';
+		$next = $next ? : 'index';
 		$this->runChildFlow($next);
 	}
 

@@ -41,8 +41,8 @@ switch ($InputRoute->get('page')) {
 }
 
 $Dispatcher = Dispatcher::di(array(
-			'modeConfig' => $ModeConfig,
-			'initialFlow' => $initialFlow
+			Dispatcher::PARAM_MODE_CONFIG => $ModeConfig,
+			Dispatcher::PARAM_INITIAL_FLOW => $initialFlow
 		));
 
 echo $Dispatcher->flow($InputHttp);

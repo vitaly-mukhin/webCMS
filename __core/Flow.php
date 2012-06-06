@@ -133,6 +133,9 @@ class Flow {
 	 * @throws ErrorException 
 	 */
 	final protected function getFlow($flowString) {
+		if ($this->existsAction($flowString)) {
+			return $this;
+		}
 
 		$class = get_called_class();
 

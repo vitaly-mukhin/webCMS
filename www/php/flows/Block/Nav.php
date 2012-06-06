@@ -13,8 +13,10 @@ class Flow_Block_Nav extends Flow_AbstractBlock {
 	 */
 	public function action_default() {
 		$this->Output->bind('navArray', array(
-			'rss' => '#rss',
-			'top' => '#top'
+			'Головна' => '/',
+			'Блоги' => '/blog',
+			'Альбоми' => '/album',
+			'Цитатник' => '/quote'
 		));
 	}
 

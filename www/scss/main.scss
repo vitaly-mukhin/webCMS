@@ -2,12 +2,10 @@
  * @outputFile ../public_html/css/main.css
  */
 
-.notification {
-	.error {
-		.source {
-			font: bold;
-		}
-		font: 1em;
-		color: #e3e3e3;
-	}
+body {
+    padding: 92px;
+}
+
+a.logo {
+	margin:20px 0;
 }
