@@ -1,13 +1,35 @@
-{# empty Twig template #}
 <div class="container-fluid">
 	<form class="form-horizontal" action="/block/auth/reg" method="post">
 		<fieldset>
-			<legend>Legend text</legend>
+			<legend>Реєстрація</legend>
 			<div class="control-group">
-				<label class="control-label" for="input01">Логін</label>
+				<label class="control-label" for="login">Логін</label>
 				<div class="controls">
-					<input type="text" class="input-xlarge" id="input01">
+					<input name="login" type="text" class="input-xlarge" id="login" />
 					<p class="help-block">Вкажіть логін, який буде використовуватись для входу</p>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="password">Пароль</label>
+				<div class="controls">
+					<input name="password" type="password" class="input-xlarge" id="password"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="password_repeat">Пароль повторно</label>
+				<div class="controls">
+					<input name="password_repeat" type="password" class="input-xlarge" id="password_repeat"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="email">Email</label>
+				<div class="controls">
+					<input name="email" type="text" class="input-xlarge" id="email" placeholder="Email"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<input value="Зареєструватись" type="submit" class="btn btn-large btn-primary" />
 				</div>
 			</div>
 		</fieldset>

@@ -4,6 +4,7 @@ $(document).ready(function(){
 		$.get(this.baseURI + 'block' + this.pathname, {}, function(data){
 			$('#body-content').html(data);
 		}, 'html');
+		document.location.hash = this.pathname;
 		return false;
 	});
 });

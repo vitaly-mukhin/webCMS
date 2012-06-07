@@ -77,10 +77,10 @@ class User {
 				), $data);
 
 		// TODO: for tests
-		$data = array(
-			self::IS_LOGGED => self::LOGGED,
-			self::ID => 1
-		);
+//		$data = array(
+//			self::IS_LOGGED => self::LOGGED,
+//			self::ID => 1
+//		);
 
 		return new Input($data);
 	}

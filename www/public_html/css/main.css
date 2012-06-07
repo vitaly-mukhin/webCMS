@@ -1,9 +1,9 @@
 /**
- * @outputFile ../public_html/css/main.css
- */
- 
+* @outputFile ../public_html/css/main.css
+*/
 body {
-  padding: 92px;
+  padding-top: 92px;
+  padding-bottom: 40px;
 }
 
 a.logo {
