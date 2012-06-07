@@ -1,5 +1,16 @@
 {% if not(User.isLogged()) %}
-<a href="#profile">Вітаємо, <strong>незнайомцю!</strong></a>
+<div class="pull-right">
+	<form class="form-inline">
+		<input type="text" class="input-small btn-mini" placeholder="Login">
+		<input type="password" class="input-small btn-mini" placeholder="Password">
+		<!--<label class="checkbox">
+			<input type="checkbox"> Remember me
+		</label>-->
+		<input type="submit" class="btn btn-mini" value="Sign in" />
+		<a class="auth-register" href="/auth/reg">Реєстрація</a>
+		<a class="auth-reset" href="/auth/reset">Відновлення паролю</a>
+	</form>
+</div>
 {% else %}
 <a href="#profile" class="dropdown-toggle" data-toggle="dropdown">Вітаємо, <strong>{{User.getData().get('username')}}!</strong><b class="caret"></b></a>
 <ul class="dropdown-menu">
