@@ -24,8 +24,7 @@ class Block_Auth extends Block {
 	 *
 	 */
 	private static function initUser() {
-		$UserSessionData = Session::i()->getSection(Session::USER);
-
+		$UserSessionData = Session::i()->get(Session::USER);
 		self::$User = User::f($UserSessionData);
 	}
 

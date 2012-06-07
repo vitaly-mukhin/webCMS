@@ -2,26 +2,30 @@
 <html>
 	<head>
 		{{ Block_Flow_Head | default('<!-- here should be the Block_Flow_Head -->') | raw }}
-	</head>
-	<body>
-		<div class="container">
-			<div class="navbar navbar-fixed-top">
-				<div class="navbar-inner">
-					<div class="container">
-						<a class="brand" href="">***</a>
+		</head>
+		<body>
+			<div class="container">
+				<div class="navbar navbar-fixed-top">
+					<div class="navbar-inner">
+						<div class="container">
+							<a class="brand" href="">***</a>
 						{{ Block_Flow_Nav | default('<!-- here should be the Block_Flow_Nav -->') | raw }}
-						<ul class="nav pull-right">
-							<li class="dropdown">
+							<ul class="nav pull-right">
+								<li class="dropdown">
 								{{ Block_Flow_Login | default('<!-- here should be the Block_Flow_Login -->') | raw }}
-							</li>
-						</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-			{% block head %}
-			<h1>Hello, World!</h1>
-			{% endblock %}
-			<h2>{{ result }}</h2>
-		</div>
-	</body>
-</html>
+					<div class="container">
+						<div class="lead">
+				{% block head %}
+							<h1>Hello, World!</h1>
+				{% endblock %}
+							<h2>{{ result }}</h2>
+						</div>
+						</div>
+					</div>
+				</body>
+			</html>

@@ -5,28 +5,28 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Session {
-	
+class Session extends ArrayObject {
+
 	const USER = 'section_user';
-	
+
 	/**
 	 *
 	 * @var Session
 	 */
 	private static $i;
-	
+
 	/**
 	 *
 	 * @var string
 	 */
 	private $id;
-	
+
 	/**
 	 *
 	 * @var Input
 	 */
 	private $data;
-	
+
 	/**
 	 *
 	 * @return Session
@@ -36,26 +36,26 @@ class Session {
 		if (!empty(self::$i)) {
 			return self::$i;
 		}
-		
-		if(!session_start()) {
+
+		if (!session_start()) {
 			throw new Exception('Cannot start a session');
 		}
-		
+
 		$sessionId = session_id();
-		
+
 		$Session = new Session($sessionId);
-		
+
 		self::$i = $Session;
-		
+
 		return self::i();
 	}
-	
-	private function __construct($id) {
-		$this->id = $id;
-		
-		$this->data = new Input($_SESSION);
+
+	public function __construct($id) {
+		parent::__construct($_SESSION);
+
+		$this->setId($id);
 	}
-	
+
 	/**
 	 *
 	 * @return string
@@ -63,14 +63,43 @@ class Session {
 	public function getId() {
 		return $this->id;
 	}
-	
+
+	/**
+	 *
+	 * @param string $id
+	 * @return \Session 
+	 */
+	public function setId($id) {
+		$this->id = $id;
+
+		return $this;
+	}
+
 	/**
 	 *
 	 * @param string $sectionId 
 	 * @return Input
 	 */
-	public function getSection($sectionId) {
-		return new Input($this->data->get($sectionId, array()));
+	public function get($sectionId) {
+		$data = $this->offsetExists($sectionId) ? $this->offsetGet($sectionId) : null;
+		return is_array($data) ? new Input($data) : $data;
 	}
-	
+
+	/**
+	 *
+	 * @param string $sectionId
+	 * @param mixed $params
+	 * @return \Session 
+	 */
+	public function set($sectionId, $params = array()) {
+
+		if ($this->offsetExists($sectionId) && is_array($params)) {
+			$existing = $this->offsetGet($sectionId);
+			$params = (is_array($existing)) ? array_merge($existing, $params) : $params;
+		}
+
+		$this->offsetSet($sectionId, $params);
+		return $this;
+	}
+
 }

@@ -1,6 +1,11 @@
 /**
- * @outputFile ../public_html/css/main.css
- */
+* @outputFile ../public_html/css/main.css
+*/
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
 .notification .error {
   font: 1em;
   color: #e3e3e3;
