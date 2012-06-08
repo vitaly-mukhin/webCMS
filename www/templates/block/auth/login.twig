@@ -1,12 +1,12 @@
 {% if not(User.isLogged()) %}
 <div class="pull-right">
-	<form class="form-inline">
+	<form id="form-auth-login" name="login" action="/auth/login" method="post" class="form-inline" autocomplete="off">
 		<input type="text" class="input-small btn-mini" placeholder="Login">
 		<input type="password" class="input-small btn-mini" placeholder="Password">
 		<!--<label class="checkbox">
 			<input type="checkbox"> Remember me
 		</label>-->
-		<input type="submit" class="btn btn-mini" value="Sign in" />
+		<input type="submit" class="btn btn-mini btn-primary" value="Sign in" />
 		<a class="auth-register" href="/auth/reg">Реєстрація</a>
 		<a class="auth-reset" href="/auth/reset">Відновлення паролю</a>
 	</form>
@@ -14,7 +14,7 @@
 {% else %}
 <a href="#profile" class="dropdown-toggle" data-toggle="dropdown">Вітаємо, <strong>{{User.getData().get('username')}}!</strong><b class="caret"></b></a>
 <ul class="dropdown-menu">
+	<li><a data-toggle="modal" href="#preferences">Налаштування</a></li>
 	<li><a data-toggle="modal" href="#logout">Вихід</a></li>
-	<li><a data-toggle="modal" href="#preferences">Опції</a></li>
 </ul>
 {% endif %}

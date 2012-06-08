@@ -12,7 +12,7 @@ class Block_Flow_Login extends Block_Flow {
 	 * @return type 
 	 */
 	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'login', 'step' => $InputRoute->get('step'));
+		return array('action' => 'auth', 'step' => 'login');
 	}
 
 }

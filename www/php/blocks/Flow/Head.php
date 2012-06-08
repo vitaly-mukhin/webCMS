@@ -12,7 +12,7 @@ class Block_Flow_Head extends Block_Flow {
 	private static $pageTitle = array();
 
 	public static function addJsLink($link) {
-		self::$jsLinks[] = $link;
+		self::$jsLinks[$link] = $link;
 	}
 
 	public static function getJsLinks() {
@@ -20,7 +20,7 @@ class Block_Flow_Head extends Block_Flow {
 	}
 
 	public static function addCssLink($link) {
-		self::$cssLinks[] = $link;
+		self::$cssLinks[$link] = $link;
 	}
 
 	public static function getCssLinks() {
