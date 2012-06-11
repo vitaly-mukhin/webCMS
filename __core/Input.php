@@ -45,5 +45,14 @@ class Input {
 	public function get($key, $default = null) {
 		return key_exists($key, $this->data) ? $this->data[$key] : $default;
 	}
+	
+	/**
+	 * Returns TRUE, if there are no data
+	 * 
+	 * @return boolean
+	 */
+	public function isEmpty() {
+		return empty($this->data);
+	}
 
 }
