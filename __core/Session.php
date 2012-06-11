@@ -55,6 +55,10 @@ class Session extends ArrayObject {
 
 		$this->setId($id);
 	}
+	
+	public function __destruct() {
+		// TODO: add saving to $_SESSION on exit;
+	}
 
 	/**
 	 *
