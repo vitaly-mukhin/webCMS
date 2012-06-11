@@ -44,22 +44,44 @@ class User {
 
 	/**
 	 *
-	 * @param Input $Input
+	 * @param Input $SessionData
 	 * @return \User
 	 */
-	public static function f(Input $Input = null) {
-		$Input = self::getFullInput($Input);
+	public static function f(Input $SessionData = null) {
+		$SessionData = self::getFullInput($SessionData);
 
 		$User = new User();
 
 		// Logged
-		$User = ($Input->get(self::IS_LOGGED) == self::LOGGED) ? new User_Logged_Yes($User) : new User_Logged_No($User);
+		$User = ($SessionData->get(self::IS_LOGGED) == self::LOGGED) ? new User_Logged_Yes($User) : new User_Logged_No($User);
+		$userId = $SessionData->get(self::ID);
+		var_dump('before '. $userId);
 
 		// Userdata
-		$userId = $Input->get(self::ID);
+		$userId = $SessionData->get(self::ID);
+		var_dump('after '. $userId);
 		$User = ($userId == self::NO_ID) ? new User_Data_No($User, null) : new User_Data_Yes($User, $userId);
 
 		return $User;
+	}
+	
+	/**
+	 * Create a user account, and init it
+	 *
+	 * @param Input $Post data for user account
+	 * 
+	 * @return User
+	 */
+	public static function reg(Input $Post) {
+		$data = array(
+			self::IS_LOGGED => self::LOGGED,
+			self::ID => $Post->get('id', rand(100, 999)),
+			self::USERNAME => $Post->get('login', 'Abra-kadabra')
+		);
+		
+		Session::i()->set(Session::USER, $data);
+		
+		return User::f(Session::i()->get(Session::USER));
 	}
 
 	/**
