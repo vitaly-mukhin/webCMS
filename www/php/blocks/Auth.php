@@ -17,7 +17,6 @@ class Block_Auth extends Block {
 		if (empty(self::$User)) {
 			$sessionId = Session::i()->getId();
 			self::initUser($sessionId);
-			var_dump(self::getUser());
 		}
 	}
 
@@ -26,7 +25,7 @@ class Block_Auth extends Block {
 	 */
 	private static function initUser() {
 		$UserSessionData = Session::i()->get(Session::USER);
-		self::$User = User::f($UserSessionData);
+		self::$User = User::f($UserSessionData, true);
 	}
 
 	/**

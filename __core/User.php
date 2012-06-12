@@ -5,66 +5,100 @@
  *
  * @author Vitaliy_Mukhin
  * 
- * @method boolean isLogged
- * @method Input getData
  */
 class User {
+	//
 
-	const LOGGED = true;
-	const NOT_LOGGED = false;
+	const F_ID = 'id';
+	//
 	const IS_LOGGED = 'is_logged';
 	const ID = 'id';
-	const NO_ID = null;
-	const USERNAME = 'username';
-	const EMPTY_USERNAME = '';
+	const SET_CURRENT = true;
 
 	/**
 	 *
 	 * @var User
 	 */
-	protected $original;
-
-	public function __construct(User $User = null) {
-		$this->original = $User;
-	}
+	protected static $current;
 
 	/**
 	 *
-	 * @param string $method
-	 * @param mixed $arguments
-	 * @return null|mixed 
+	 * @var User_Data
 	 */
-	public function __call($method, $arguments) {
-		if ($this->original && $this->original instanceof User) {
-			return call_user_func_array(array($this->original, $method), $arguments);
-		}
+	protected $Data;
 
-		return null;
+	/**
+	 *
+	 * @var User_Auth
+	 */
+	protected $Auth;
+
+	private function __construct() {
+		
 	}
 
 	/**
 	 *
-	 * @param Input $SessionData
+	 * @param Input $UserData
+	 * @param boolean $setCurrent
+	 * 
 	 * @return \User
 	 */
-	public static function f(Input $SessionData = null) {
-		$SessionData = self::getFullInput($SessionData);
+	public static function f(Input $UserData = null, $setCurrent = false) {
+
+		$UserData = self::getFullInput($UserData);
 
 		$User = new User();
 
-		// Logged
-		$User = ($SessionData->get(self::IS_LOGGED) == self::LOGGED) ? new User_Logged_Yes($User) : new User_Logged_No($User);
-		$userId = $SessionData->get(self::ID);
-		var_dump('before '. $userId);
+		$User->setAuth($UserData->get('user_id', -1));
 
-		// Userdata
-		$userId = $SessionData->get(self::ID);
-		var_dump('after '. $userId);
-		$User = ($userId == self::NO_ID) ? new User_Data_No($User, null) : new User_Data_Yes($User, $userId);
+		$User->setData($UserData->get('user_id', -1));
+
+		if ($setCurrent == self::SET_CURRENT) {
+			self::$current = $User;
+		}
 
 		return $User;
 	}
-	
+
+	/**
+	 *
+	 * @param Input|int $userId
+	 * @return \User 
+	 */
+	private function setData($userId) {
+		$this->Data = User_Data::f($userId);
+
+		return $this;
+	}
+
+	/**
+	 *
+	 * @return User_Data
+	 */
+	private function getData() {
+		return $this->Data;
+	}
+
+	/**
+	 *
+	 * @param Input|int $userId
+	 * @return \User 
+	 */
+	private function setAuth($userId) {
+		$this->Auth = User_Auth::f($userId);
+
+		return $this;
+	}
+
+	/**
+	 *
+	 * @return User|null 
+	 */
+	public static function curr() {
+		return empty(self::$current) ? null : self::$current;
+	}
+
 	/**
 	 * Create a user account, and init it
 	 *
@@ -73,15 +107,37 @@ class User {
 	 * @return User
 	 */
 	public static function reg(Input $Post) {
-		$data = array(
-			self::IS_LOGGED => self::LOGGED,
-			self::ID => $Post->get('id', rand(100, 999)),
-			self::USERNAME => $Post->get('login', 'Abra-kadabra')
-		);
-		
-		Session::i()->set(Session::USER, $data);
-		
+		$Data = new Input(array(
+					User_Auth::LOGIN => $Post->get('login'),
+					User_Auth::PASSWORD => $Post->get('password'),
+					User_Auth::PASSWORD_REPEAT => $Post->get('password_repeat'),
+					User_Data::EMAIL => $Post->get('email')
+				));
+
+		$User = User::f();
+
+		if (!self::checkReg($Data)) {
+			return null;
+		}
+
+		$User->getData()->reg($Data);
+
 		return User::f(Session::i()->get(Session::USER));
+	}
+
+	/**
+	 *
+	 * @param Input $Post
+	 * @return boolean 
+	 */
+	private static function checkReg(Input $Post) {
+		$result = true;
+
+		$result = $result && ($Post->get(User_Auth::LOGIN));
+		$result = $result && ($Post->get(User_Auth::PASSWORD) == $Post->get(User_Auth::PASSWORD_REPEAT));
+		$result = $result && filter_var($Post->get(User_Data::EMAIL), FILTER_SANITIZE_EMAIL);
+		
+		return $result;
 	}
 
 	/**
@@ -97,12 +153,6 @@ class User {
 			self::IS_LOGGED => self::NOT_LOGGED,
 			self::ID => self::NO_ID
 				), $data);
-
-		// TODO: for tests
-//		$data = array(
-//			self::IS_LOGGED => self::LOGGED,
-//			self::ID => 1
-//		);
 
 		return new Input($data);
 	}

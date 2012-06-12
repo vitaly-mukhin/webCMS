@@ -14,6 +14,8 @@ define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c
 define('PATH_MODE_CONFIG', __DIR__ . DIRECTORY_SEPARATOR . 'config');
 $ModeConfig = Input_Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
 
+Fw_Db::i()->connect(new Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
+
 $InputGET = new Input($_GET);
 
 // create instance of Router, by using a ModeConfig::router section

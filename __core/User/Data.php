@@ -5,31 +5,58 @@
  *
  * @author Vitaliy_Mukhin
  */
-abstract class User_Data extends User {
-	
-	const F_USERNAME = 'username';
-	const F_EMAIL = 'email';
+class User_Data {
+	//
+
 	const F_ID = 'id';
-	
+	const F_EMAIL = 'email';
+	//
+	const EMAIL = 'email';
+
 	/**
 	 *
 	 * @var Input
 	 */
 	protected $userData = null;
-	
-	public function __construct(User $User, $id) {
-		parent::__construct($User);
+
+	protected function __construct() {
 		
-		$this->setData($id);
 	}
-	
-	abstract protected function setData($id);
 
 	/**
 	 *
-	 * @return Input
+	 * @param Input|int $userId
+	 * @return User_Data 
 	 */
-	public function getData() {
-		return $this->userData;
+	public static function f($userId) {
+		$UserData = new self();
+
+		$Data = ($userId instanceof Input) ? $userId : $UserData->getUserData($userId);
+
+		$UserData->init($Data);
+
+		return $UserData;
 	}
+
+	/**
+	 *
+	 * @param int $userId
+	 * @return \Input 
+	 */
+	protected function getUserData($userId) {
+		return new Input(array(
+					self::F_USERNAME => 'some_username',
+					self::F_EMAIL => 'some@email.com',
+					self::F_ID => $userId
+				));
+	}
+
+	protected function init(Input $Data) {
+		$this->userData = $Data;
+	}
+	
+	public function reg(Input $Data) {
+		
+	}
+
 }

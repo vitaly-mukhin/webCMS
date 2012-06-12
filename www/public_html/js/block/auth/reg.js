@@ -21,7 +21,6 @@
 
 	// Submitting the reg form
 	$('#form-auth-reg').submit(function(){
-		var result = true;
 			
 		var $login = $('input[name=login]', this);
 		$login.trigger('change');
@@ -34,12 +33,18 @@
 		$pwd_r.trigger('change');
 			
 		if ($pwd.val() != $pwd_r.val()) {
-			result = false;
 			setStatus($pwd_r, STATUS.FAILED);
 		}
 			
-		result = !$('.control-group.' + STATUS.FAILED, this).get();
-		return result;
+		var result = $('.control-group.' + STATUS.FAILED, this).get().length == 0;
+		
+		if (result) {
+			$.post(this.action, $(this).serialize(), function(data){
+				console.log(data);
+			});
+		}
+		
+		return false;
 	});
 
 	function setStatus($el, status) {

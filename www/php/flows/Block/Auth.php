@@ -29,18 +29,16 @@ class Flow_Block_Auth extends Flow_Block {
 		Block_Flow_Head::addJsLink('/js/block/auth.js');
 		Block_Flow_Head::addJsLink('/js/block/auth/reg.js');
 		
-		var_dump($_SESSION);
-//		phpinfo();
-//		die();
 		$post = $this->Input->get(Input_Http::INPUT_POST);
-		if (empty($post)) {
+
+		if (!$post->export()) {
 			return null;
 		}
 		
 		$User = User::reg($post);
 		
 		if ($User->isLogged()) {
-			var_dump($User);
+//			var_dump($User);
 		}
 	}
 
