@@ -50,9 +50,9 @@ class User {
 
 		$User = new User();
 
-		$User->setAuth($UserData->get('user_id', -1));
+		$User->setAuth($UserData->get(self::ID));
 
-		$User->setData($UserData->get('user_id', -1));
+		$User->setData($UserData->get(self::ID));
 
 		if ($setCurrent == self::SET_CURRENT) {
 			self::$current = $User;

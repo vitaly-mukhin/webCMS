@@ -24,7 +24,7 @@ class Autoloader {
 		foreach (self::$loaders as $Loader) {
 			/* @var $Loader Loader */
 			$file = $Loader->getFile($class);
-			var_dump($file);
+			
 			if (!$file) {
 				continue;
 			}
