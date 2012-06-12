@@ -98,11 +98,11 @@ class Loader implements ILoader {
 
 	/**
 	 *
-	 * @param boolean $use
+	 * @param boolean $use_or_not
 	 * @return \Loader 
 	 */
-	public function useFilePrefix($use) {
-		$this->useFilePrefix = (boolean)$use;
+	public function useFilePrefix($use_or_not) {
+		$this->useFilePrefix = (boolean)$use_or_not;
 
 		return $this;
 	}
