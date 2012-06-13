@@ -32,6 +32,7 @@ $InputHttp = new Input_Http(array(
 			Input_Http::INPUT_POST => $_POST,
 			Input_Http::INPUT_COOKIE => $_COOKIE
 		));
+
 Input_Http::setDefault($InputHttp);
 
 // TODO 2012-05-22: hard-coded 'page' key

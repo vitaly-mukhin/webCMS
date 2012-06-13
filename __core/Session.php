@@ -17,18 +17,6 @@ class Session extends ArrayObject {
 
 	/**
 	 *
-	 * @var string
-	 */
-	private $id;
-
-	/**
-	 *
-	 * @var Input
-	 */
-	private $data;
-
-	/**
-	 *
 	 * @return Session
 	 * @throws Exception 
 	 */
@@ -52,31 +40,10 @@ class Session extends ArrayObject {
 
 	public function __construct($id) {
 		parent::__construct($_SESSION);
-
-		$this->setId($id);
 	}
-	
+
 	public function __destruct() {
-		// TODO: add saving to $_SESSION on exit;
-	}
-
-	/**
-	 *
-	 * @return string
-	 */
-	public function getId() {
-		return $this->id;
-	}
-
-	/**
-	 *
-	 * @param string $id
-	 * @return \Session 
-	 */
-	public function setId($id) {
-		$this->id = $id;
-
-		return $this;
+		$_SESSION = $this->getArrayCopy();
 	}
 
 	/**

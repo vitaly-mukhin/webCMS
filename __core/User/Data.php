@@ -6,11 +6,7 @@
  * @author Vitaliy_Mukhin
  */
 class User_Data {
-	//
 
-	const F_ID = 'id';
-	const F_EMAIL = 'email';
-	//
 	const EMAIL = 'email';
 
 	/**
@@ -19,21 +15,25 @@ class User_Data {
 	 */
 	protected $userData = null;
 
+	/**
+	 *
+	 * @var Mapper_User_Data
+	 */
+	protected $Mapper;
+
 	protected function __construct() {
-		
+		$this->Mapper = new Mapper_User_Data;
 	}
 
 	/**
 	 *
-	 * @param Input|int $userId
+	 * @param int|null $userId
 	 * @return User_Data 
 	 */
 	public static function f($userId) {
-		$UserData = new self();
+		$UserData = new static();
 
-		$Data = ($userId instanceof Input) ? $userId : $UserData->getUserData($userId);
-
-		$UserData->init($Data);
+		$UserData->init($userId);
 
 		return $UserData;
 	}
@@ -43,20 +43,38 @@ class User_Data {
 	 * @param int $userId
 	 * @return \Input 
 	 */
-	protected function getUserData($userId) {
-		return new Input(array(
-					self::F_USERNAME => 'some_username',
-					self::F_EMAIL => 'some@email.com',
-					self::F_ID => $userId
-				));
+	protected function getEmptyData() {
+		return new Input(array());
 	}
 
-	protected function init(Input $Data) {
-		$this->userData = $Data;
+	/**
+	 *
+	 * @param int|null $userId 
+	 */
+	protected function init($userId) {
+		$Data = ($userId && (int)$userId > 0) ? $this->Mapper->byId((int)$userId) : $this->getEmptyData();
+
+		$this->setData($Data);
 	}
-	
+
+	/**
+	 *
+	 * @param Input $Data
+	 * @return \User_Data 
+	 */
+	protected function setData(Input $Data) {
+		$this->userData = $Data;
+
+		return $this;
+	}
+
+	/**
+	 *
+	 * @param Input $Data
+	 * @return int
+	 */
 	public function reg(Input $Data) {
-		
+		return $this->Mapper->reg($Data);
 	}
 
 }

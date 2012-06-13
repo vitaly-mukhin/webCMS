@@ -15,8 +15,7 @@ class Block_Auth extends Block {
 
 	public static function process() {
 		if (empty(self::$User)) {
-			$sessionId = Session::i()->getId();
-			self::initUser($sessionId);
+			self::initUser();
 		}
 	}
 

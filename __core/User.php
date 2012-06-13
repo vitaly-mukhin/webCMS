@@ -7,13 +7,10 @@
  * 
  */
 class User {
-	//
 
-	const F_ID = 'id';
-	//
-	const IS_LOGGED = 'is_logged';
 	const ID = 'id';
 	const SET_CURRENT = true;
+	const IS_LOGGED = 'is_logged';
 
 	/**
 	 *
@@ -50,9 +47,9 @@ class User {
 
 		$User = new User();
 
-		$User->setAuth($UserData->get(self::ID));
+		$User->setAuth($setCurrent ? $UserData : null);
 
-		$User->setData($UserData->get(self::ID));
+		$User->setData($User->Auth->getUserId());
 
 		if ($setCurrent == self::SET_CURRENT) {
 			self::$current = $User;
@@ -74,19 +71,34 @@ class User {
 
 	/**
 	 *
-	 * @return User_Data
-	 */
-	private function getData() {
-		return $this->Data;
-	}
-
-	/**
-	 *
 	 * @param Input|int $userId
 	 * @return \User 
 	 */
-	private function setAuth($userId) {
-		$this->Auth = User_Auth::f($userId);
+	private function setAuth(Input $Data = null) {
+		$this->Auth = User_Auth::f();
+
+		Session::i()->set(Session::USER, array(
+			'is_logged' => false
+		));
+
+		if (is_null($Data)) {
+			return $this;
+		}
+
+		if (($login = $Data->get(User_Auth::LOGIN)) && ($password = $Data->get(User_Auth::PASSWORD))) {
+			$this->Auth->authByPwd($login, $password);
+		} elseif (($login = $Data->get(User_Auth::LOGIN)) && ($hash = $Data->get(User_Auth::HASH))) {
+			$this->Auth->authByHash($login, $hash);
+		}
+
+		if ($this->Auth->getUserId()) {
+			Session::i()->set(Session::USER, array(
+				'is_logged' => true,
+				'login' => $this->Auth->getLogin(),
+				'hash' => $this->Auth->getHash(),
+				'refreshed' => date('c')
+			));
+		}
 
 		return $this;
 	}
@@ -120,9 +132,23 @@ class User {
 			return null;
 		}
 
-		$User->getData()->reg($Data);
+		$user_id = $User->Data->reg($Data);
 
-		return User::f(Session::i()->get(Session::USER));
+		if (!$user_id) {
+			return null;
+		} else {
+			$User->setData($user_id);
+		}
+
+		$auth_id = $User->Auth->reg($user_id, $Data);
+
+		if (!$auth_id) {
+			return null;
+		} else {
+			$User->setAuth($Data);
+		}
+
+		return $User;
 	}
 
 	/**
@@ -136,7 +162,7 @@ class User {
 		$result = $result && ($Post->get(User_Auth::LOGIN));
 		$result = $result && ($Post->get(User_Auth::PASSWORD) == $Post->get(User_Auth::PASSWORD_REPEAT));
 		$result = $result && filter_var($Post->get(User_Data::EMAIL), FILTER_SANITIZE_EMAIL);
-		
+
 		return $result;
 	}
 
@@ -149,12 +175,20 @@ class User {
 	private static function getFullInput(Input $Input = null) {
 		$data = $Input ? $Input->export() : array();
 
-		$data = array_merge(array(
-			self::IS_LOGGED => self::NOT_LOGGED,
-			self::ID => self::NO_ID
-				), $data);
-
 		return new Input($data);
+	}
+
+	/**
+	 *
+	 * @param Input $Data
+	 * @return User 
+	 */
+	public function auth(Input $Data) {
+		return self::f($Data, self::SET_CURRENT);
+	}
+
+	public function isLogged() {
+		return (bool)Session::i()->get(Session::USER)->get(self::IS_LOGGED);
 	}
 
 }
