@@ -9,6 +9,7 @@ class Mapper_User_Data extends Mapper_User {
 
 	const F_USER_ID = 'user_id';
 	const F_EMAIL = 'email';
+	const F_USERNAME = 'username';
 	const F_DATE_CREATED = 'date_created';
 
 	protected $tableName = 'users';
@@ -38,7 +39,8 @@ class Mapper_User_Data extends Mapper_User {
 
 	public function reg(Input $Data) {
 		$data = array(
-			self::F_EMAIL => $Data->get(User_Data::EMAIL)
+			self::F_EMAIL => $Data->get(User_Data::EMAIL),
+			self::F_USERNAME => $Data->get(User_Data::USERNAME)
 		);
 
 		$Q = $this->Db->query();

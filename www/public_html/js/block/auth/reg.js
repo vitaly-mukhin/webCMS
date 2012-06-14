@@ -39,7 +39,7 @@
 		var result = $('.control-group.' + STATUS.FAILED, this).get().length == 0;
 		
 		if (result) {
-			$.post(this.action, $(this).serialize(), function(data){
+			$.post(this.baseURI + 'block' + this.action.substr(this.baseURI.length-1), $(this).serialize(), function(data){
 				console.log(data);
 			});
 		}

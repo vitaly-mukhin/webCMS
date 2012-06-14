@@ -1,0 +1,6 @@
+{% extends "__default.twig" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+	{{ Block_Flow_Profile | default('<!-- here should be the Block_Flow_Profile -->') | raw }}
+{% endblock %}

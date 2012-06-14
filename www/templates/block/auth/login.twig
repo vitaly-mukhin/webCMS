@@ -12,9 +12,9 @@
 	</form>
 </div>
 {% else %}
-<a href="#profile" class="dropdown-toggle" data-toggle="dropdown">Вітаємо, <strong>{{User.getData().get('username')}}!</strong><b class="caret"></b></a>
+<a href="#profile" class="dropdown-toggle pull-right" data-toggle="dropdown">Вітаємо, <strong>{{User.getUsername()}}!</strong><b class="caret"></b></a>
 <ul class="dropdown-menu">
 	<li><a data-toggle="modal" href="#preferences">Налаштування</a></li>
-	<li><a data-toggle="modal" href="#logout">Вихід</a></li>
+	<li><a data-toggle="modal" href="/auth/logout">Вихід</a></li>
 </ul>
 {% endif %}

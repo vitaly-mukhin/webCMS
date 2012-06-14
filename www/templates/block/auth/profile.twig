@@ -1,0 +1,11 @@
+<div class="container-fluid">
+	<table class="table table-striped">
+		{% for key, f in userData %}
+			<tr>
+				<th>{{key}}</th>
+				<td>{{f}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+<script src="/js/block/auth/profile.js"></script>

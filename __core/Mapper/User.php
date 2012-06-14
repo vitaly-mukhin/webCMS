@@ -5,7 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Mapper_User {
+abstract class Mapper_User {
 
 	protected $tableName;
 

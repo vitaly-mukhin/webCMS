@@ -8,6 +8,7 @@
 class User_Data {
 
 	const EMAIL = 'email';
+	const USERNAME = 'username';
 
 	/**
 	 *
@@ -52,7 +53,7 @@ class User_Data {
 	 * @param int|null $userId 
 	 */
 	protected function init($userId) {
-		$Data = ($userId && (int)$userId > 0) ? $this->Mapper->byId((int)$userId) : $this->getEmptyData();
+		$Data = ($userId && (int) $userId > 0) ? $this->Mapper->byId((int) $userId) : $this->getEmptyData();
 
 		$this->setData($Data);
 	}
@@ -75,6 +76,22 @@ class User_Data {
 	 */
 	public function reg(Input $Data) {
 		return $this->Mapper->reg($Data);
+	}
+
+	protected function get($field) {
+		return $this->userData->get($field);
+	}
+
+	public function getEmail() {
+		return $this->get(Mapper_User_Data::F_EMAIL);
+	}
+
+	public function getUsername() {
+		return $this->get(Mapper_User_Data::F_USERNAME);
+	}
+
+	public function getDateCreated() {
+		return $this->get(Mapper_User_Data::F_DATE_CREATED);
 	}
 
 }

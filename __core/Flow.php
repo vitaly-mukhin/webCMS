@@ -51,7 +51,7 @@ class Flow {
 	 * @return string|boolean
 	 */
 	public function action($action = null) {
-		$action = is_null($action) ? static::DEFAULT_ACTION : $action;
+		$action = is_null($action) ? $this->getDefaultAction() : $action;
 
 		$this->Output->setTemplatePath($this->getTemplatePath($action));
 
@@ -124,6 +124,14 @@ class Flow {
 		} else {
 			$this->action($action);
 		}
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getDefaultAction() {
+		return static::DEFAULT_ACTION;
 	}
 
 	/**

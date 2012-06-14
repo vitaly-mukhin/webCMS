@@ -110,6 +110,13 @@ class User {
 	public static function curr() {
 		return empty(self::$current) ? null : self::$current;
 	}
+	
+	public function exportData() {
+		return array(
+			User_Data::EMAIL => $this->Data->getEmail(),
+			User_Data::USERNAME => $this->Data->getUsername()
+		);
+	}
 
 	/**
 	 * Create a user account, and init it
@@ -123,7 +130,8 @@ class User {
 					User_Auth::LOGIN => $Post->get('login'),
 					User_Auth::PASSWORD => $Post->get('password'),
 					User_Auth::PASSWORD_REPEAT => $Post->get('password_repeat'),
-					User_Data::EMAIL => $Post->get('email')
+					User_Data::EMAIL => $Post->get('email'),
+					User_Data::USERNAME => $Post->get('username')
 				));
 
 		$User = User::f();
@@ -187,8 +195,16 @@ class User {
 		return self::f($Data, self::SET_CURRENT);
 	}
 
+	/**
+	 *
+	 * @return boolean
+	 */
 	public function isLogged() {
 		return (bool)Session::i()->get(Session::USER)->get(self::IS_LOGGED);
+	}
+	
+	public function getUsername() {
+		return $this->Data->getUsername();
 	}
 
 }
