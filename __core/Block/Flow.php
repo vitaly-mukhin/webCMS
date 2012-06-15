@@ -53,8 +53,9 @@ abstract class Block_Flow extends Block {
 		$this->InputHttp = new Input_Http(array(
 					Input_Http::INPUT_ROUTE => new Input($routeData),
 					Input_Http::INPUT_GET => $InputGET,
-					Input_Http::INPUT_POST => $_POST,
-					Input_Http::INPUT_COOKIE => $_COOKIE
+					Input_Http::INPUT_POST => $InputDefault->get(Input_Http::INPUT_POST),
+					Input_Http::INPUT_SERVER => $InputDefault->get(Input_Http::INPUT_SERVER),
+					Input_Http::INPUT_COOKIE => $InputDefault->get(Input_Http::INPUT_COOKIE)
 				));
 	}
 

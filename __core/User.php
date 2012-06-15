@@ -77,9 +77,7 @@ class User {
 	private function setAuth(Input $Data = null) {
 		$this->Auth = User_Auth::f();
 
-		Session::i()->set(Session::USER, array(
-			'is_logged' => false
-		));
+		$this->unauth();
 
 		if (is_null($Data)) {
 			return $this;
@@ -110,7 +108,7 @@ class User {
 	public static function curr() {
 		return empty(self::$current) ? null : self::$current;
 	}
-	
+
 	public function exportData() {
 		return array(
 			User_Data::EMAIL => $this->Data->getEmail(),
@@ -195,14 +193,21 @@ class User {
 		return self::f($Data, self::SET_CURRENT);
 	}
 
+	public function unauth() {
+		Session::i()->set(Session::USER, array(
+			'is_logged' => false,
+			'hash' => false
+		));
+	}
+
 	/**
 	 *
 	 * @return boolean
 	 */
 	public function isLogged() {
-		return (bool)Session::i()->get(Session::USER)->get(self::IS_LOGGED);
+		return (bool) Session::i()->get(Session::USER)->get(self::IS_LOGGED);
 	}
-	
+
 	public function getUsername() {
 		return $this->Data->getUsername();
 	}

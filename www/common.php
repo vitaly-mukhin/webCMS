@@ -30,6 +30,7 @@ $InputHttp = new Input_Http(array(
 			Input_Http::INPUT_ROUTE => $InputRoute,
 			Input_Http::INPUT_GET => $InputGET,
 			Input_Http::INPUT_POST => $_POST,
+			Input_Http::INPUT_SERVER => $_SERVER,
 			Input_Http::INPUT_COOKIE => $_COOKIE
 		));
 

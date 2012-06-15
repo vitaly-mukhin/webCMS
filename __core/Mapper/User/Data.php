@@ -19,7 +19,7 @@ class Mapper_User_Data extends Mapper_User {
 	 * @var array
 	 */
 	private static $fields = array(
-		self::F_USER_ID, self::F_EMAIL, self::F_DATE_CREATED
+		self::F_USER_ID, self::F_EMAIL, self::F_DATE_CREATED, self::F_USERNAME
 	);
 
 	/**

@@ -10,6 +10,7 @@ class Input_Http extends Input {
 	const INPUT_ROUTE = 'route_data';
 	const INPUT_GET = 'get_data';
 	const INPUT_POST = 'post_data';
+	const INPUT_SERVER = 'server_data';
 	const INPUT_COOKIE = 'coockie_data';
 
 	/**

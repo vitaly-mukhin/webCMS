@@ -79,7 +79,7 @@ class User_Data {
 	}
 
 	protected function get($field) {
-		return $this->userData->get($field);
+		return $this->userData->get($field, 'field_not_found');
 	}
 
 	public function getEmail() {
