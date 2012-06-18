@@ -5,7 +5,7 @@ return array(
         'server' => 'localhost',
         'port' => '3306',
         'user' => 'root',
-        'password' => 'mariadb',
+        'password' => 'root',
         'encoding' => 'UTF8',
         'name' => 'webcms'
 );
