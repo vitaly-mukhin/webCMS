@@ -3,7 +3,7 @@
 	url = git@bitbucket.org:maglorchik/autoloader.git
 [submodule "__libs/Fw"]
 	path = __libs/Fw
-	url = git@bitbucket.org:maglorchik/Fw.git
+	url = git@bitbucket.org:maglorchik/fw.git
 [submodule "__libs/FwT"]
 	path = __libs/FwT
 	url = git@bitbucket.org:maglorchik/fw.git
