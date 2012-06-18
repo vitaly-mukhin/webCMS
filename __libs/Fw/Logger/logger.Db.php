@@ -22,7 +22,7 @@ class Fw_Logger_Db extends Fw_Logger_Abstract {
 		$this->_prepareCallback = $prepareCallback;
 	}
 
-	protected function _prepare($data) {
+	protected function prepareForWrite($data) {
 		if (empty($this->_prepareCallback) || !is_callable($this->_prepareCallback)) {
 			throw new Fw_Exception_Logger(__CLASS__ . ' requires a callback for preparing data');
 		}
@@ -30,7 +30,7 @@ class Fw_Logger_Db extends Fw_Logger_Abstract {
 		$this->_data = $function($data, $this->_Config);
 	}
 
-	protected function _write() {
+	protected function write() {
 		if ((!$this->_Config->db || !($this->_Config->db instanceof Fw_Db)) && error_reporting()) {
 			throw new Fw_Exception_Logger('db parameter in config must be set, and has to be an instance of Fw_Db');
 		}

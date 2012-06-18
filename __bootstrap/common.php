@@ -20,3 +20,5 @@ $FwLoader = new Loader();
 $FwLoader->setBaseFolder(PATH_LIBS . DIRECTORY_SEPARATOR . 'Fw')->useFilePrefix(true)->setPrefix('fw.')->setIgnoreFirstPart(true);
 
 Autoloader::add($FwLoader);
+
+require_once PATH_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php';

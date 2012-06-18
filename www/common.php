@@ -15,7 +15,9 @@ define('PATH_MODE_CONFIG', __DIR__ . DIRECTORY_SEPARATOR . 'config');
 $ModeConfig = Input_Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
 
 // Setup the connection to DB
+$DbLog = new Log_Fb(new Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'log.php'));
 Fw_Db::i()->connect(new Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
+Fw_Db::i()->setLogger($DbLog);
 
 $InputGET = new Input($_GET);
 

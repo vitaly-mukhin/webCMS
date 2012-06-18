@@ -26,28 +26,20 @@ class Fw_Logger_Abstract implements Fw_Logger_Interface {
 	/**
 	 * Preparing data for writing with self::_prepare(), and call self::_write() for writing data
 	 *
-	 * @param mix $data 
+	 * @param mixed $data 
 	 * @return Fw_Logger_Abstract
 	 */
 	public function save($data) {
-		$this->_prepare($data);
+		$this->prepareForWrite($data);
 
-		return $this->_write();
+		return $this->write();
 	}
 
 	/**
 	 *
-	 * @return mix
+	 * @param mixed $data 
 	 */
-	public function getData() {
-		return $this->_data;
-	}
-
-	/**
-	 *
-	 * @param mix $data 
-	 */
-	protected function _prepare($data) {
+	protected function prepareForWrite($data) {
 		$this->_data = $data;
 	}
 
@@ -55,7 +47,7 @@ class Fw_Logger_Abstract implements Fw_Logger_Interface {
 	 *
 	 * @return Fw_Logger_Abstract
 	 */
-	protected function _write() {
+	protected function write() {
 		return $this;
 	}
 }
