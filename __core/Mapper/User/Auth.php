@@ -57,5 +57,20 @@ class Mapper_User_Auth extends Mapper_User {
 
 		return $id;
 	}
+	
+	/**
+	 *
+	 * @param Input $Data
+	 * @return boolean 
+	 */
+	public function checkReg(Input $Data) {
+		$Q = $this->Db->query()->select()->from($this->tableName, self::$fields)->where(self::F_LOGIN . ' = ?', $Data->get(User_Auth::LOGIN));
+
+		$result = $Q->fetchRow();
+		
+		var_dump($result);
+		
+		return empty($result);
+	}
 
 }

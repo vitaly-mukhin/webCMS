@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of User
+ * Class for mapping data for User_Data
  *
  * @author Vitaliy_Mukhin
  */
@@ -12,9 +12,15 @@ class Mapper_User_Data extends Mapper_User {
 	const F_USERNAME = 'username';
 	const F_DATE_CREATED = 'date_created';
 
-	protected $tableName = 'users';
+	/**
+	 * Name of user table
+	 *
+	 * @var string
+	 */
+	protected $tableName = DB_TBL_USER;
 
 	/**
+	 * Complete list of fields in users table
 	 *
 	 * @var array
 	 */
@@ -23,9 +29,10 @@ class Mapper_User_Data extends Mapper_User {
 	);
 
 	/**
+	 * Get a single record by user_id
 	 *
 	 * @param int $userId
-	 * @return \Input 
+	 * @return Input 
 	 */
 	public function byId($userId) {
 		$Q = $this->Db->query();
@@ -37,6 +44,26 @@ class Mapper_User_Data extends Mapper_User {
 		return new Input($result);
 	}
 
+	/**
+	 * Check if we have unique user data (within our db)
+	 *
+	 * @param Input $Data
+	 * @return boolean 
+	 */
+	public function checkReg(Input $Data) {
+		$Q = $this->Db->query()->select()->from($this->tableName, self::$fields)->where(self::F_EMAIL . ' = ?', $Data->get(User_Data::EMAIL));
+
+		$resutl = $Q->fetchRow();
+
+		return empty($resutl);
+	}
+
+	/**
+	 * Add a record to user table.
+	 *
+	 * @param Input $Data
+	 * @return int|null
+	 */
 	public function reg(Input $Data) {
 		$data = array(
 			self::F_EMAIL => $Data->get(User_Data::EMAIL),
