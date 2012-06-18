@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of User
+ * Main class, which describe a User entity
  *
  * @author Vitaliy_Mukhin
  * 
@@ -13,18 +13,21 @@ class User {
 	const IS_LOGGED = 'is_logged';
 
 	/**
+	 * Main (current) User object
 	 *
 	 * @var User
 	 */
 	protected static $current;
 
 	/**
+	 * Data from users storage
 	 *
 	 * @var User_Data
 	 */
 	protected $Data;
 
 	/**
+	 * Data from user_auths storage
 	 *
 	 * @var User_Auth
 	 */
@@ -39,7 +42,7 @@ class User {
 	 * @param Input $UserData
 	 * @param boolean $setCurrent
 	 * 
-	 * @return \User
+	 * @return User
 	 */
 	public static function f(Input $UserData = null, $setCurrent = false) {
 
@@ -59,9 +62,10 @@ class User {
 	}
 
 	/**
+	 * Set the Data parameter, which is initiated through User_Data::f()
 	 *
-	 * @param Input|int $userId
-	 * @return \User 
+	 * @param null|int $userId
+	 * @return User 
 	 */
 	private function setData($userId) {
 		$this->Data = User_Data::f($userId);
@@ -70,6 +74,7 @@ class User {
 	}
 
 	/**
+	 * Set the Auth parameter, which is initiated through User_Data::f()
 	 *
 	 * @param Input|int $userId
 	 * @return \User 
@@ -102,6 +107,7 @@ class User {
 	}
 
 	/**
+	 * Get the current User entity
 	 *
 	 * @return User|null 
 	 */
@@ -109,10 +115,16 @@ class User {
 		return empty(self::$current) ? null : self::$current;
 	}
 
+	/**
+	 * Export data as assoc array
+	 * 
+	 * @return array
+	 */
 	public function exportData() {
 		return array(
 			User_Data::EMAIL => $this->Data->getEmail(),
-			User_Data::USERNAME => $this->Data->getUsername()
+			User_Data::USERNAME => $this->Data->getUsername(),
+			User_Data::DATE_CREATED => $this->Data->getDateCreated()
 		);
 	}
 
@@ -158,6 +170,7 @@ class User {
 	}
 
 	/**
+	 * Check all data, which are required for registrating a new User
 	 *
 	 * @param Input $Post
 	 * @return boolean 
@@ -165,9 +178,15 @@ class User {
 	private static function checkReg(Input $Post) {
 		$result = true;
 
-		$result = $result && ($Post->get(User_Auth::LOGIN));
-		$result = $result && ($Post->get(User_Auth::PASSWORD) == $Post->get(User_Auth::PASSWORD_REPEAT));
-		$result = $result && filter_var($Post->get(User_Data::EMAIL), FILTER_SANITIZE_EMAIL);
+		if ($result) {
+			$Auth = User_Auth::f();
+			$result = $Auth->checkReg($Post);
+		}
+
+		if ($result) {
+			$Data = User_Data::f();
+			$result = $Data->checkReg($Post);
+		}
 
 		return $result;
 	}
@@ -185,6 +204,7 @@ class User {
 	}
 
 	/**
+	 * Authenticate the User with data from $Data, and set it as current.
 	 *
 	 * @param Input $Data
 	 * @return User 
@@ -201,15 +221,35 @@ class User {
 	}
 
 	/**
+	 * Check if current User entity is logged
 	 *
 	 * @return boolean
 	 */
 	public function isLogged() {
-		return (bool) Session::i()->get(Session::USER)->get(self::IS_LOGGED);
+		$sessionUserId = (bool) Session::i()->get(Session::USER)->get(self::ID);
+		$isLogged = (bool) Session::i()->get(Session::USER)->get(self::ID);
+
+		$result = $sessionUserId == $this->getUserId() && $isLogged;
+
+		return $result;
 	}
 
+	/**
+	 * Get the USERNAME
+	 *
+	 * @return string
+	 */
 	public function getUsername() {
 		return $this->Data->getUsername();
+	}
+
+	/**
+	 * Get the USER_ID
+	 *
+	 * @return string
+	 */
+	public function getUserId() {
+		return $this->Data->getUserId();
 	}
 
 }
