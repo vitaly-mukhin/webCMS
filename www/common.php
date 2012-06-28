@@ -1,5 +1,9 @@
 <?php
 
+if ($_SERVER['SERVER_NAME'] == 'www.webcms') {
+	error_reporting(E_ALL);
+}
+
 // calling global bootstrap
 define('PATH_BOOTSTRAP', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '__bootstrap');
 require PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'common.php';
@@ -16,8 +20,8 @@ $ModeConfig = Input_Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'confi
 
 // Setup the connection to DB
 $DbLog = new Log_Fb(new Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'log.php'));
-Fw_Db::i()->connect(new Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
 Fw_Db::i()->setLogger($DbLog);
+Fw_Db::i()->connect(new Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
 
 $InputGET = new Input($_GET);
 

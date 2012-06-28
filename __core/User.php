@@ -11,6 +11,7 @@ class User {
 	const ID = 'id';
 	const SET_CURRENT = true;
 	const IS_LOGGED = 'is_logged';
+	const REFRESHED = 'refreshed';
 
 	/**
 	 * Main (current) User object
@@ -82,7 +83,7 @@ class User {
 	private function setAuth(Input $Data = null) {
 		$this->Auth = User_Auth::f();
 
-		$this->unauth();
+		$this->deleteAuth();
 
 		if (is_null($Data)) {
 			return $this;
@@ -95,12 +96,7 @@ class User {
 		}
 
 		if ($this->Auth->getUserId()) {
-			Session::i()->set(Session::USER, array(
-				'is_logged' => true,
-				'login' => $this->Auth->getLogin(),
-				'hash' => $this->Auth->getHash(),
-				'refreshed' => date('c')
-			));
+			$this->saveAuth();
 		}
 
 		return $this;
@@ -150,21 +146,21 @@ class User {
 			return null;
 		}
 
+		// add user to users table
 		$user_id = $User->Data->reg($Data);
-
 		if (!$user_id) {
 			return null;
-		} else {
-			$User->setData($user_id);
 		}
 
-		$auth_id = $User->Auth->reg($user_id, $Data);
+		$User->setData($user_id);
 
+		// add user to user_auths table
+		$auth_id = $User->Auth->reg($user_id, $Data);
 		if (!$auth_id) {
 			return null;
-		} else {
-			$User->setAuth($Data);
 		}
+
+		$User->setAuth($Data);
 
 		return $User;
 	}
@@ -213,10 +209,20 @@ class User {
 		return self::f($Data, self::SET_CURRENT);
 	}
 
-	public function unauth() {
+	public function deleteAuth() {
 		Session::i()->set(Session::USER, array(
 			'is_logged' => false,
 			'hash' => false
+		));
+	}
+
+	protected function saveAuth() {
+		Session::i()->set(Session::USER, array(
+			self::IS_LOGGED => true,
+			User_Auth::USER_ID => $this->Auth->getUserId(),
+			User_Auth::LOGIN => $this->Auth->getLogin(),
+			User_Auth::HASH => $this->Auth->getHash(),
+			self::REFRESHED => date('c')
 		));
 	}
 
@@ -226,10 +232,10 @@ class User {
 	 * @return boolean
 	 */
 	public function isLogged() {
-		$sessionUserId = (bool) Session::i()->get(Session::USER)->get(self::ID);
-		$isLogged = (bool) Session::i()->get(Session::USER)->get(self::ID);
+		$sessionUserId = (bool) Session::i()->get(Session::USER)->get(User_Auth::USER_ID);
+		$isLogged = (bool) Session::i()->get(Session::USER)->get(self::IS_LOGGED);
 
-		$result = $sessionUserId == $this->getUserId() && $isLogged;
+		$result = $isLogged && ($sessionUserId == $this->getUserId());
 
 		return $result;
 	}

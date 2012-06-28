@@ -34,7 +34,7 @@ class Flow_Block_Auth extends Flow_Block {
 	}
 	
 	public function action_logout() {
-		User::curr()->unauth();
+		User::curr()->deleteAuth();
 		
 		$this->Output->header('Location: /');
 	}

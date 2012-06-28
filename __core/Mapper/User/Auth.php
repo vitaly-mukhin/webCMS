@@ -68,8 +68,6 @@ class Mapper_User_Auth extends Mapper_User {
 
 		$result = $Q->fetchRow();
 		
-		var_dump($result);
-		
 		return empty($result);
 	}
 

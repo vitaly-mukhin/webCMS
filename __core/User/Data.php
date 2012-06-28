@@ -85,11 +85,11 @@ class User_Data {
 	 */
 	public function checkReg(Input $Data) {
 		$result = true;
-
-		$result = $result && filter_var($Post->get(User_Data::EMAIL), FILTER_SANITIZE_EMAIL);
-
+		
+		$result = $result && filter_var($Data->get(User_Data::EMAIL), FILTER_SANITIZE_EMAIL);
+		
 		$result = $result && $this->Mapper->checkReg($Data);
-
+		
 		return $result;
 	}
 
