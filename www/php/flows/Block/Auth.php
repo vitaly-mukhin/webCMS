@@ -52,7 +52,7 @@ class Flow_Block_Auth extends Flow_Block {
 		$User = User::reg($post);
 
 		if ($User && $User->isLogged()) {
-			$this->Output->header('Location: /block/auth');
+			$this->Output->header('Location: /block/auth/profile');
 		}
 	}
 

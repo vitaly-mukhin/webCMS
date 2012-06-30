@@ -40,7 +40,7 @@
 		
 		if (result) {
 			$.post(this.baseURI + 'block' + this.action.substr(this.baseURI.length-1), $(this).serialize(), function(data){
-				console.log(data);
+				$('#body-content').html(data);
 			});
 		}
 		
