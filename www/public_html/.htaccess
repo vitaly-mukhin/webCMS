@@ -5,4 +5,5 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !favicon.ico
+RewriteCond %{REQUEST_FILENAME} !json.php
 RewriteRule ^(.*)$ /index.php?route=$1 [L]

@@ -30,7 +30,7 @@ class Flow {
 
 	const DEFAULT_ACTION = 'default';
 	const CLASS_DELIMITER = '_';
-	const NO_FLOW_FOUND_CLASS = 'NoFlowFound';
+	const FLOW_NOT_FOUND_CLASS = 'NoFlowFound';
 	const TEMPLATE_FILE_EXTENSION = '.twig';
 
 	/**
@@ -125,7 +125,7 @@ class Flow {
 			$this->action($action);
 		}
 	}
-	
+
 	/**
 	 *
 	 * @return string
@@ -135,57 +135,96 @@ class Flow {
 	}
 
 	/**
+	 * Get the current or child Flow, that might proceed with $childFlowSuffix
 	 *
-	 * @param string $flowString
+	 * @param string $childFlowSuffix
 	 * @return Flow
 	 * @throws ErrorException 
 	 */
-	final protected function getFlow($flowString) {
-		if ($this->existsAction($flowString)) {
+	final protected function getFlow($childFlowSuffix) {
+		// for being able to redirect inside current Flow
+		if ($this->existsAction($childFlowSuffix)) {
 			return $this;
 		}
 
-		$class = get_called_class();
+		$currentClass = get_called_class();
 
 		if (static::IS_ROOT) {
-			$class = substr($class, 0, strrpos($class, self::CLASS_DELIMITER));
+			$currentClass = substr($currentClass, 0, strrpos($currentClass, self::CLASS_DELIMITER));
 		}
 
-		$flowClass = $class . self::CLASS_DELIMITER . ucfirst($flowString);
+		$flowClass = $this->getChildFlowName($currentClass, $childFlowSuffix);
 
 		if (!class_exists($flowClass)) {
-			$flowClass = $this->getNoFlowFound($class);
+			$flowClass = $this->getNoFlowFoundClass($flowClass);
 		}
 		/* @var $Flow Flow */
 		$Flow = new $flowClass();
-
-		$this->init($this->Input, $this->Output);
 
 		return $Flow;
 	}
 
 	/**
+	 * Build class name for child flow (by using $childFlowSuffix)
+	 * 
+	 * @param string $flowClass
+	 * @param string $childFlowSuffix
+	 * @return string
+	 */
+	protected function getChildFlowName($flowClass, $childFlowSuffix) {
+		return $flowClass . self::CLASS_DELIMITER . ucfirst($childFlowSuffix);
+	}
+
+	/**
+	 * Transform $flowClass into the parent NoFlowFound class
+	 * 
+	 * Example 1:
+	 *     $flowClass = Flow_Block_Auth_Reset
+	 * Return:
+	 *     Flow_Block_Auth_NoFlowFound
+	 * 
+	 * Example 2:
+	 *     $flowClass = Flow_Block_Auth_NoFlowFound
+	 * Return:
+	 *     Flow_Block_NoFlowFound
+	 * 
+	 * @param string $flowClass
+	 * @return string
+	 */
+	protected function buildNoFloFoundClass($flowClass) {
+		// remove _NoFlowFound from the flow class name
+		$flowClassShort = str_replace(self::FLOW_NOT_FOUND_CLASS, '', $flowClass);
+		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
+
+		// remove prelast part of class name
+		$flowClassShort = substr($flowClassShort, 0, strrpos($flowClassShort, self::CLASS_DELIMITER));
+		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
+
+		return $this->getChildFlowName($flowClassShort, self::FLOW_NOT_FOUND_CLASS);
+	}
+
+	/**
+	 * Get the nearest relative NoFlowFound class
+	 * 
+	 * Example:
+	 *     $flowClass = Flow_Block_Auth_Reset
+	 * 
+	 * Return:
+	 *     Flow_Block_Auth_NoFlowFound
+	 *     Flow_Block_NoFlowFound
+	 *     Flow_NoFlowFound
 	 *
 	 * @param string $flowClass
 	 * @return string
 	 * @throws ErrorException 
 	 */
-	final protected function getNoFlowFound($flowClass) {
-		$flowClass .= self::CLASS_DELIMITER . self::NO_FLOW_FOUND_CLASS;
+	final protected function getNoFlowFoundClass($flowClass) {
 		while (true) {
+			$flowClass = $this->buildNoFloFoundClass($flowClass);
+
 			if (class_exists($flowClass)) {
 				break;
 			}
-
-			$flowArray = explode(self::CLASS_DELIMITER, $flowClass);
-			// remove prelast part of class name
-			unset($flowArray[count($flowArray) - 2]);
-
-			if (count($flowArray) < 2) {
-				throw new ErrorException(sprintf('Flow not found %s', $flowClass));
-			}
-
-			$flowClass = implode(self::CLASS_DELIMITER, $flowArray);
 		}
 
 		return $flowClass;
