@@ -13,7 +13,7 @@ class Block_Auth extends Block {
 	 */
 	private static $User;
 
-	public static function process() {
+	public static function process($params = array()) {
 		if (empty(self::$User)) {
 			self::initUser();
 		}

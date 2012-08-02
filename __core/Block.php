@@ -28,7 +28,7 @@ class Block {
 	 *
 	 * @param array $params 
 	 */
-	public static function process($params) {
+	public static function process($params = array()) {
 		
 	}
 

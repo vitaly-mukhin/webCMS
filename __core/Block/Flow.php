@@ -78,14 +78,25 @@ abstract class Block_Flow extends Block {
 	 * @param Output $Output
 	 * @param array $params 
 	 */
-	public static function process($params, Output $Output) {
+	public static function process($params = array(), Output $Output = null) {
 		$Block = new static();
 
 		$Block->init($params);
 
 		$result = $Block->invoke();
 
-		$Output->bind(get_called_class(), $result);
+        if ($Output) {
+            $Output->bind(static::getBindName(), $result);
+        }
 	}
+    
+    /**
+     * Returns the name of variable, where processed result is binded
+     * 
+     * @return string
+     */
+    public static function getBindName() {
+        return get_called_class();
+    }
 
 }
