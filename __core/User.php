@@ -180,7 +180,7 @@ class User {
 		}
 
 		if ($result) {
-			$Data = User_Data::f();
+			$Data = User_Data::f(null);
 			$result = $Data->checkReg($Post);
 		}
 

@@ -39,9 +39,13 @@
 		var result = $('.control-group.' + STATUS.FAILED, this).get().length == 0;
 		
 		if (result) {
-			$.post(this.baseURI + 'block' + this.action.substr(this.baseURI.length-1), $(this).serialize(), function(data){
-				$('#body-content').html(data);
-			});
+			$.post(this.baseURI + 'json/' + 'block' + this.action.substr(this.baseURI.length-1), $(this).serialize(), function(data){
+//				$('#body-content').html(data);
+                $('#body-content').html($('<div/>').html(data.content).text());
+			}, 'json');
+//            $.get(this.baseURI + 'json/' + 'block' + this.pathname, {}, function(data){
+//                $('#body-content').html($('<div/>').html(data.content).text());
+//            }, 'json');
 		}
 		
 		return false;
