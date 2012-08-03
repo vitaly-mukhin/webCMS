@@ -33,20 +33,6 @@ class Output {
 
 	/**
 	 *
-	 * @param null|Renderer $Renderer
-	 * @return Renderer
-	 */
-	public function renderer(Renderer $Renderer = null) {
-		if (!is_null($Renderer)) {
-			$this->Renderer = $Renderer;
-		}
-
-
-		return $this->Renderer;
-	}
-
-	/**
-	 *
 	 * @return array
 	 */
 	public function export() {

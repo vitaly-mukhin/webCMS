@@ -7,33 +7,61 @@
  */
 abstract class Renderer {
 
-	/**
-	 *
-	 * @var Renderer_Engine
-	 */
-	protected $Engine;
+    /**
+     *
+     * @var Renderer_Engine
+     */
+    protected $Engine;
 
-	/**
-	 *
-	 * @param Renderer_Engine $Engine
-	 * @return \Renderer 
-	 */
-	public function engine(Renderer_Engine $Engine) {
-		$this->Engine = $Engine;
+    /**
+     *
+     * @var array
+     */
+    protected static $instances;
 
-		return $this;
-	}
+    protected function __construct() {
+        
+    }
 
-	/**
-	 *
-	 * @param Output $Output
-	 * @return string
-	 */
-	public function render(Output_Http $Output) {
-		$templatePath = $Output->getTemplatePath();
-		$content = $this->Engine->render($templatePath, $Output->export());
+    /**
+     * 
+     * @return Renderer
+     */
+    public static function di() {
+        $calledClass = get_called_class();
+        if (!empty(static::$instances[$calledClass])) {
+            return static::$instances[$calledClass];
+        }
 
-		return $content;
-	}
+        $instance = new static();
+
+        $instance->Engine = $instance->getRendererEngine();
+
+        return static::$instances[$calledClass] = $instance;
+    }
+
+    /**
+     *
+     * @return Renderer_Engine 
+     */
+    private function getRendererEngine() {
+
+        $Engine = new Renderer_Engine();
+        $Engine->init();
+
+        return $Engine;
+    }
+
+    /**
+     *
+     * @param Output $Output
+     * @return string
+     */
+    public function render(Output_Http $Output) {
+        $templatePath = $Output->getTemplatePath();
+        $content = $this->Engine->render($templatePath, $Output->export());
+
+        return $content;
+    }
 
 }

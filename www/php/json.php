@@ -36,7 +36,8 @@ $Dispatcher = Dispatcher::di(array(
 			Dispatcher::PARAM_INITIAL_FLOW => $initialFlow
 		));
 
-$OutputHttp = new Output_Http;
+$OutputHttp = new Output_Http_Json();
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
-echo Renderer_Http::di()->render($OutputHttp);
+// render in JSON format
+echo Renderer_Json::di()->render($OutputHttp);

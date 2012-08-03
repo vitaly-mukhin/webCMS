@@ -70,7 +70,11 @@ abstract class Block_Flow extends Block {
 	 * @return string
 	 */
 	final protected function invoke() {
-		return $this->Dispatcher->flow($this->InputHttp);
+        $Output = new Output_Http;
+        
+		$this->Dispatcher->flow($this->InputHttp, $Output);
+        
+        return $Output;
 	}
 
 	/**
@@ -83,10 +87,10 @@ abstract class Block_Flow extends Block {
 
 		$Block->init($params);
 
-		$result = $Block->invoke();
+		$OutputResult = $Block->invoke();
 
         if ($Output) {
-            $Output->bind(static::getBindName(), $result);
+            $Output->bind(static::getBindName(), Renderer_Http::di()->render($OutputResult));
         }
 	}
     

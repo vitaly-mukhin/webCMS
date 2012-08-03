@@ -129,41 +129,13 @@ class Dispatcher {
 	 * @return string
 	 * @throws ErrorException 
 	 */
-	public function flow(Input_Http $Input = null) {
-		// initiating a Output_Http object, and setting its default params
-		$Output = new Output_Http();
-		$Output->renderer(new Renderer_Http);
-
+	public function flow(Input_Http $Input = null, Output_Http $Output) {
 		$Flow = new Flow();
 		$Flow->init($Input, $Output);
 
 		$Flow->action($this->initialFlow);
-
-		return $this->render($Output);
-	}
-
-	/**
-	 *
-	 * @param Output_Http $Output 
-	 */
-	public function render(Output_Http $Output) {
-		// TODO 2012-05-18: move this logic to a Output::render() ?
-		$Renderer = $Output->renderer();
-		$Renderer->engine($this->getRendererEngine());
-
-		return $Renderer->render($Output);
-	}
-
-	/**
-	 *
-	 * @return Renderer_Engine 
-	 */
-	private function getRendererEngine() {
-
-		$Engine = new Renderer_Engine();
-		$Engine->init();
-
-		return $Engine;
+//        return $Output;
+//		return $this->render($Output);
 	}
 
 }

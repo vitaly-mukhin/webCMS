@@ -8,7 +8,7 @@ return array(
         'server' => 'localhost',
         'port' => '3306',
         'user' => 'root',
-        'password' => 'root',
+        'password' => 'fe3109',
         'encoding' => 'UTF8',
         'name' => 'webcms'
 );

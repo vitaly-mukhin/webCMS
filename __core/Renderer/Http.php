@@ -21,6 +21,11 @@ class Renderer_Http extends Renderer {
 		return parent::render($Output);
 	}
 
+    /**
+     * Set the headers to HTTP response
+     * 
+     * @param Output_Http $Output
+     */
 	protected function renderHeaders(Output_Http $Output) {
 		$headers = $Output->headers();
 
@@ -33,6 +38,11 @@ class Renderer_Http extends Renderer {
 		}
 	}
 
+    /**
+     * Set the cookies to HTTP response
+     * 
+     * @param Output_Http $Output
+     */
 	protected function renderCookie(Output_Http $Output) {
 		$cookies = $Output->cookies();
 
