@@ -90,7 +90,7 @@ abstract class Block_Flow extends Block {
 		$OutputResult = $Block->invoke();
 
         if ($Output) {
-            $Output->bind(static::getBindName(), Renderer_Http::di()->render($OutputResult));
+            $Output->bind(static::getBindName(), Renderer_Http::di()->render($OutputResult, $OutputResult->getTemplatePath()));
         }
 	}
     

@@ -39,4 +39,4 @@ $Dispatcher = Dispatcher::di(array(
 $OutputHttp = new Output_Http;
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
-echo Renderer_Http::di()->render($OutputHttp);
+echo Renderer_Http_Html::di()->render($OutputHttp, $OutputHttp->getTemplatePath());

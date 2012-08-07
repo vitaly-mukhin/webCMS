@@ -19,8 +19,8 @@ class Flow_Block_Auth extends Flow_Block {
      * @return boolean 
      */
     public function action_login() {
-        Block_Flow_Head::addJsLink('/js/block/auth.js');
-        Block_Flow_Head::addJsLink('/js/block/auth/login.js');
+        Block_Head::addJsLink('js/block/auth.js');
+        Block_Head::addJsLink('js/block/auth/login.js');
 
         if (!User::curr()->isLogged()) {
             Block_Auth::getUser()->auth($this->Input->get(Input_Http::INPUT_POST));
@@ -40,12 +40,11 @@ class Flow_Block_Auth extends Flow_Block {
     }
 
     public function action_reg() {
-
+        Block_Head::addJsLink('js/block/auth.js');
+        Block_Head::addJsLink('js/block/auth/reg.js');
+        
         $post = $this->Input->get(Input_Http::INPUT_POST);
-
         if (!$post->export()) {
-            Block_Flow_Head::addJsLink('/js/block/auth.js');
-            Block_Flow_Head::addJsLink('/js/block/auth/reg.js');
 
             return null;
         }

@@ -7,14 +7,26 @@
  */
 class Renderer_Http_Json extends Renderer_Http {
 
+    const TPL = '__json.twig';
+
     /**
      *
      * @param Output_Http $Output
      */
-    public function render(Output_Http $Output) {
-        return json_encode(array(
-                    'result' => $Output->result(),
-                    'content' => htmlspecialchars(parent::render($Output))
-                ));
+    public function render(Output $Output, $templatePath) {
+        /* @var $Output Output_Http */
+        $Output->header('Content-Type: text/json');
+        $content = parent::render($Output, $templatePath);
+
+        $result = $this->renderInner(new Output(array(
+                    'head' => json_encode(array(
+                        'script' => array_values(Block_Head::getJsLinks()),
+                        'css' => array_values(Block_Head::getCssLinks())
+                    )),
+                    'content' => json_encode(htmlspecialchars($content, ENT_NOQUOTES))
+                )), static::TPL);
+
+        return $result;
     }
+
 }

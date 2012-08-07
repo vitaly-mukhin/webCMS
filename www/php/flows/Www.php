@@ -15,20 +15,19 @@ class Flow_Www extends Flow {
 
 		Block_Auth::process();
 
-		Block_Flow_Head::addPageTitle('webCMS');
+		Block_Head::addPageTitle('webCMS');
 
-		Block_Flow_Head::addJsLink('js/jquery-1.7.2.min.js');
-		Block_Flow_Head::addJsLink('js/bootstrap-2.0.3.js');
-		Block_Flow_Head::addCssLink('css/bootstrap-2.0.3.css');
+		Block_Head::addJsLink('js/jquery-1.7.2.min.js');
+		Block_Head::addJsLink('js/bootstrap-2.0.3.js');
+		Block_Head::addJsLink('js/common.js');
+		Block_Head::addCssLink('css/bootstrap-2.0.3.css');
 
-		Block_Flow_Head::addCssLink('css/main.css');
+		Block_Head::addCssLink('css/main.css');
 
 		Block_Flow_Login::process(array(), $this->Output);
 	}
 
 	protected function callPost($result) {
-		Block_Flow_Head::process(array(), $this->Output);
-
 		Block_Flow_Nav::process(array(), $this->Output);
 
 		return parent::callPost($result);

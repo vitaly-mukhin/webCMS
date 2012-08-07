@@ -38,7 +38,7 @@ class Renderer_Engine {
 	 * @param array $data 
 	 * @return string
 	 */
-	public function render($templatePath, $data) {
+	public function render($data, $templatePath) {
 
 		if (!file_exists(PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . $templatePath)) {
 			return '<!-- template "' . htmlspecialchars($templatePath, ENT_IGNORE, 'UTF-8') . '" not found -->';

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Html
+ * Description of Renderer_Http
  *
  * @author Vitaliy_Mukhin
  */
@@ -12,13 +12,22 @@ class Renderer_Http extends Renderer {
 	 * @param Output_Http $Output
 	 * @param string $templatePath 
 	 */
-	public function render(Output_Http $Output) {
-		if ($Output instanceof Output_Http) {
-			$this->renderHeaders($Output);
-			$this->renderCookie($Output);
-		}
+	public function render(Output $Output, $templatePath) {
+        if ($Output instanceof Output_Http) {
+            $this->renderHeaders($Output);
+            $this->renderCookie($Output);
+        }
+        
+//        $templatePath = $templatePath ? : $Output->getTemplatePath();
+        
+//        $head = $this->renderInner(new Output(array(
+//            'jsLinks' => Block_Head::getJsLinks(),
+//            'cssLinks' => Block_Head::getCssLinks(),
+//            'pageTitle' => Block_Head::getPageTitle(),
+//        )), Block_Head::TPL);
+//        $content = $this->renderInner($Output, $templatePath);
 
-		return parent::render($Output);
+		return $this->renderInner($Output, $templatePath);
 	}
 
     /**

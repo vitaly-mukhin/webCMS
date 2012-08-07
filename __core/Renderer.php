@@ -57,9 +57,18 @@ abstract class Renderer {
      * @param Output $Output
      * @return string
      */
-    public function render(Output_Http $Output) {
-        $templatePath = $Output->getTemplatePath();
-        $content = $this->Engine->render($templatePath, $Output->export());
+    public function render(Output $Output, $templatePath) {
+        return $this->renderInner($Output, $templatePath);
+    }
+    
+    /**
+     * 
+     * @param Output $Output
+     * @param string $templatePath
+     * @return string
+     */
+    protected function renderInner(Output $Output, $templatePath) {
+        $content = $this->Engine->render($Output->export(), $templatePath);
 
         return $content;
     }

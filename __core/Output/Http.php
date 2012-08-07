@@ -20,13 +20,13 @@ class Output_Http extends Output {
 	 *
 	 * @var Output
 	 */
-	protected $headers;
+	protected $Headers;
 
 	/**
 	 *
 	 * @var Output
 	 */
-	protected $cookies;
+	protected $Cookies;
 
 	/**
 	 *
@@ -37,9 +37,9 @@ class Output_Http extends Output {
 	public function __construct() {
 //		parent::__construct();
 
-		$this->headers = new Output;
+		$this->Headers = new Output;
 
-		$this->cookies = new Output;
+		$this->Cookies = new Output;
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Output_Http extends Output {
 	 * @return Output
 	 */
 	public function header($value, $todo = self::HTTP_HEADER_SET) {
-		$this->headers->bind($value, $todo);
+		$this->Headers->bind($value, $todo);
 
 		return $this;
 	}
@@ -69,7 +69,7 @@ class Output_Http extends Output {
 		$cookie->bind(static::OUTPUT_COOKIE_EXPIRE, ($expire ? time() + $expire : 0));
 		$cookie->bind(static::OUTPUT_COOKIE_PATH, $path);
 
-		$this->cookies->bind($name, $cookie);
+		$this->Cookies->bind($name, $cookie);
 
 		return $this;
 	}
@@ -79,12 +79,10 @@ class Output_Http extends Output {
 	 * @return array
 	 */
 	public function headers() {
-		$result = array();
-		foreach ($this->headers->export() as $header=>$todo) {
-			if ($todo == self::HTTP_HEADER_SET) {
-				$result[] = $header;
-			}
-		}
+        $result = array_keys(array_filter($this->Headers->export(), function($v){
+            return ($v == Output_Http::HTTP_HEADER_SET);
+        }));
+        
 		return $result;
 	}
 
@@ -93,7 +91,7 @@ class Output_Http extends Output {
 	 * @return array
 	 */
 	public function cookies() {
-		return $this->cookies->export();
+		return $this->Cookies->export();
 	}
 
 	/**

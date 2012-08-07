@@ -40,4 +40,4 @@ $OutputHttp = new Output_Http_Json();
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
 // render in JSON format
-echo Renderer_Http_Json::di()->render($OutputHttp);
+echo Renderer_Http_Json::di()->render($OutputHttp, $OutputHttp->getTemplatePath());

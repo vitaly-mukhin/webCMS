@@ -8,7 +8,7 @@
 class Flow_Index extends Flow {
 
 	public function action_default() {
-		Block_Flow_Head::addPageTitle('index');
+		Block_Head::addPageTitle('index');
 
 		$this->Output->bind('result', 'OK');
 	}

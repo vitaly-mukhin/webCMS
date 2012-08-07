@@ -18,6 +18,10 @@ class Output {
 	 * @var Renderer
 	 */
 	protected $Renderer;
+    
+    public function __construct($data = array()) {
+        $this->data = $data;
+    }
 
 	/**
 	 *

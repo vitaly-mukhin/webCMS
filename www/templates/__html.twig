@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {{ head | default('<!-- here should be the Block_Head -->') | raw }}
+    </head>
+    <body>
+        {{ body | default('<!-- here should be the Block_Head -->') | raw }}
+    </body>
+</html>
