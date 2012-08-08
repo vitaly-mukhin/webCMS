@@ -1,18 +1,18 @@
-(function(){
+$(document).ready(function(){
 	var STATUS = {
 		OK: 'success',
 		FAILED: 'error'
 	};
 	
 	// Check for login field
-	$('#form-auth-reg input[name=login]').change(function(){
+	$('.form-auth-reg input[name=login]').change(function(){
 		var s = true;
 		s = s && (this.value != '');
 		s = s && !(this.value.match(/[^$A-Za-z0-9_\-.]/i));
 		setStatus($(this), (s ? STATUS.OK : STATUS.FAILED));
 	});
 	
-	$('#form-auth-reg input[name=password], #form-auth-reg input[name=password_repeat]').change(function(){
+	$('.form-auth-reg input[name=password], .form-auth-reg input[name=password_repeat]').change(function(){
 		var s = true;
 		s = s && this.value != '';
 		s = s && this.value.length >= 6;
@@ -20,7 +20,7 @@
 	});
 
 	// Submitting the reg form
-	$('#form-auth-reg').submit(function(){
+	$('.form-auth-reg').submit(function(){
 			
 		var $login = $('input[name=login]', this);
 		$login.trigger('change');

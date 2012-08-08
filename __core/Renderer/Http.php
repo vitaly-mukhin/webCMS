@@ -17,15 +17,6 @@ class Renderer_Http extends Renderer {
             $this->renderHeaders($Output);
             $this->renderCookie($Output);
         }
-        
-//        $templatePath = $templatePath ? : $Output->getTemplatePath();
-        
-//        $head = $this->renderInner(new Output(array(
-//            'jsLinks' => Block_Head::getJsLinks(),
-//            'cssLinks' => Block_Head::getCssLinks(),
-//            'pageTitle' => Block_Head::getPageTitle(),
-//        )), Block_Head::TPL);
-//        $content = $this->renderInner($Output, $templatePath);
 
 		return $this->renderInner($Output, $templatePath);
 	}
