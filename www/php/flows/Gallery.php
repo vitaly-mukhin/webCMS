@@ -3,7 +3,8 @@
 class Flow_Gallery extends Flow {
 
     public function action_default() {
-        Block_Head::addPageTitle('Галерея');
+        Block_Head::addPageTitle('Албоми');
+        Block_Head::addJsLink('js/gallery/default.js');
         
 		Block_Flow_Gallery_Menu::process(array(), $this->Output);
 		Block_Flow_Gallery_Own::process(array(), $this->Output);
@@ -24,14 +25,6 @@ class Flow_Gallery extends Flow {
         Block_Head::addPageTitle('Найновіші');
         
         $Albums = Album_Mapper::getLatest();
-
-//        $Album = Album_Mapper::getById($id);
-//
-//        if (!$Album) {
-//            $this->runChildFlow('noalbum');
-//        }
-//
-//        Block_Head::addPageTitle($Album->getTitle());
 
         $this->Output->bind('Albums', $Albums);
         return true;
@@ -68,7 +61,7 @@ class Flow_Gallery extends Flow {
     }
 
     public function action_add() {
-        Block_Head::addPageTitle('Додати галерею');
+        Block_Head::addPageTitle('Додати альбом');
 
         if (!($post = $this->Input->get(Input_Http::INPUT_POST)) || $post->isEmpty()) {
             return true;
@@ -79,6 +72,40 @@ class Flow_Gallery extends Flow {
         }
 
         $Result = Album::add($post);
+
+        if ($Result->error) {
+            $this->Output->bind('errors', (array) $Result->error);
+            return true;
+        }
+
+        $this->Output->header('Location: /gallery/' . $Result->value);
+
+        return true;
+    }
+
+    public function action_edit() {
+        Block_Head::addPageTitle('Редагування');
+        
+        $id = $this->Input->get(Input_Http::INPUT_ROUTE)->get('step');
+        if (!$id) {
+            $this->Output->header('Location: /gallery');
+            return;
+        }
+        $Album = Album_Mapper::getById($id);
+
+        if (!User::curr()->isLogged() || !$Album || User::curr()->getUserId() != $Album->getUserId()) {
+            return $this->runChildFlow('noperm');
+        }
+        
+        Block_Head::addJsLink('js/gallery/upload.js');
+        
+        $this->Output->bind('album', $Album);
+
+        if (!($post = $this->Input->get(Input_Http::INPUT_POST)) || $post->isEmpty()) {
+            return true;
+        }
+
+        $Result = Album::edit($post);
 
         if ($Result->error) {
             $this->Output->bind('errors', (array) $Result->error);

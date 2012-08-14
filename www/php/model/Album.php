@@ -37,7 +37,7 @@ class Album {
      * @var array
      */
     protected $data;
-    
+
     /**
      *
      * @var Album_Mapper
@@ -48,17 +48,25 @@ class Album {
         $this->data = new Input($data);
         $this->Mapper = $Mapper;
     }
-    
+
     public function getTitle() {
         return $this->data->get('title');
     }
-    
+
     public function getId() {
         return $this->data->get('album_id');
     }
-    
+
+    public function getUserId() {
+        return $this->data->get('user_id');
+    }
+
     public function getDateCreated() {
         return $this->data->get('date_created');
+    }
+
+    public function getContent() {
+        return array();
     }
 
 }
