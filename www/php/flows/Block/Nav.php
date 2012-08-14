@@ -15,8 +15,8 @@ class Flow_Block_Nav extends Flow_AbstractBlock {
 		$this->Output->bind('navArray', array(
 			'Головна' => '/',
 			'Блоги' => '/blog',
-			'Альбоми' => '/album',
-			'Цитатник' => '/quote'
+			'Альбоми' => '/gallery'
+//			'Цитатник' => '/quote'
 		));
 	}
 
