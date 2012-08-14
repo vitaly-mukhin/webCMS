@@ -1,0 +1,21 @@
+{% extends "__default.twig" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div id="content-gallery" class="span9">
+                {% block content_gallery %}
+                {% endblock %}
+            </div>
+            <div id="menu-gallery" class="span3 pull-right">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        {{ Block_Flow_Gallery_Menu | raw }}
+                        {{ Block_Flow_Gallery_Own | raw }}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

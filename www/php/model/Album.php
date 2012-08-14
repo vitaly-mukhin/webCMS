@@ -52,5 +52,13 @@ class Album {
     public function getTitle() {
         return $this->data->get('title');
     }
+    
+    public function getId() {
+        return $this->data->get('album_id');
+    }
+    
+    public function getDateCreated() {
+        return $this->data->get('date_created');
+    }
 
 }

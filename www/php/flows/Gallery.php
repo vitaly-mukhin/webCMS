@@ -4,21 +4,36 @@ class Flow_Gallery extends Flow {
 
     public function action_default() {
         Block_Head::addPageTitle('Галерея');
+        
+		Block_Flow_Gallery_Menu::process(array(), $this->Output);
+		Block_Flow_Gallery_Own::process(array(), $this->Output);
 
         $action = $this->Input->get(Input_Http::INPUT_ROUTE)->get('action');
         if (intval($action) > 0) {
             $action = 'view';
         }
-
-        if ($action) {
-            return $this->runChildFlow($action);
+        
+        if (!$this->existsAction($action)) {
+            $action = 'list';
         }
 
-//        $list = 
-//        Album_Factory::f();
+        return $this->runChildFlow($action);
+    }
+    
+    public function action_list() {
+        Block_Head::addPageTitle('Найновіші');
+        
+        $Albums = Album_Mapper::getLatest();
 
-        $this->Output->bind('result', 'OK');
+//        $Album = Album_Mapper::getById($id);
+//
+//        if (!$Album) {
+//            $this->runChildFlow('noalbum');
+//        }
+//
+//        Block_Head::addPageTitle($Album->getTitle());
 
+        $this->Output->bind('Albums', $Albums);
         return true;
     }
 
@@ -61,7 +76,6 @@ class Flow_Gallery extends Flow {
 
         if (!User::curr()->isLogged()) {
             return $this->runChildFlow('noperm');
-            return true;
         }
 
         $Result = Album::add($post);
