@@ -22,3 +22,29 @@ function appendScripts(data) {
         }
     }
 }
+
+P = (function(){
+    return {
+        METHOD_POST: 'post',
+        METHOD_GET: 'get',
+        load: function(url, method, params){
+            method = (method == this.METHOD_POST) ? method : this.METHOD_GET;
+            params = params || {};
+            
+            if (method == this.METHOD_GET) {
+                $.get(url, {}, function(data){
+                    $('#body-title').html($('<div/>').html(data.title).text());
+                    $('#body-content').html($('<div/>').html(data.content).text());
+                    appendScripts(data);
+                }, 'json');
+            } else if (method == this.METHOD_POST) {
+                $.post(url, params, function(data){
+                    $('#body-title').html($('<div/>').html(data.title).text());
+                    $('#body-content').html($('<div/>').html(data.content).text());
+                    appendScripts(data);
+                }, 'json');
+//                alert('unsupported method: ' + method);
+            }
+        }
+    };
+})();
