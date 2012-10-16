@@ -24,8 +24,8 @@ class Renderer_Http_Json extends Renderer_Http {
                         'script' => array_values(Block_Head::getJsLinks()),
                         'css' => array_values(Block_Head::getCssLinks())
                     )),
-                    'title' => json_encode(htmlspecialchars(reset($titles), ENT_NOQUOTES)),
-                    'content' => json_encode(htmlspecialchars($content, ENT_NOQUOTES))
+                    'title' => json_encode(reset($titles), ENT_NOQUOTES),
+                    'content' => json_encode($content, ENT_NOQUOTES)
                 )), static::TPL);
 
         return $result;
