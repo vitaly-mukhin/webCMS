@@ -9,3 +9,8 @@ body {
 a.logo {
   margin: 20px 0;
 }
+
+#top-user a:hover {
+    text-decoration: none;
+    color: #d9edf7;
+}

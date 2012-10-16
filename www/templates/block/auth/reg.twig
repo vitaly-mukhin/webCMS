@@ -5,32 +5,32 @@
 			<div class="control-group">
 				<label class="control-label" for="login">Логін</label>
 				<div class="controls">
-					<input name="login" type="text" class="input-xlarge" id="login" value="someLogin"/>
+					<input name="login" type="text" class="input-xlarge" id="login" placeholder="someLogin" value="{{data.get('login')}}"/>
 					<p class="help-block">Вкажіть логін, який буде використовуватись для входу</p>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="password">Пароль</label>
 				<div class="controls">
-					<input name="password" type="password" class="input-xlarge" id="password" value="somePwd"/>
+					<input name="password" type="password" class="input-xlarge" id="password" placeholder="somePwd" value="{{data.get('password')}}"/>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="password_repeat">Пароль повторно</label>
 				<div class="controls">
-					<input name="password_repeat" type="password" class="input-xlarge" id="password_repeat" value="somePwd"/>
+					<input name="password_repeat" type="password" class="input-xlarge" id="password_repeat" placeholder="somePwd" value="{{data.get('password_repeat')}}"/>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="email">Email</label>
 				<div class="controls">
-					<input name="email" type="text" class="input-xlarge" id="email" placeholder="Email" value="example@example.com"/>
+					<input name="email" type="text" class="input-xlarge" id="email" placeholder="Email" value="{{data.get('email')}}"/>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="username">Username</label>
 				<div class="controls">
-					<input name="username" type="text" class="input-xlarge" id="email" placeholder="Username" value="User Userovich"/>
+					<input name="username" type="text" class="input-xlarge" id="email" placeholder="Username" value="{{data.get('username')}}"/>
 				</div>
 			</div>
 			<div class="control-group">

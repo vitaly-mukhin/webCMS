@@ -6,6 +6,7 @@
  * @author Виталик
  * 
  * @property-read mixed $value
+ * @property-read mixed $data
  * @property-read mixed $error
  */
 class Result {
@@ -16,10 +17,13 @@ class Result {
      */
     protected $error;
     protected $value;
+    protected $data;
 
     public function __get($name) {
         switch ($name) {
             case 'value':
+                return $this->value;
+            case 'data':
                 return $this->value;
             case 'error':
                 return $this->error;
@@ -28,10 +32,12 @@ class Result {
         }
     }
 
-    public function __construct($value, $error = false) {
+    public function __construct($value, $error = false, $data = null) {
         $this->value = $value;
 
         $this->error = $error;
+
+        $this->data = $data;
     }
 
 }
