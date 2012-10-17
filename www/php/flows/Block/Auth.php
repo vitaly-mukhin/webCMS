@@ -45,15 +45,17 @@ class Flow_Block_Auth extends Flow_Block {
         
         $post = $this->Input->get(Input_Http::INPUT_POST);
         if (!$post->export()) {
-
             return null;
         }
 
         $User = User::reg($post);
 
-        if ($User && $User->isLogged()) {
+        if ($User instanceof User && $User->isLogged()) {
             $this->Output->header('Location: ' . ($this->Output instanceof Output_Http_Json ? '/json' : '') . '/block/auth/profile');
+            return true;
         }
+        
+        $this->Output->bind('data', $post);
     }
 
 }

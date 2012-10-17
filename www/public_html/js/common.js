@@ -39,8 +39,8 @@ P = (function(){
                 }, 'json');
             } else if (method == this.METHOD_POST) {
                 $.post(url, params, function(data){
-                    $('#body-title').html($('<div/>').html(data.title).text());
-                    $('#body-content').html($('<div/>').html(data.content).text());
+                    $('#body-title').html(data.title);
+                    $('#body-content').html(data.content);
                     appendScripts(data);
                 }, 'json');
 //                alert('unsupported method: ' + method);
