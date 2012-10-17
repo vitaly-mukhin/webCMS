@@ -33,6 +33,18 @@ class Flow_Auth extends Flow {
 	}
 
 	public function action_reg() {
+		if (User::curr()->isLogged() || ($referer && strpos($referer, $currentDomain) !== false)) {
+			$this->Output->header('Location: '.$referer);
+		}
+                
+                return true;
+                
+                
+		Block_Flow_Login::process(array(), $this->Output);
+		
+		$referer = $this->Input->get(Input_Http::INPUT_SERVER)->get('HTTP_REFERER', false);
+		$currentDomain = $this->Input->get(Input_Http::INPUT_SERVER)->get('SERVER_NAME');
+		
 		Block_Flow_Reg::process(array(), $this->Output);
 	}
 	
