@@ -18,9 +18,9 @@ class Flow_Www extends Flow {
 		Block_Head::addPageTitle('webCMS');
 
 		Block_Head::addJsLink('js/jquery-1.7.2.min.js');
-		Block_Head::addJsLink('js/bootstrap-2.0.3.js');
+		Block_Head::addJsLink('js/bootstrap-2.2.0.js');
 		Block_Head::addJsLink('js/common.js');
-		Block_Head::addCssLink('css/bootstrap-2.0.3.css');
+		Block_Head::addCssLink('css/bootstrap-2.1.1a.css');
 
 		Block_Head::addCssLink('css/main.css');
 

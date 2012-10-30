@@ -26,6 +26,7 @@ class Renderer_Engine {
 
 		$this->core = new Twig_Environment($Twig_Loader, array(
 					'cache' => PATH_MODE_TEMPLATES_C,
+					'auto_reload' => 1,
 					'debug' => ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
 				));
 

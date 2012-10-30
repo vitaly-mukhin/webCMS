@@ -141,15 +141,15 @@ class User {
 				));
 
 		$User = User::f();
-
-		if (!self::checkReg($Data)) {
-			return null;
+		$Result = self::checkReg($Data);
+		if ($Result->error) {
+			return $Result;
 		}
 
 		// add user to users table
 		$user_id = $User->Data->reg($Data);
 		if (!$user_id) {
-			return null;
+			return $Result;
 		}
 
 		$User->setData($user_id);
@@ -157,29 +157,27 @@ class User {
 		// add user to user_auths table
 		$auth_id = $User->Auth->reg($user_id, $Data);
 		if (!$auth_id) {
-			return null;
+			return $Result;
 		}
 
 		$User->setAuth($Data);
 
-		return $User;
+		return new Result($User);
 	}
 
 	/**
 	 * Check all data, which are required for registrating a new User
 	 *
 	 * @param Input $Post
-	 * @return boolean 
+	 * @return Result 
 	 */
 	private static function checkReg(Input $Post) {
 		$result = true;
 
-		if ($result) {
-			$Auth = User_Auth::f();
-			$result = $Auth->checkReg($Post);
-		}
+		$Auth = User_Auth::f();
+		$result = $Auth->checkReg($Post);
 
-		if ($result) {
+		if (!$result->error) {
 			$Data = User_Data::f(null);
 			$result = $Data->checkReg($Post);
 		}
