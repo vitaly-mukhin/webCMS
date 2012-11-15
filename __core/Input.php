@@ -19,7 +19,7 @@ class Input {
 	 *
 	 * @param array $data 
 	 */
-	public function __construct($data) {
+	public function __construct(array $data = array()) {
 		if (!is_array($data)) {
 			throw new ErrorException('Source data are incompatible');
 		}
@@ -45,7 +45,7 @@ class Input {
 	public function get($key, $default = null) {
 		return key_exists($key, $this->data) ? $this->data[$key] : $default;
 	}
-	
+
 	/**
 	 * Returns TRUE, if there are no data
 	 * 

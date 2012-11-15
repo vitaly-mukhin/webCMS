@@ -6,7 +6,7 @@ if ($_SERVER['SERVER_NAME'] == 'www.webcms') {
 
 // calling global bootstrap
 define('PATH_BOOTSTRAP', __DIR__ . DIRECTORY_SEPARATOR . DIR_UP . DIRECTORY_SEPARATOR . '__bootstrap');
-require PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'common.php';
+require PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'boost.php';
 
 // define a root folder for a current mode
 define('PATH_MODE', __DIR__);

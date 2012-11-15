@@ -56,18 +56,22 @@ class User_Auth {
 		$result = true;
 		$msgs = array();
 
+		$login = $Data->get(User_Auth::LOGIN);
+		$pwd = $Data->get(User_Auth::PASSWORD);
+		$pwd2 = $Data->get(User_Auth::PASSWORD_REPEAT);
+
 		switch (true) {
-			case (!($login = $Data->get(User_Auth::LOGIN))):
+			case (!$login):
 				$msgs[] = 'Поле Логін не може бути пустим';
 				$result = false;
 				break;
 
-			case (!preg_match('/^\w[A-z0-9]+/i', $login)):
+			case (!preg_match('/^\w[A-z0-9]*/i', $login)):
 				$msgs[] = 'Поле Логін повинно починатись із літери та містити як мінімум 2 символи';
 				$result = false;
 				break;
 
-			case (!($pwd = $Data->get(User_Auth::PASSWORD)) || !($pwd2 = $Data->get(User_Auth::PASSWORD_REPEAT))):
+			case (!$pwd || !$pwd2):
 				$msgs[] = 'Поля Пароль та Пароль повторно не можуть бути пустими';
 				$result = false;
 				break;
@@ -80,7 +84,7 @@ class User_Auth {
 
 		$result = $result && $this->Mapper->checkReg($Data);
 
-		return new Result(false, $result, $msgs);
+		return new Result(false, !$result, $msgs);
 	}
 
 	/**

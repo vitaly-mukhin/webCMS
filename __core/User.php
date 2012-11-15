@@ -46,11 +46,9 @@ class User {
 	 * @return User
 	 */
 	public static function f(Input $UserData = null, $setCurrent = false) {
-
-		$UserData = self::getFullInput($UserData);
-
 		$User = new User();
 
+		$UserData = self::getFullInput($UserData);
 		$User->setAuth($setCurrent ? $UserData : null);
 
 		$User->setData($User->Auth->getUserId());
@@ -77,7 +75,7 @@ class User {
 	/**
 	 * Set the Auth parameter, which is initiated through User_Data::f()
 	 *
-	 * @param Input|int $userId
+	 * @param Input $userId
 	 * @return \User 
 	 */
 	private function setAuth(Input $Data = null) {
@@ -89,9 +87,13 @@ class User {
 			return $this;
 		}
 
-		if (($login = $Data->get(User_Auth::LOGIN)) && ($password = $Data->get(User_Auth::PASSWORD))) {
+		$login = $Data->get(User_Auth::LOGIN);
+		$password = $Data->get(User_Auth::PASSWORD);
+		$hash = $Data->get(User_Auth::HASH);
+		
+		if ($login && $password) {
 			$this->Auth->authByPwd($login, $password);
-		} elseif (($login = $Data->get(User_Auth::LOGIN)) && ($hash = $Data->get(User_Auth::HASH))) {
+		} elseif ($login && $hash) {
 			$this->Auth->authByHash($login, $hash);
 		}
 
@@ -172,8 +174,6 @@ class User {
 	 * @return Result 
 	 */
 	private static function checkReg(Input $Post) {
-		$result = true;
-
 		$Auth = User_Auth::f();
 		$result = $Auth->checkReg($Post);
 

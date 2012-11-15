@@ -54,7 +54,7 @@ class Flow_Block_Auth extends Flow_Block {
 		$Result = User::reg($post);
 
 		if (!$Result->error && ($User = $Result->value) instanceof User && $User->isLogged()) {
-			$this->Output->header('Location: ' . ($this->Output instanceof Output_Http_Json ? '/json' : '') . '/block/auth/profile');
+			$this->Output->header('Location: ' . ($this->Output instanceof Output_Http_Json ? '/json/block' : '') . '/auth/profile');
 			return true;
 		}
 
