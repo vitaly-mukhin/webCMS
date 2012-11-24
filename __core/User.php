@@ -46,9 +46,11 @@ class User {
 	 * @return User
 	 */
 	public static function f(Input $UserData = null, $setCurrent = false) {
-		$User = new User();
 
 		$UserData = self::getFullInput($UserData);
+
+		$User = new User();
+
 		$User->setAuth($setCurrent ? $UserData : null);
 
 		$User->setData($User->Auth->getUserId());
@@ -75,7 +77,7 @@ class User {
 	/**
 	 * Set the Auth parameter, which is initiated through User_Data::f()
 	 *
-	 * @param Input $userId
+	 * @param Input|int $userId
 	 * @return \User 
 	 */
 	private function setAuth(Input $Data = null) {
@@ -87,13 +89,9 @@ class User {
 			return $this;
 		}
 
-		$login = $Data->get(User_Auth::LOGIN);
-		$password = $Data->get(User_Auth::PASSWORD);
-		$hash = $Data->get(User_Auth::HASH);
-		
-		if ($login && $password) {
+		if (($login = $Data->get(User_Auth::LOGIN)) && ($password = $Data->get(User_Auth::PASSWORD))) {
 			$this->Auth->authByPwd($login, $password);
-		} elseif ($login && $hash) {
+		} elseif (($login = $Data->get(User_Auth::LOGIN)) && ($hash = $Data->get(User_Auth::HASH))) {
 			$this->Auth->authByHash($login, $hash);
 		}
 
@@ -143,15 +141,16 @@ class User {
 				));
 
 		$User = User::f();
-		$Result = self::checkReg($Data);
-		if ($Result->error) {
-			return $Result;
+
+		if (!self::checkReg($Data)) {
+            return new Result();
+			return null;
 		}
 
 		// add user to users table
 		$user_id = $User->Data->reg($Data);
 		if (!$user_id) {
-			return $Result;
+			return null;
 		}
 
 		$User->setData($user_id);
@@ -159,25 +158,29 @@ class User {
 		// add user to user_auths table
 		$auth_id = $User->Auth->reg($user_id, $Data);
 		if (!$auth_id) {
-			return $Result;
+			return null;
 		}
 
 		$User->setAuth($Data);
 
-		return new Result($User);
+		return $User;
 	}
 
 	/**
 	 * Check all data, which are required for registrating a new User
 	 *
 	 * @param Input $Post
-	 * @return Result 
+	 * @return boolean 
 	 */
 	private static function checkReg(Input $Post) {
-		$Auth = User_Auth::f();
-		$result = $Auth->checkReg($Post);
+		$result = true;
 
-		if (!$result->error) {
+		if ($result) {
+			$Auth = User_Auth::f();
+			$result = $Auth->checkReg($Post);
+		}
+
+		if ($result) {
 			$Data = User_Data::f(null);
 			$result = $Data->checkReg($Post);
 		}
