@@ -7,7 +7,7 @@
  */
 class Flow_Www extends Flow {
 
-	const IS_ROOT = true;
+	const IS_ROOT        = true;
 	const DEFAULT_ACTION = 'default';
 
 	protected function callPre($action) {

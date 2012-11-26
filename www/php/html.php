@@ -12,13 +12,11 @@ $routeString = $InputGET->get(Dispatcher::ROUTE_IN_GET, '');
 // ... save parsed route to a Input
 $InputRoute = new Input($Router->parse($routeString));
 
-$InputHttp = new Input_Http(array(
-			Input_Http::INPUT_ROUTE => $InputRoute,
-			Input_Http::INPUT_GET => $InputGET,
-			Input_Http::INPUT_POST => $_POST,
-			Input_Http::INPUT_SERVER => $_SERVER,
-			Input_Http::INPUT_COOKIE => $_COOKIE
-		));
+$InputHttp = new Input_Http(array(Input_Http::INPUT_ROUTE  => $InputRoute,
+                                  Input_Http::INPUT_GET    => $InputGET,
+                                  Input_Http::INPUT_POST   => $_POST,
+                                  Input_Http::INPUT_SERVER => $_SERVER,
+                                  Input_Http::INPUT_COOKIE => $_COOKIE));
 
 Input_Http::setDefault($InputHttp);
 
@@ -31,10 +29,8 @@ switch ($InputRoute->get('page')) {
 		$initialFlow = 'www';
 }
 
-$Dispatcher = Dispatcher::di(array(
-			Dispatcher::PARAM_MODE_CONFIG => $ModeConfig,
-			Dispatcher::PARAM_INITIAL_FLOW => $initialFlow
-		));
+$Dispatcher = Dispatcher::di(array(Dispatcher::PARAM_MODE_CONFIG  => $ModeConfig,
+                                   Dispatcher::PARAM_INITIAL_FLOW => $initialFlow));
 
 $OutputHttp = new Output_Http;
 $Dispatcher->flow($InputHttp, $OutputHttp);

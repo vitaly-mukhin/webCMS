@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['SERVER_NAME'] == 'www.webcms') {
+if (preg_match('/.*webcms$/i', $_SERVER['SERVER_NAME'])) {
 	error_reporting(E_ALL);
 }
 
