@@ -5,14 +5,17 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Flow_Nav extends Block_Flow {
+namespace App\Block\Flow;
 
-	/**
-	 *
-	 * @return type 
-	 */
-	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'nav');
-	}
+class Nav extends \App\Block\Flow {
+
+    /**
+     * @param \Core\Input $InputRoute
+     *
+     * @return array
+     */
+    protected function getRoute(\Core\Input $InputRoute) {
+        return array('action' => 'nav');
+    }
 
 }

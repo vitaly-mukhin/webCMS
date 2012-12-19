@@ -5,11 +5,14 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Head extends Block {
+namespace Core\Block;
+use Core\Block;
+
+class Head extends Block {
 
 	const TPL = 'block/head/default.twig';
 	// consts for js scripts
-	const JS_BLOCK_AUTH = 'js/block/auth.js';
+	const JS_BLOCK_AUTH       = 'js/block/auth.js';
 	const JS_BLOCK_AUTH_LOGIN = 'js/block/auth/login.js';
 	// consts for css
 	const CSS_AUTH_LOGIN = 'css/auth/login.css';

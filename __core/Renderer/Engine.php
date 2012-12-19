@@ -5,30 +5,29 @@
  *
  * @author Mukhenok
  */
-class Renderer_Engine {
+namespace Core\Renderer;
+class Engine {
 
 	/**
 	 *
-	 * @var Twig_Environment
+	 * @var \Twig_Environment
 	 */
 	private $core;
 
 	/**
 	 *
-	 * @return \Renderer_Engine 
+	 * @return self
 	 */
 	public function init() {
 		require_once PATH_LIBS . DIRECTORY_SEPARATOR . 'Twig' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 
-		Twig_Autoloader::register();
+		\Twig_Autoloader::register();
 
-		$Twig_Loader = new Twig_Loader_Filesystem(PATH_MODE_TEMPLATES);
+		$Twig_Loader = new \Twig_Loader_Filesystem(PATH_MODE_TEMPLATES);
 
-		$this->core = new Twig_Environment($Twig_Loader, array(
-					'cache' => PATH_MODE_TEMPLATES_C,
-					'auto_reload' => 1,
-					'debug' => ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
-				));
+		$this->core = new \Twig_Environment($Twig_Loader, array('cache'       => PATH_MODE_TEMPLATES_C,
+		                                                        'auto_reload' => 1,
+		                                                        'debug'       => ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')));
 
 		return $this;
 	}
@@ -36,7 +35,8 @@ class Renderer_Engine {
 	/**
 	 *
 	 * @param string $templatePath
-	 * @param array $data 
+	 * @param array  $data
+	 *
 	 * @return string
 	 */
 	public function render($data, $templatePath) {

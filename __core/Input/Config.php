@@ -1,46 +1,51 @@
 <?php
 
 /**
- * Description of Input_Config
+ * Description of Input\Config
  *
  * @author Vitaliy_Mukhin
  */
-class Input_Config extends Input {
+namespace Core\Input;
+use Core\Input;
 
-    /**
-     *
-     * @param mixed $key
-     * @param mixed $default
-     * @return Input_Config|mixed
-     */
-    public function get($key, $default = null) {
-        $result = parent::get($key, $default);
+class Config extends Input {
 
-        if (is_array($result)) {
-            return new static($result);
-        }
+	/**
+	 *
+	 * @param mixed $key
+	 * @param mixed $default
+	 *
+	 * @return Input\Config|mixed
+	 */
+	public function get($key, $default = null) {
+		$result = parent::get($key, $default);
 
-        return $result;
-    }
+		if (is_array($result)) {
+			return new static($result);
+		}
 
-    /**
-     *
-     * @param type $configFile
-     * @return Input_Config
-     * @throws ErrorException 
-     */
-    public static function init($configFile) {
-        if (!file_exists($configFile)) {
-            throw new ErrorException(sprintf('Config file not found at <b>%s</b>', $configFile));
-        }
+		return $result;
+	}
 
-        ob_start();
+	/**
+	 *
+	 * @param string $configFile
+	 *
+	 * @return Input\Config
+	 * @throws \ErrorException
+	 */
+	public static function init($configFile) {
+		if (!file_exists($configFile)) {
+			throw new \ErrorException(sprintf('Config file not found at <b>%s</b>', $configFile));
+		}
 
-        $data = require $configFile;
+		ob_start();
 
-        ob_end_clean();
+		$data = require $configFile;
 
-        return new static($data);
-    }
+		ob_end_clean();
+
+		return new static($data);
+	}
 
 }

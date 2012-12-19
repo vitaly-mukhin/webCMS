@@ -5,7 +5,12 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Auth extends Block {
+namespace App\Block;
+use Core\Block;
+use Core\Session;
+use Core\User;
+
+class Auth extends Block {
 
 	/**
 	 *
@@ -24,7 +29,7 @@ class Block_Auth extends Block {
 	 */
 	private static function initUser() {
 		$UserSessionData = Session::i()->get(Session::USER);
-		self::$User = User::f($UserSessionData, true);
+		self::$User      = User::f($UserSessionData, true);
 	}
 
 	/**

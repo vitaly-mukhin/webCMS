@@ -5,6 +5,7 @@
  *
  * @author Mukhenok
  */
+namespace Core;
 class Router {
 	/**
 	 * Default route mask 
@@ -21,10 +22,10 @@ class Router {
 
 	/**
 	 *
-	 * @param Input_Config $Config
-	 * @return \Router 
+	 * @param Input\Config $Config
+	 * @return Router
 	 */
-	public static function init(Input_Config $Config) {
+	public static function init(Input\Config $Config) {
 		$Router = new Router();
 		$Router->setRouteMask($Config->get('mask'));
 
@@ -34,7 +35,7 @@ class Router {
 	/**
 	 *
 	 * @param string $routeMask
-	 * @return \Router 
+	 * @return Router
 	 */
 	public function setRouteMask($routeMask) {
 		$this->routeMask = $routeMask;
@@ -45,8 +46,9 @@ class Router {
 	/**
 	 *
 	 * @param string $route
+	 *
+	 * @throws Exception
 	 * @return array
-	 * @throws Exception 
 	 */
 	public function parse($route) {
 		if (is_null($this->routeMask)) {

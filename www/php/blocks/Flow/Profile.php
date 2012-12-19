@@ -1,18 +1,21 @@
 <?php
 
 /**
- * Description of Block_Flow_Profile
+ * Description of Block\Flow_Profile
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Flow_Profile extends Block_Flow {
+namespace App\Block\Flow;
 
-	/**
-	 * @param Input $InputRoute
-	 * @return type 
-	 */
-	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'auth', 'step' => 'profile');
-	}
+class Profile extends \App\Block\Flow {
+
+    /**
+     * @param \Core\Input $InputRoute
+     *
+     * @return array
+     */
+    protected function getRoute(\Core\Input $InputRoute) {
+        return array('action' => 'auth', 'step' => 'profile');
+    }
 
 }

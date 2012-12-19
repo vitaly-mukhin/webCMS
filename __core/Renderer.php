@@ -5,72 +5,75 @@
  *
  * @author Vitaliy_Mukhin
  */
+namespace Core;
 abstract class Renderer {
 
-    /**
-     *
-     * @var Renderer_Engine
-     */
-    protected $Engine;
+	/**
+	 *
+	 * @var Renderer\Engine
+	 */
+	protected $Engine;
 
-    /**
-     *
-     * @var array
-     */
-    protected static $instances;
+	/**
+	 *
+	 * @var array
+	 */
+	protected static $instances;
 
-    protected function __construct() {
-        
-    }
+	protected function __construct() {
 
-    /**
-     * 
-     * @return Renderer
-     */
-    public static function di() {
-        $calledClass = get_called_class();
-        if (!empty(static::$instances[$calledClass])) {
-            return static::$instances[$calledClass];
-        }
+	}
 
-        $instance = new static();
+	/**
+	 *
+	 * @return Renderer
+	 */
+	public static function di() {
+		$calledClass = get_called_class();
+		if (!empty(static::$instances[$calledClass])) {
+			return static::$instances[$calledClass];
+		}
 
-        $instance->Engine = $instance->getRendererEngine();
+		$instance = new static();
 
-        return static::$instances[$calledClass] = $instance;
-    }
+		$instance->Engine = $instance->getRendererEngine();
 
-    /**
-     *
-     * @return Renderer_Engine 
-     */
-    private function getRendererEngine() {
+		return static::$instances[$calledClass] = $instance;
+	}
 
-        $Engine = new Renderer_Engine();
-        $Engine->init();
+	/**
+	 *
+	 * @return Renderer\Engine
+	 */
+	private function getRendererEngine() {
 
-        return $Engine;
-    }
+		$Engine = new Renderer\Engine();
+		$Engine->init();
 
-    /**
-     *
-     * @param Output $Output
-     * @return string
-     */
-    public function render(Output $Output, $templatePath) {
-        return $this->renderInner($Output, $templatePath);
-    }
-    
-    /**
-     * 
-     * @param Output $Output
-     * @param string $templatePath
-     * @return string
-     */
-    protected function renderInner(Output $Output, $templatePath) {
-        $content = $this->Engine->render($Output->export(), $templatePath);
+		return $Engine;
+	}
 
-        return $content;
-    }
+	/**
+	 *
+	 * @param Output $Output
+	 *
+	 * @return string
+	 */
+	public function render(Output $Output, $templatePath) {
+		return $this->renderInner($Output, $templatePath);
+	}
+
+	/**
+	 *
+	 * @param Output $Output
+	 * @param string $templatePath
+	 *
+	 * @return string
+	 */
+	protected function renderInner(Output $Output, $templatePath) {
+		$content = $this->Engine->render($Output->export(), $templatePath);
+
+		return $content;
+	}
 
 }

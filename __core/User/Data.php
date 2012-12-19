@@ -6,185 +6,192 @@
  *
  * @author Vitaliy_Mukhin
  */
-class User_Data {
+namespace Core\User;
+use Core\Input;
+use Core\Output;
 
-	const EMAIL = 'email';
-	const USERNAME = 'username';
-	const DATE_CREATED = 'date_created';
-	//
-	const F_USER_ID = 'user_id';
-	const F_EMAIL = 'email';
-	const F_USERNAME = 'username';
-	const F_DATE_CREATED = 'date_created';
+class Data {
 
-	/**
-	 * Name of user table
-	 *
-	 * @var string
-	 */
-	protected $tableName = DB_TBL_USER;
+    const EMAIL        = 'email';
+    const USERNAME     = 'username';
+    const DATE_CREATED = 'date_created';
+    //
+    const F_USER_ID      = 'user_id';
+    const F_EMAIL        = 'email';
+    const F_USERNAME     = 'username';
+    const F_DATE_CREATED = 'date_created';
 
-	/**
-	 * Complete list of fields in users table
-	 *
-	 * @var array
-	 */
-	private static $fields = array(
-		self::F_USER_ID, self::F_EMAIL, self::F_DATE_CREATED, self::F_USERNAME
-	);
+    /**
+     * Name of user table
+     *
+     * @var string
+     */
+    protected $tableName = DB_TBL_USER;
 
-	/**
-	 *
-	 * @var Fw_Db
-	 */
-	protected $Db;
+    /**
+     * Complete list of fields in users table
+     *
+     * @var array
+     */
+    private static $fields
+        = array(self::F_USER_ID,
+                self::F_EMAIL,
+                self::F_DATE_CREATED,
+                self::F_USERNAME);
 
-	/**
-	 * Storage, which contains data
-	 *
-	 * @var Input
-	 */
-	protected $data = null;
+    /**
+     * @var \Fw_Db
+     */
+    protected $Db;
 
-	protected function __construct() {
-		$this->Db = Fw_Db::i();
+    /**
+     * Storage, which contains data
+     *
+     * @var Input
+     */
+    protected $data = null;
 
-		return $this;
-	}
+    protected function __construct() {
+        $this->Db = \Fw_Db::i();
 
-	/**
-	 * Factory method for creating a new entity, and initiating it with default data
-	 *
-	 * @param int|null $userId
-	 * @return User_Data 
-	 */
-	public static function f($userId) {
-		$UserData = new static();
+        return $this;
+    }
 
-		$UserData->init($userId);
+    /**
+     * Factory method for creating a new entity, and initiating it with default data
+     *
+     * @param int|null $userId
+     *
+     * @return self
+     */
+    public static function f($userId) {
+        $UserData = new static();
 
-		return $UserData;
-	}
+        $UserData->init($userId);
 
-	/**
-	 * Returns empty Input for unlogged user
-	 *
-	 * @param int $userId
-	 * @return Input 
-	 */
-	protected function getEmptyData() {
-		return new Input(array());
-	}
+        return $UserData;
+    }
 
-	/**
-	 * Init procedure for every entity of this class
-	 *
-	 * @param int|null $userId 
-	 */
-	protected function init($userId) {
-		if ($userId && (int) $userId > 0) {
-			$Q = $this->Db->query();
-			$Q->select()->from($this->tableName, self::$fields)->where(self::F_USER_ID . ' = ?', $userId);
-			$result = $Q->fetchRow();
-			$Data = new Input($result);
-		} else {
-			$Data = $this->getEmptyData();
-		}
+    /**
+     * Returns empty Input for unlogged user
+     *
+     * @return Input
+     */
+    protected function getEmptyData() {
+        return new Input(array());
+    }
 
-		$this->setData($Data);
-	}
+    /**
+     * Init procedure for every entity of this class
+     *
+     * @param int|null $userId
+     */
+    protected function init($userId) {
+        if ($userId && (int) $userId > 0) {
+            $Q = $this->Db->query();
+            $Q->select()->from($this->tableName, self::$fields)->where(self::F_USER_ID . ' = ?', $userId);
+            $result = $Q->fetchRow();
+            $Data   = new Input($result);
+        } else {
+            $Data = $this->getEmptyData();
+        }
 
-	/**
-	 * Set up the $Data as a source of data about current class entity
-	 *
-	 * @param Input $Data
-	 * @return User_Data 
-	 */
-	protected function setData(Input $Data) {
-		$this->data = $Data;
+        $this->setData($Data);
+    }
 
-		return $this;
-	}
+    /**
+     * Set up the $Data as a source of data about current class entity
+     *
+     * @param Input $Data
+     *
+     * @return self
+     */
+    protected function setData(Input $Data) {
+        $this->data = $Data;
 
-	/**
-	 * Check if we have all required proper values for adding a new user record
-	 *
-	 * @param Input $Data
-	 * @return \Result
-	 */
-	public function checkReg(Input $Data) {
-		$result = true;
+        return $this;
+    }
 
-		$result = $result && filter_var($Data->get(User_Data::EMAIL), FILTER_SANITIZE_EMAIL);
+    /**
+     * Check if we have all required proper values for adding a new user record
+     *
+     * @param Input $Data
+     *
+     * @return Result
+     */
+    public function checkReg(Input $Data) {
+        $result = true;
 
-		$Q = $this->Db->query()->select()->from($this->tableName, self::F_USER_ID)->where(self::F_EMAIL . ' = ?', $Data->get(User_Data::EMAIL));
-		$result = $result && !$Q->fetchRow();
+        $result = $result && filter_var($Data->get(self::EMAIL), FILTER_SANITIZE_EMAIL);
 
-		return new Result(false, !$result);
-	}
+        $Q      = $this->Db->query()->select()->from($this->tableName, self::F_USER_ID)
+            ->where(self::F_EMAIL . ' = ?', $Data->get(self::EMAIL));
+        $result = $result && !$Q->fetchRow();
 
-	/**
-	 *
-	 * @param Input $Data
-	 * @return int
-	 */
-	public function reg(Input $Data) {
-		$data = array(
-			self::F_EMAIL => $Data->get(self::EMAIL),
-			self::F_USERNAME => $Data->get(self::USERNAME)
-		);
+        return new Result(false, !$result);
+    }
 
-		$Q = $this->Db->query()->insert($this->tableName, $data);
+    /**
+     * @param Input $Data
+     *
+     * @return int
+     */
+    public function reg(Input $Data) {
+        $data = array(self::F_EMAIL    => $Data->get(self::EMAIL),
+                      self::F_USERNAME => $Data->get(self::USERNAME));
 
-		$id = $Q->fetchRow();
+        $Q = $this->Db->query()->insert($this->tableName, $data);
 
-		return $id;
-	}
+        $id = $Q->fetchRow();
 
-	/**
-	 * Unified method for retrieving data from source by field name
-	 *
-	 * @param string $field one of Mapper_User_Data::F_* constants
-	 * @return type 
-	 */
-	protected function get($field) {
-		return $this->data->get($field, 'field_not_found');
-	}
+        return $id;
+    }
 
-	/**
-	 * Get the EMAIL
-	 *
-	 * @return string
-	 */
-	public function getEmail() {
-		return $this->get(self::F_EMAIL);
-	}
+    /**
+     * Unified method for retrieving data from source by field name
+     *
+     * @param string $field one of Mapper_User\Data::F_* constants
+     *
+     * @return string
+     */
+    protected function get($field) {
+        return $this->data->get($field, 'field_not_found');
+    }
 
-	/**
-	 * Get the USERNAME
-	 *
-	 * @return string
-	 */
-	public function getUsername() {
-		return $this->get(self::F_USERNAME);
-	}
+    /**
+     * Get the EMAIL
+     *
+     * @return string
+     */
+    public function getEmail() {
+        return $this->get(self::F_EMAIL);
+    }
 
-	/**
-	 * Get the DATE_CREATED
-	 *
-	 * @return string 
-	 */
-	public function getDateCreated() {
-		return $this->get(self::F_DATE_CREATED);
-	}
+    /**
+     * Get the USERNAME
+     *
+     * @return string
+     */
+    public function getUsername() {
+        return $this->get(self::F_USERNAME);
+    }
 
-	/**
-	 * Get the USER_ID
-	 *
-	 * @return string 
-	 */
-	public function getUserId() {
-		return $this->get(self::F_USER_ID);
-	}
+    /**
+     * Get the DATE_CREATED
+     *
+     * @return string
+     */
+    public function getDateCreated() {
+        return $this->get(self::F_DATE_CREATED);
+    }
+
+    /**
+     * Get the USER_ID
+     *
+     * @return string
+     */
+    public function getUserId() {
+        return $this->get(self::F_USER_ID);
+    }
 
 }

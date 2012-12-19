@@ -50,11 +50,10 @@ if(!class_exists('FirePHP')) {
  * Sends the given data to the FirePHP Firefox Extension.
  * The data can be displayed in the Firebug Console or in the
  * "Server" request tab.
- * 
- * @see http://www.firephp.org/Wiki/Reference/Fb
- * @param mixed $Object
+ *
+ * @see      http://www.firephp.org/Wiki/Reference/Fb
+ * @internal param mixed $Object
  * @return true
- * @throws Exception
  */
 function fb()
 {

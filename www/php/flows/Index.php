@@ -5,12 +5,16 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Index extends Flow {
+namespace App\Flow;
+use App\Flow;
+use App\Block\Head;
 
-	public function action_default() {
-		Block_Head::addPageTitle('index');
+class Index extends Flow {
 
-		$this->Output->bind('result', 'OK');
-	}
+    public function action_default() {
+        Head::addPageTitle('index');
+
+        $this->Output->bind('result', 'OK');
+    }
 
 }
