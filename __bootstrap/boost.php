@@ -1,17 +1,23 @@
 <?php
 
+use VM\Loader;
+use VM\Autoloader;
+use VM\LoaderNames;
+
 define('PATH_ROOT', __DIR__ . DIRECTORY_SEPARATOR . DIR_UP);
 
 define('PATH_CORE', PATH_ROOT . DIRECTORY_SEPARATOR . '__core');
 define('PATH_LIBS', PATH_ROOT . DIRECTORY_SEPARATOR . '__libs');
 
-require __DIR__ . DIRECTORY_SEPARATOR . 'autoloader' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+/** @noinspection PhpIncludeInspection */
+require __DIR__ . DIRECTORY_SEPARATOR . 'autoload' . DIRECTORY_SEPARATOR . '__include.php';
+//require __DIR__ . DIRECTORY_SEPARATOR . 'autoloader' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 
 Autoloader::register();
 
 // setup basic class autoloader for a system folder
-$SystemLoader = new Loader();
-$SystemLoader->setBaseFolder(PATH_CORE)->useFilePrefix(false);
+$SystemLoader = new LoaderNames();
+$SystemLoader->setBaseFolder(PATH_CORE)->useFilePrefix(false)->setIgnoreFirstPart(true);
 Autoloader::add($SystemLoader);
 
 $FwLoader = new Loader();

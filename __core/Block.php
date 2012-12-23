@@ -5,6 +5,7 @@
  *
  * @author Vitaliy_Mukhin
  */
+namespace Core;
 class Block {
 
 	/**
@@ -16,7 +17,8 @@ class Block {
 	/**
 	 *
 	 * @param array $params
-	 * @return \Block 
+	 *
+	 * @return Block
 	 */
 	protected function init($params) {
 		$this->params = (array) $params;
@@ -26,10 +28,10 @@ class Block {
 
 	/**
 	 *
-	 * @param array $params 
+	 * @param array $params
 	 */
 	public static function process($params = array()) {
-		
+
 	}
 
 }

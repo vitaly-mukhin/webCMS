@@ -2,119 +2,124 @@
 
 class Flow_Gallery extends Flow {
 
-    public function action_default() {
-        Block_Head::addPageTitle('Албоми');
-        Block_Head::addJsLink('js/gallery/default.js');
-        
-		Block_Flow_Gallery_Menu::process(array(), $this->Output);
-		Block_Flow_Gallery_Own::process(array(), $this->Output);
+	public function action_default() {
+		Block\Head::addPageTitle('Альбоми');
+		Block\Head::addJsLink(Www_Head::JS_GALLERY);
 
-        $action = $this->Input->get(Input_Http::INPUT_ROUTE)->get('action');
-        if (intval($action) > 0) {
-            $action = 'view';
-        }
-        
-        if (!$this->existsAction($action)) {
-            $action = 'list';
-        }
+		Block\Flow_Gallery_Menu::process(array(), $this->Output);
+		Block\Flow_Gallery_Own::process(array(), $this->Output);
 
-        return $this->runChildFlow($action);
-    }
-    
-    public function action_list() {
-        Block_Head::addPageTitle('Найновіші');
-        
-        $Albums = Album_Mapper::getLatest();
+		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
+		if (intval($action) > 0) {
+			$action = 'view';
+		}
 
-        $this->Output->bind('Albums', $Albums);
-        return true;
-    }
+		if (!$this->existsAction($action)) {
+			$action = 'list';
+		}
 
-    public function action_view() {
-        Block_Head::addPageTitle('Перегляд');
+		$this->runChildFlow($action);
+	}
 
-        $action = $this->Input->get(Input_Http::INPUT_ROUTE)->get('action');
-        $id = $this->Input->get(Input_Http::INPUT_ROUTE)->get('step');
-        if (intval($action) > 0) {
-            $id = $action;
-            $action = 'view';
-        }
+	public function action_list() {
+		Block\Head::addPageTitle('Найновіші');
 
-        $Album = Album_Mapper::getById($id);
+		$Albums = Album_Mapper::getLatest();
 
-        if (!$Album) {
-            $this->runChildFlow('noalbum');
-        }
+		$this->Output->bind('Albums', $Albums);
 
-        Block_Head::addPageTitle($Album->getTitle());
+		return true;
+	}
 
-        $this->Output->bind('Album', $Album);
-        return true;
-    }
+	public function action_view() {
+		Block\Head::addPageTitle('Перегляд');
 
-    public function action_noalbum() {
-        return true;
-    }
+		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
+		$id     = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
+		if (intval($action) > 0) {
+			$id     = $action;
+			$action = 'view';
+		}
 
-    public function action_noperm() {
-        return true;
-    }
+		$Album = Album_Mapper::getById($id);
 
-    public function action_add() {
-        Block_Head::addPageTitle('Додати альбом');
+		if (!$Album) {
+			$this->runChildFlow('noalbum');
+		}
 
-        if (!($post = $this->Input->get(Input_Http::INPUT_POST)) || $post->isEmpty()) {
-            return true;
-        }
+		Block\Head::addPageTitle($Album->getTitle());
 
-        if (!User::curr()->isLogged()) {
-            return $this->runChildFlow('noperm');
-        }
+		$this->Output->bind('Album', $Album);
 
-        $Result = Album::add($post);
+		return true;
+	}
 
-        if ($Result->error) {
-            $this->Output->bind('errors', (array) $Result->error);
-            return true;
-        }
+	public function action_noalbum() {
+		return true;
+	}
 
-        $this->Output->header('Location: /gallery/' . $Result->value);
+	public function action_noperm() {
+		return true;
+	}
 
-        return true;
-    }
+	public function action_add() {
+		Block\Head::addPageTitle('Додати альбом');
 
-    public function action_edit() {
-        Block_Head::addPageTitle('Редагування');
-        
-        $id = $this->Input->get(Input_Http::INPUT_ROUTE)->get('step');
-        if (!$id) {
-            $this->Output->header('Location: /gallery');
-            return;
-        }
-        $Album = Album_Mapper::getById($id);
+		if (!($post = $this->Input->get(Input\Http::INPUT_POST)) || $post->isEmpty()) {
+			return true;
+		}
 
-        if (!User::curr()->isLogged() || !$Album || User::curr()->getUserId() != $Album->getUserId()) {
-            return $this->runChildFlow('noperm');
-        }
-        
-        Block_Head::addJsLink('js/gallery/upload.js');
-        
-        $this->Output->bind('album', $Album);
+		if (!User::curr()->isLogged()) {
+			return $this->runChildFlow('noperm');
+		}
 
-        if (!($post = $this->Input->get(Input_Http::INPUT_POST)) || $post->isEmpty()) {
-            return true;
-        }
+		$Result = Album::add($post);
 
-        $Result = Album::edit($post);
+		if ($Result->error) {
+			$this->Output->bind('errors', (array) $Result->error);
 
-        if ($Result->error) {
-            $this->Output->bind('errors', (array) $Result->error);
-            return true;
-        }
+			return true;
+		}
 
-        $this->Output->header('Location: /gallery/' . $Result->value);
+		$this->Output->header('Location: /gallery/' . $Result->value);
 
-        return true;
-    }
+		return true;
+	}
+
+	public function action_edit() {
+		Block\Head::addPageTitle('Редагування');
+
+		$id = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
+		if (!$id) {
+			$this->Output->header('Location: /gallery');
+
+			return;
+		}
+		$Album = Album_Mapper::getById($id);
+
+		if (!User::curr()->isLogged() || !$Album || User::curr()->getUserId() != $Album->getUserId()) {
+			return $this->runChildFlow('noperm');
+		}
+
+		Block\Head::addJsLink(Www_Head::JS_GALLERY_UPLOAD);
+
+		$this->Output->bind('album', $Album);
+
+		if (!($post = $this->Input->get(Input\Http::INPUT_POST)) || $post->isEmpty()) {
+			return true;
+		}
+
+		$Result = Album::edit($post);
+
+		if ($Result->error) {
+			$this->Output->bind('errors', (array) $Result->error);
+
+			return true;
+		}
+
+		$this->Output->header('Location: /gallery/' . $Result->value);
+
+		return true;
+	}
 
 }

@@ -9,6 +9,7 @@
  * @property-read mixed $data
  * @property-read mixed $error
  */
+namespace Core;
 class Result {
 
     /**

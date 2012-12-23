@@ -5,7 +5,11 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Flow_Login extends Block_Flow {
+namespace App\Block\Flow;
+use App\Block\Flow;
+use Core\Input;
+
+class Login extends Flow {
 
 	/**
 	 * @param Input $InputRoute

@@ -5,137 +5,137 @@
  *
  * @author Vitaliy_Mukhin
  */
+namespace Core;
+use VM\Autoloader;
+
 class Dispatcher {
 
-	/**
-	 *
-	 * @var Flow
-	 */
-	private $initialFlow;
+    /**
+     * @var Flow
+     */
+    private $initialFlow;
 
-	const ROUTE_IN_GET = 'route';
-	const MODE_ROUTER = 'router';
-	const PARAM_MODE_CONFIG = 'modeConfig';
-	const PARAM_INITIAL_FLOW = 'initialFlow';
+    const ROUTE_IN_GET       = 'route';
+    const MODE_ROUTER        = 'router';
+    const PARAM_MODE_CONFIG  = 'modeConfig';
+    const PARAM_INITIAL_FLOW = 'initialFlow';
 
-	/**
-	 *
-	 * @var Input_Config 
-	 */
-	private $modeConfig;
+    /**
+     * @var Input\Config
+     */
+    private $modeConfig;
 
-	private function __construct() {
-		
-	}
+    private function __construct() {
 
-	private function __clone() {
-		
-	}
+    }
 
-	/**
-	 *
-	 * @param Input $Input
-	 * @param Input_Config $ModeConfig
-	 * @param type $params
-	 * @return \Dispatcher 
-	 */
-	public static function di($params = array()) {
-		$Dispatcher = new self();
-		$Dispatcher->init();
-		$Dispatcher->setOptions($params);
+    private function __clone() {
 
-		return $Dispatcher;
-	}
+    }
 
-	protected function setOptions($params) {
-		foreach ($params as $k => $v) {
-			$method = 'set' . ucfirst($k);
-			if (method_exists($this, $method) && ($method != __FUNCTION__)) {
-				$this->$method($v);
-			}
-		}
-	}
+    /**
+     * @param array $params
+     *
+     * @return self
+     */
+    public static function di($params = array()) {
+        $Dispatcher = new self();
+        $Dispatcher->init();
+        $Dispatcher->setOptions($params);
 
-	/**
-	 *
-	 * @param Input_Config $Config
-	 * @return \Dispatcher 
-	 */
-	public function init() {
-		$this->initModeEnv();
+        return $Dispatcher;
+    }
 
-		return $this;
-	}
+    protected function setOptions($params) {
+        foreach ($params as $k => $v) {
+            $method = 'set' . ucfirst($k);
+            if (method_exists($this, $method) && ($method != __FUNCTION__)) {
+                $this->$method($v);
+            }
+        }
+    }
 
-	/**
-	 *
-	 * @return Dispatcher
-	 */
-	private function initModeEnv() {
+    /**
+     * @return self
+     */
+    public function init() {
+        $this->initModeEnv();
 
-		$this->addModeAutoloaders(PATH_MODE);
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * @return self
+     */
+    private function initModeEnv() {
 
-	/**
-	 *
-	 * @param string $flowString
-	 * @return \Dispatcher 
-	 */
-	public function setInitialFlow($flowString) {
-		$this->initialFlow = $flowString;
+        $this->addModeAutoloaders(PATH_MODE);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @param Input_Config $ModeConfig
-	 * @return \Dispatcher 
-	 */
-	public function setModeConfig(Input_Config $ModeConfig) {
-		$this->modeConfig = $ModeConfig;
+    /**
+     * @param string $flowString
+     *
+     * @return self
+     */
+    public function setInitialFlow($flowString) {
+        $this->initialFlow = $flowString;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @param string $modeFolder 
-	 */
-	private function addModeAutoloaders($modeFolder) {
-		$baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
+    /**
+     * @param Input\Config $ModeConfig
+     *
+     * @return self
+     */
+    public function setModeConfig(Input\Config $ModeConfig) {
+        $this->modeConfig = $ModeConfig;
 
-		// autoloader for Flow_*
-		$FlowLoader = new Loader();
-		$FlowLoader
-				->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')
-				->setIgnoreFirstPart(true)
-				->useFilePrefix(false);
-		Autoloader::add($FlowLoader);
+        return $this;
+    }
 
-		// autoloader for Block_*
-		$BlockLoader = new Loader();
-		$BlockLoader
-				->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'blocks')
-				->setIgnoreFirstPart(true)
-				->useFilePrefix(false);
-		Autoloader::add($BlockLoader);
-	}
+    /**
+     * @param string $modeFolder
+     */
+    private function addModeAutoloaders($modeFolder) {
+        $baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
 
-	/**
-	 *
-	 * @return string
-	 * @throws ErrorException 
-	 */
-	public function flow(Input_Http $Input = null, Output_Http $Output) {
-		$Flow = new Flow();
-		$Flow->init($Input, $Output);
+        // autoloader for Flow_*
+        $FlowLoader = new \App\LoaderNames();
+        $FlowLoader
+            ->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')
+            ->setIgnoreFirstPart(true)
+            ->useFilePrefix(false);
+        Autoloader::add($FlowLoader);
 
-		$Flow->action($this->initialFlow);
-//        return $Output;
-//		return $this->render($Output);
-	}
+        // autoloader for Block_*
+        $BlockLoader = new \App\LoaderNames();
+        $BlockLoader
+            ->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'blocks')
+            ->setIgnoreFirstPart(true)
+            ->useFilePrefix(false);
+        Autoloader::add($BlockLoader);
+
+        // autoloader for models
+        $BlockLoader = new \App\LoaderNames();
+        $BlockLoader
+            ->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'model')
+            ->useFilePrefix(false);
+
+        Autoloader::add($BlockLoader);
+    }
+
+    /**
+     * @param Input\Http  $Input
+     * @param Output\Http $Output
+     */
+    public function flow(Input\Http $Input = null, Output\Http $Output) {
+        $Flow = new \App\Flow();
+        $Flow->init($Input, $Output);
+
+        $Flow->action($this->initialFlow);
+    }
 
 }

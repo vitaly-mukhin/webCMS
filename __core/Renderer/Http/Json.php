@@ -1,34 +1,37 @@
 <?php
 
 /**
- * Description of Renderer_Http_Json
+ * Description of Renderer\Http\Json
  *
  * @author Vitaliy_Mukhin
  */
-class Renderer_Http_Json extends Renderer_Http {
+namespace Core\Renderer\Http;
+use Core\Renderer\Http;
+use Core\Output;
+use Core\Block;
 
-    const TPL = '__json.twig';
+class Json extends Http {
 
-    /**
-     *
-     * @param Output_Http $Output
-     */
-    public function render(Output $Output, $templatePath) {
-        /* @var $Output Output_Http */
-        $Output->header('Content-Type: text/json');
-        $content = parent::render($Output, $templatePath);
-        $titles = Block_Head::getPageTitle();
+	const TPL = '__json.twig';
 
-        $result = $this->renderInner(new Output(array(
-                    'head' => json_encode(array(
-                        'script' => array_values(Block_Head::getJsLinks()),
-                        'css' => array_values(Block_Head::getCssLinks())
-                    )),
-                    'title' => json_encode(reset($titles), ENT_NOQUOTES),
-                    'content' => json_encode($content, ENT_NOQUOTES)
-                )), static::TPL);
+	/**
+	 * @param Output $Output
+	 * @param        $templatePath
+	 *
+	 * @return string
+	 */
+	public function render(Output $Output, $templatePath) {
+		/* @var $Output Output\Http */
+		$Output->header('Content-Type: text/json');
+		$content = parent::render($Output, $templatePath);
+		$titles  = Block\Head::getPageTitle();
 
-        return $result;
-    }
+		$result = $this->renderInner(new Output(array('head'    => json_encode(array('script' => array_values(Block\Head::getJsLinks()),
+		                                                                             'css'    => array_values(Block\Head::getCssLinks()))),
+		                                              'title'   => json_encode(reset($titles), ENT_NOQUOTES),
+		                                              'content' => json_encode($content, ENT_NOQUOTES))), static::TPL);
+
+		return $result;
+	}
 
 }

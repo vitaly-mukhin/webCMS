@@ -2,10 +2,11 @@
 
 /**
  * This is a basic class, which will provide a basic features for providing
- * a convenient read access to array of data 
+ * a convenient read access to array of data
  *
  * @author Vitaliy_Mukhin
  */
+namespace Core;
 class Input {
 
 	/**
@@ -17,11 +18,13 @@ class Input {
 	/**
 	 * Throws Exception if data are incompatible
 	 *
-	 * @param array $data 
+	 * @param array $data
+	 *
+	 * @throws \ErrorException
 	 */
 	public function __construct(array $data = array()) {
 		if (!is_array($data)) {
-			throw new ErrorException('Source data are incompatible');
+			throw new \ErrorException('Source data are incompatible');
 		}
 
 		$this->data = $data;
@@ -40,15 +43,16 @@ class Input {
 	 *
 	 * @param mixed $key
 	 * @param mixed $default
+	 *
 	 * @return mixed
 	 */
 	public function get($key, $default = null) {
-		return key_exists($key, $this->data) ? $this->data[$key] : $default;
+		return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
 	}
 
 	/**
 	 * Returns TRUE, if there are no data
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isEmpty() {

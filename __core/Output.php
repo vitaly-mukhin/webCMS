@@ -5,6 +5,8 @@
  *
  * @author Mukhenok
  */
+namespace Core;
+
 class Output {
 
 	/**
@@ -18,16 +20,17 @@ class Output {
 	 * @var Renderer
 	 */
 	protected $Renderer;
-    
-    public function __construct($data = array()) {
-        $this->data = $data;
-    }
+
+	public function __construct($data = array()) {
+		$this->data = $data;
+	}
 
 	/**
 	 *
-	 * @param string $name
+	 * @param string     $name
 	 * @param mixed|null $value
-	 * @return Output 
+	 *
+	 * @return Output
 	 */
 	public function bind($name, $value = null) {
 		$this->data[$name] = $value;

@@ -5,14 +5,16 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Flow_Reg extends Block_Flow {
+namespace App\Block\Flow;
+class Reg extends \App\Block\Flow {
 
-	/**
-	 * @param Input $InputRoute
-	 * @return type 
-	 */
-	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'auth', 'step' => 'reg');
-	}
+    /**
+     * @param Input $InputRoute
+     *
+     * @return type
+     */
+    protected function getRoute(Input $InputRoute) {
+        return array('action' => 'auth', 'step' => 'reg');
+    }
 
 }

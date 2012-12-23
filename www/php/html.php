@@ -1,24 +1,32 @@
 <?php
 
 // calling mode config, and setup mode params
-$ModeConfig = Input_Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+namespace App;
+//use Core\Input;
+//use Core\Router;
+//use Core\Dispatcher;
+//use Core\Output;
+//use Core\Renderer;
+//use Core\Renderer\Http\Html;
 
-$InputGET = new Input($_GET);
+$ModeConfig = \Core\Input\Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+
+$InputGET = new \Core\Input($_GET);
 
 // create instance of Router, by using a ModeConfig::router section
-$Router = Router::init($ModeConfig->get(Dispatcher::MODE_ROUTER));
+$Router = \Core\Router::init($ModeConfig->get(\Core\Dispatcher::MODE_ROUTER));
 // get route string, parse it and ...
-$routeString = $InputGET->get(Dispatcher::ROUTE_IN_GET, '');
+$routeString = $InputGET->get(\Core\Dispatcher::ROUTE_IN_GET, '');
 // ... save parsed route to a Input
-$InputRoute = new Input($Router->parse($routeString));
+$InputRoute = new \Core\Input($Router->parse($routeString));
 
-$InputHttp = new Input_Http(array(Input_Http::INPUT_ROUTE  => $InputRoute,
-                                  Input_Http::INPUT_GET    => $InputGET,
-                                  Input_Http::INPUT_POST   => $_POST,
-                                  Input_Http::INPUT_SERVER => $_SERVER,
-                                  Input_Http::INPUT_COOKIE => $_COOKIE));
+$InputHttp = new \Core\Input\Http(array(\Core\Input\Http::INPUT_ROUTE  => $InputRoute,
+                                        \Core\Input\Http::INPUT_GET    => $InputGET,
+                                        \Core\Input\Http::INPUT_POST   => $_POST,
+                                        \Core\Input\Http::INPUT_SERVER => $_SERVER,
+                                        \Core\Input\Http::INPUT_COOKIE => $_COOKIE));
 
-Input_Http::setDefault($InputHttp);
+\Core\Input\Http::setDefault($InputHttp);
 
 // TODO 2012-05-22: hard-coded 'page' key
 switch ($InputRoute->get('page')) {
@@ -26,13 +34,13 @@ switch ($InputRoute->get('page')) {
 		$initialFlow = 'block';
 		break;
 	default:
-		$initialFlow = 'www';
+		$initialFlow = 'main';
 }
 
-$Dispatcher = Dispatcher::di(array(Dispatcher::PARAM_MODE_CONFIG  => $ModeConfig,
-                                   Dispatcher::PARAM_INITIAL_FLOW => $initialFlow));
+$Dispatcher = \Core\Dispatcher::di(array(\Core\Dispatcher::PARAM_MODE_CONFIG  => $ModeConfig,
+                                   \Core\Dispatcher::PARAM_INITIAL_FLOW => $initialFlow));
 
-$OutputHttp = new Output_Http;
+$OutputHttp = new \Core\Output\Http;
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
-echo Renderer_Http_Html::di()->render($OutputHttp, $OutputHttp->getTemplatePath());
+echo \Core\Renderer\Http\Html::di()->render($OutputHttp, $OutputHttp->getTemplatePath());

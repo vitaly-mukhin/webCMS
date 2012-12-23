@@ -5,16 +5,19 @@
  *
  * @author Mukhenok
  */
-class Output_Http extends Output {
+namespace Core\Output;
+use Core\Output;
+
+class Http extends Output {
 
 	const YEAR_IN_SECONDS = 31536000; // 365*24*60*60
-	const HTTP_HEADER = 'http_header';
-	const OUTPUT_COOKIE_NAME = 'cookie_name';
-	const OUTPUT_COOKIE_VALUE = 'cookie_value';
+	const HTTP_HEADER          = 'http_header';
+	const OUTPUT_COOKIE_NAME   = 'cookie_name';
+	const OUTPUT_COOKIE_VALUE  = 'cookie_value';
 	const OUTPUT_COOKIE_EXPIRE = 'cookie_exprire';
-	const OUTPUT_COOKIE_PATH = 'cookie_path';
-	const HTTP_HEADER_SET = true;
-	const HTTP_HEADER_UNSET = false;
+	const OUTPUT_COOKIE_PATH   = 'cookie_path';
+	const HTTP_HEADER_SET      = true;
+	const HTTP_HEADER_UNSET    = false;
 
 	/**
 	 *
@@ -35,7 +38,7 @@ class Output_Http extends Output {
 	protected $templatePath;
 
 	public function __construct() {
-//		parent::__construct();
+		//		parent::__construct();
 
 		$this->Headers = new Output;
 
@@ -44,8 +47,9 @@ class Output_Http extends Output {
 
 	/**
 	 *
-	 * @param string $value
+	 * @param string  $value
 	 * @param boolean $todo
+	 *
 	 * @return Output
 	 */
 	public function header($value, $todo = self::HTTP_HEADER_SET) {
@@ -58,9 +62,10 @@ class Output_Http extends Output {
 	 *
 	 * @param string $name
 	 * @param string $value
-	 * @param int $expire
+	 * @param int    $expire
 	 * @param string $path
-	 * @return \Output_Http 
+	 *
+	 * @return self
 	 */
 	public function cookie($name, $value, $expire = self::YEAR_IN_SECONDS, $path = '/') {
 		$cookie = new Output();
@@ -79,10 +84,10 @@ class Output_Http extends Output {
 	 * @return array
 	 */
 	public function headers() {
-        $result = array_keys(array_filter($this->Headers->export(), function($v){
-            return ($v == Output_Http::HTTP_HEADER_SET);
-        }));
-        
+		$result = array_keys(array_filter($this->Headers->export(), function ($v) {
+			return ($v == Http::HTTP_HEADER_SET);
+		}));
+
 		return $result;
 	}
 
@@ -97,7 +102,8 @@ class Output_Http extends Output {
 	/**
 	 *
 	 * @param string $templatePath
-	 * @return \Output_Http 
+	 *
+	 * @return self
 	 */
 	public function setTemplatePath($templatePath) {
 		$this->templatePath = $templatePath;

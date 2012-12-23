@@ -1,7 +1,7 @@
 <?php
 
 // calling mode config, and setup mode params
-$ModeConfig = Input_Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+$ModeConfig = Input\Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
 
 $InputGET = new Input($_GET);
 
@@ -12,15 +12,15 @@ $routeString = $InputGET->get(Dispatcher::ROUTE_IN_GET, '');
 // ... save parsed route to a Input
 $InputRoute = new Input($Router->parse($routeString));
 
-$InputHttp = new Input_Http(array(
-			Input_Http::INPUT_ROUTE => $InputRoute,
-			Input_Http::INPUT_GET => $InputGET,
-			Input_Http::INPUT_POST => $_POST,
-			Input_Http::INPUT_SERVER => $_SERVER,
-			Input_Http::INPUT_COOKIE => $_COOKIE
+$InputHttp = new Input\Http(array(
+			Input\Http::INPUT_ROUTE => $InputRoute,
+			Input\Http::INPUT_GET => $InputGET,
+			Input\Http::INPUT_POST => $_POST,
+			Input\Http::INPUT_SERVER => $_SERVER,
+			Input\Http::INPUT_COOKIE => $_COOKIE
 		));
 
-Input_Http::setDefault($InputHttp);
+Input\Http::setDefault($InputHttp);
 
 // TODO 2012-05-22: hard-coded 'page' key
 switch ($InputRoute->get('page')) {
@@ -36,8 +36,8 @@ $Dispatcher = Dispatcher::di(array(
 			Dispatcher::PARAM_INITIAL_FLOW => $initialFlow
 		));
 
-$OutputHttp = new Output_Http_Json();
+$OutputHttp = new Output\Http\Json();
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
 // render in JSON format
-echo Renderer_Http_Json::di()->render($OutputHttp, $OutputHttp->getTemplatePath());
+echo Renderer\Http\Json::di()->render($OutputHttp, $OutputHttp->getTemplatePath());

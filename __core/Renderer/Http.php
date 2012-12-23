@@ -1,32 +1,38 @@
 <?php
 
 /**
- * Description of Renderer_Http
+ * Description of Renderer\Http
  *
  * @author Vitaliy_Mukhin
  */
-class Renderer_Http extends Renderer {
+namespace Core\Renderer;
+use Core\Renderer;
+use Core\Output;
+use Core\Input;
+
+class Http extends Renderer {
 
 	/**
+	 * @param Output $Output
+	 * @param        $templatePath
 	 *
-	 * @param Output_Http $Output
-	 * @param string $templatePath 
+	 * @return string
 	 */
 	public function render(Output $Output, $templatePath) {
-        if ($Output instanceof Output_Http) {
-            $this->renderHeaders($Output);
-            $this->renderCookie($Output);
-        }
+		if ($Output instanceof Output\Http) {
+			$this->renderHeaders($Output);
+			$this->renderCookie($Output);
+		}
 
 		return $this->renderInner($Output, $templatePath);
 	}
 
-    /**
-     * Set the headers to HTTP response
-     * 
-     * @param Output_Http $Output
-     */
-	protected function renderHeaders(Output_Http $Output) {
+	/**
+	 * Set the headers to HTTP response
+	 *
+	 * @param Output\Http $Output
+	 */
+	protected function renderHeaders(Output\Http $Output) {
 		$headers = $Output->headers();
 
 		if (empty($headers)) {
@@ -38,12 +44,12 @@ class Renderer_Http extends Renderer {
 		}
 	}
 
-    /**
-     * Set the cookies to HTTP response
-     * 
-     * @param Output_Http $Output
-     */
-	protected function renderCookie(Output_Http $Output) {
+	/**
+	 * Set the cookies to HTTP response
+	 *
+	 * @param Output\Http $Output
+	 */
+	protected function renderCookie(Output\Http $Output) {
 		$cookies = $Output->cookies();
 
 		if (empty($cookies)) {
@@ -53,10 +59,10 @@ class Renderer_Http extends Renderer {
 		foreach ($cookies as $Cookie) {
 			/* @var $Cookie Input */
 			$Cookie = new Input($Cookie->export());
-			$name = (string)$Cookie->get(Output_Http::OUTPUT_COOKIE_NAME);
-			$value = (string)$Cookie->get(Output_Http::OUTPUT_COOKIE_VALUE);
-			$expire = (int)$Cookie->get(Output_Http::OUTPUT_COOKIE_EXPIRE);
-			$path = (string)$Cookie->get(Output_Http::OUTPUT_COOKIE_PATH);
+			$name   = (string) $Cookie->get(Output\Http::OUTPUT_COOKIE_NAME);
+			$value  = (string) $Cookie->get(Output\Http::OUTPUT_COOKIE_VALUE);
+			$expire = (int) $Cookie->get(Output\Http::OUTPUT_COOKIE_EXPIRE);
+			$path   = (string) $Cookie->get(Output\Http::OUTPUT_COOKIE_PATH);
 
 			setcookie($name, $value, $expire, $path);
 		}

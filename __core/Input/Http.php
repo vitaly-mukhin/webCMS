@@ -1,68 +1,73 @@
 <?php
 
 /**
- * Description of Input_Http
+ * Description of Input\Http
  *
  * @author Mukhenok
  */
-class Input_Http extends Input {
+namespace Core\Input;
+use Core\Input;
 
-    const INPUT_ROUTE = 'route_data';
-    const INPUT_GET = 'get_data';
-    const INPUT_POST = 'post_data';
-    const INPUT_SERVER = 'server_data';
-    const INPUT_COOKIE = 'coockie_data';
+class Http extends Input {
 
-    /**
-     *
-     * @var array
-     */
-    private $inputs = array();
+	const INPUT_ROUTE  = 'route_data';
+	const INPUT_GET    = 'get_data';
+	const INPUT_POST   = 'post_data';
+	const INPUT_SERVER = 'server_data';
+	const INPUT_COOKIE = 'coockie_data';
 
-    /**
-     *
-     * @var Input_Http
-     */
-    private static $defaultInput;
+	/**
+	 *
+	 * @var array
+	 */
+	private $inputs = array();
 
-    /**
-     *
-     * @param Input_Http $Input 
-     */
-    public static function setDefault(Input_Http $Input) {
-        self::$defaultInput = $Input;
-    }
+	/**
+	 *
+	 * @var Input\Http
+	 */
+	private static $defaultInput;
 
-    /**
-     *
-     * @return Input_Http
-     */
-    public static function getDefault() {
-        return self::$defaultInput;
-    }
+	/**
+	 *
+	 * @param Input\Http $Input
+	 */
+	public static function setDefault(Input\Http $Input) {
+		self::$defaultInput = $Input;
+	}
 
-    /**
-     *
-     * @param string $key
-     * @return \Input
-     * @throws Exception 
-     */
-    public function get($key, $default = null) {
-        //	first time called this data - should create proxy Input, save it and return it
-        if (!key_exists($key, $this->inputs)) {
-            $Input = parent::get($key, null);
-            if (is_null($Input)) {
-                throw new Exception('No such data provided');
-            }
+	/**
+	 *
+	 * @return Input\Http
+	 */
+	public static function getDefault() {
+		return self::$defaultInput;
+	}
 
-            $Input = $Input instanceof Input ? $Input : new Input($Input);
+	/**
+	 *
+	 * @param string $key
+	 * @param null   $default
+	 *
+	 * @throws \Exception
+	 * @return Input
+	 */
+	public function get($key, $default = null) {
+		//	first time called this data - should create proxy Input, save it and return it
+		if (!key_exists($key, $this->inputs)) {
+			$Input = parent::get($key, null);
+			if (is_null($Input)) {
+				throw new \Exception('No such data provided');
+			}
 
-            $this->inputs[$key] = $Input;
-        } else {
-            $Input = $this->inputs[$key];
-        }
+			$Input = $Input instanceof Input ? $Input : new Input($Input);
 
-        return $this->inputs[$key] = $Input;
-    }
+			$this->inputs[$key] = $Input;
+		} else {
+			$Input = $this->inputs[$key];
+		}
+
+		return $this->inputs[$key] = $Input;
+	}
 
 }

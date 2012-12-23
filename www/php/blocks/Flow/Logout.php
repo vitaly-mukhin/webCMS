@@ -5,14 +5,17 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Block_Flow_Logout extends Block_Flow {
+namespace App\Block\Flow;
 
-	/**
-	 * @param Input $InputRoute
-	 * @return type 
-	 */
-	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'auth', 'step' => 'logout');
-	}
+class Logout extends \App\Block\Flow {
+
+    /**
+     * @param \Core\Input $InputRoute
+     *
+     * @return array
+     */
+    protected function getRoute(\Core\Input $InputRoute) {
+        return array('action' => 'auth', 'step' => 'logout');
+    }
 
 }

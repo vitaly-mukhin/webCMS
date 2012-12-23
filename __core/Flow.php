@@ -5,20 +5,24 @@
  *
  * @author Mukhenok
  */
+
+namespace Core;
+use Core;
+
 class Flow {
 
 	const ACTION_PREFIX = 'action_';
-	const IS_ROOT = false;
+	const IS_ROOT       = false;
 
 	/**
 	 *
-	 * @var Input_Http
+	 * @var Input\Http
 	 */
 	protected $Input;
 
 	/**
 	 *
-	 * @var Output_Http 
+	 * @var Output\Http
 	 */
 	protected $Output;
 
@@ -29,17 +33,16 @@ class Flow {
 	protected $runnedAction;
 
 	const DEFAULT_ACTION = 'default';
-	const CLASS_DELIMITER = '_';
-	const FLOW_NOT_FOUND_CLASS = 'NoFlowFound';
+	//	const CLASS_DELIMITER         = '_';
+	const CLASS_DELIMITER         = '\\';
+	const FLOW_NOT_FOUND_CLASS    = 'NoFlowFound';
 	const TEMPLATE_FILE_EXTENSION = '.twig';
 
 	/**
-	 * Set input/output objects
-	 *
-	 * @param Input $Input
-	 * @param Output $Output 
+	 * @param Input\Http  $Input
+	 * @param Output\Http $Output
 	 */
-	public function init(Input_Http $Input, Output_Http $Output) {
+	public function init(Input\Http $Input, Output\Http $Output) {
 		$this->Input = $Input;
 
 		$this->Output = $Output;
@@ -48,6 +51,7 @@ class Flow {
 	/**
 	 *
 	 * @param string $action
+	 *
 	 * @return string|boolean
 	 */
 	public function action($action = null) {
@@ -66,7 +70,7 @@ class Flow {
 
 	/**
 	 *
-	 * @param string $action 
+	 * @param string $action
 	 */
 	protected function callPre($action) {
 		$this->runnedAction = $action;
@@ -74,7 +78,7 @@ class Flow {
 
 	/**
 	 *
-	 * @param string|boolean $result 
+	 * @param string|boolean $result
 	 */
 	protected function callPost($result) {
 		if ($result !== true) {
@@ -85,7 +89,8 @@ class Flow {
 	/**
 	 *
 	 * @param string $action
-	 * @return string|boolean 
+	 *
+	 * @return string|boolean
 	 */
 	protected function call($action) {
 		if ($this->existsAction($action)) {
@@ -97,8 +102,9 @@ class Flow {
 
 	/**
 	 *
-	 * @param string $Flow
-	 * @return string 
+	 * @param $action
+	 *
+	 * @return string
 	 */
 	protected function getTemplatePath($action) {
 		$array = explode(self::CLASS_DELIMITER, strtolower(get_called_class()));
@@ -138,8 +144,9 @@ class Flow {
 	 * Get the current or child Flow, that might proceed with $childFlowSuffix
 	 *
 	 * @param string $childFlowSuffix
+	 *
 	 * @return Flow
-	 * @throws ErrorException 
+	 * @throws \ErrorException
 	 */
 	final protected function getFlow($childFlowSuffix) {
 		// for being able to redirect inside current Flow
@@ -156,6 +163,7 @@ class Flow {
 		$flowClass = $this->getChildFlowName($currentClass, $childFlowSuffix);
 
 		if (!class_exists($flowClass)) {
+            die();
 			$flowClass = $this->getNoFlowFoundClass($flowClass);
 		}
 		/* @var $Flow Flow */
@@ -166,9 +174,10 @@ class Flow {
 
 	/**
 	 * Build class name for child flow (by using $childFlowSuffix)
-	 * 
+	 *
 	 * @param string $flowClass
 	 * @param string $childFlowSuffix
+	 *
 	 * @return string
 	 */
 	protected function getChildFlowName($flowClass, $childFlowSuffix) {
@@ -177,23 +186,24 @@ class Flow {
 
 	/**
 	 * Transform $flowClass into the parent NoFlowFound class
-	 * 
+	 *
 	 * Example 1:
-	 *     $flowClass = Flow_Block_Auth_Reset
+	 *     $flowClass = Flow_Block\Auth_Reset
 	 * Return:
-	 *     Flow_Block_Auth_NoFlowFound
-	 * 
+	 *     Flow_Block\Auth_NoFlowFound
+	 *
 	 * Example 2:
-	 *     $flowClass = Flow_Block_Auth_NoFlowFound
+	 *     $flowClass = Flow_Block\Auth_NoFlowFound
 	 * Return:
 	 *     Flow_Block_NoFlowFound
-	 * 
+	 *
 	 * @param string $flowClass
+	 *
 	 * @return string
 	 */
 	protected function buildNoFloFoundClass($flowClass) {
 		// remove _NoFlowFound from the flow class name
-		$flowClassShort = str_replace(self::FLOW_NOT_FOUND_CLASS, '', $flowClass);
+		$flowClassShort = str_replace(static::FLOW_NOT_FOUND_CLASS, '', $flowClass);
 		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
 
 		// remove prelast part of class name
@@ -205,18 +215,19 @@ class Flow {
 
 	/**
 	 * Get the nearest relative NoFlowFound class
-	 * 
+	 *
 	 * Example:
-	 *     $flowClass = Flow_Block_Auth_Reset
-	 * 
+	 *     $flowClass = Flow_Block\Auth_Reset
+	 *
 	 * Return:
-	 *     Flow_Block_Auth_NoFlowFound
+	 *     Flow_Block\Auth_NoFlowFound
 	 *     Flow_Block_NoFlowFound
 	 *     Flow_NoFlowFound
 	 *
 	 * @param string $flowClass
+	 *
 	 * @return string
-	 * @throws ErrorException 
+	 * @throws \ErrorException
 	 */
 	final protected function getNoFlowFoundClass($flowClass) {
 		while (true) {
@@ -224,7 +235,9 @@ class Flow {
 
 			if (class_exists($flowClass)) {
 				break;
-			}
+			} else {
+                $flowClass = $this->buildNoFloFoundClass(__NAMESPACE__ . $flowClass);
+            }
 		}
 
 		return $flowClass;
@@ -233,6 +246,7 @@ class Flow {
 	/**
 	 *
 	 * @param string $action
+	 *
 	 * @return boolean
 	 */
 	protected function existsAction($action) {
@@ -242,6 +256,7 @@ class Flow {
 	/**
 	 *
 	 * @param string $action
+	 *
 	 * @return string
 	 */
 	protected function getAction($action) {

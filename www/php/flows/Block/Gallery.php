@@ -7,7 +7,7 @@ class Flow_Block_Gallery extends Flow_AbstractBlock {
 	 * @return boolean 
 	 */
 	public function action_default() {
-		$this->runChildFlow($this->Input->get(Input_Http::INPUT_ROUTE)->get('step'));
+		$this->runChildFlow($this->Input->get(Input\Http::INPUT_ROUTE)->get('step'));
 	}
     
     public function action_menu() {
