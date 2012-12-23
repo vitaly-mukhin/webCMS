@@ -109,7 +109,7 @@ class Flow {
 	protected function getTemplatePath($action) {
 		$array = explode(self::CLASS_DELIMITER, strtolower(get_called_class()));
 		// unset standard Flow
-		unset($array[0]);
+		unset($array[0], $array[1]);
 		if (static::IS_ROOT) {
 			// unset standard Www
 			unset($array[1]);

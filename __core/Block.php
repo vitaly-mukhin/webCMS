@@ -31,7 +31,7 @@ class Block {
 	 * @param array $params
 	 */
 	public static function process($params = array()) {
-
+		throw new \ErrorException('not found');
 	}
 
 }

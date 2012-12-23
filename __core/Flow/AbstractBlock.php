@@ -5,13 +5,14 @@
  *
  * @author Vitaliy_Mukhin
  */
-namespace Core;
-use Input\Http;
+namespace Core\Flow;
+use Core\Input\Http;
+use Core\Flow;
 
-class Flow_AbstractBlock extends Flow {
+class AbstractBlock extends Flow {
 
 	public function action_default() {
-		$this->runChildFlow($this->Input->get(Input\Http::INPUT_ROUTE)->get(0));
+		$this->runChildFlow($this->Input->get(Http::INPUT_ROUTE)->get(0));
 	}
 
 }

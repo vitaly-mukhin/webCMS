@@ -5,12 +5,14 @@
  *
  * @author Vitaliy_Mukhin
  */
-namespace App;
+namespace App\Flow;
 use Core\Input;
 use Core\Output;
 use App\Block\Head;
+use App\Block;
+use Core\Flow;
 
-class Main extends Flow {
+class Main extends \App\Flow {
 
     const IS_ROOT        = true;
     const DEFAULT_ACTION = 'default';
@@ -19,6 +21,10 @@ class Main extends Flow {
         parent::callPre($action);
 
         Block\Auth::process();
+
+	    Block\Flow\Nav::process();
+
+	    Block\Flow\Login::process();
 
         Head::addPageTitle('webCMS');
 

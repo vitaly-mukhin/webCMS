@@ -5,17 +5,20 @@
  *
  * @author Vitaliy_Mukhin
  */
-namespace App;
-class Block extends Flow {
+namespace App\Flow;
+use Core\Flow\AbstractBlock;
+use Core\Input\Http;
 
-    public function callPre($action) {
-        Block\Auth::process();
+class Block extends AbstractBlock {
 
-        parent::callPre($action);
-    }
+	public function callPre($action) {
+		\App\Block\Auth::process();
 
-    public function action_default() {
-        $this->runChildFlow($this->Input->get(\Core\Input\Http::INPUT_ROUTE)->get('action'));
-    }
+		parent::callPre($action);
+	}
+
+	public function action_default() {
+		$this->runChildFlow($this->Input->get(Http::INPUT_ROUTE)->get('action'));
+	}
 
 }

@@ -6,9 +6,9 @@
  * @author Vitaliy_Mukhin
  */
 namespace Core\Renderer\Http;
-use Core\Renderer\Http;
 use Core\Output;
-use Core\Block;
+use Core\Block\Head;
+use Core\Renderer\Http;
 
 class Html extends Http {
 
@@ -22,9 +22,9 @@ class Html extends Http {
 	 */
 	public function render(Output $Output, $templatePath) {
 
-		$head = $this->renderInner(new Output(array('jsLinks'   => Block\Head::getJsLinks(),
-		                                            'cssLinks'  => Block\Head::getCssLinks(),
-		                                            'pageTitle' => Block\Head::getPageTitle(),)), Head::TPL);
+		$head = $this->renderInner(new Output(array('jsLinks'   => Head::getJsLinks(),
+		                                            'cssLinks'  => Head::getCssLinks(),
+		                                            'pageTitle' => Head::getPageTitle(),)), Head::TPL);
 
 		$content = parent::render($Output, $templatePath);
 

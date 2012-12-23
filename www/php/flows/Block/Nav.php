@@ -5,7 +5,10 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Block_Nav extends Flow_AbstractBlock {
+namespace App\Flow\Block;
+use App\Flow\Block;
+
+class Nav extends Block {
 
 	/**
 	 *

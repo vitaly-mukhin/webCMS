@@ -134,7 +134,7 @@ class User {
      *
      * @param Input $Post data for user account
      *
-     * @return User
+     * @return \Core\User
      */
     public static function reg(Input $Post) {
         $Data = new Input(array(Auth::LOGIN           => $Post->get('login'),

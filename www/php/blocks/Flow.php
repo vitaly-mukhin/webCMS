@@ -8,6 +8,6 @@
  */
 namespace App\Block;
 
-class Flow extends \Core\Block {
+abstract class Flow extends \Core\Block\Flow {
 
 }
