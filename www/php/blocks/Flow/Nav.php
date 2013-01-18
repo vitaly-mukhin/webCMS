@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Login
+ * Description of Nav block
  *
  * @author Vitaliy_Mukhin
  */

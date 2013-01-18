@@ -145,8 +145,8 @@ class Flow {
 	 *
 	 * @param string $childFlowSuffix
 	 *
+	 * @throws \Exception
 	 * @return Flow
-	 * @throws \ErrorException
 	 */
 	final protected function getFlow($childFlowSuffix) {
 		// for being able to redirect inside current Flow
@@ -161,13 +161,12 @@ class Flow {
 		}
 
 		$flowClass = $this->getChildFlowName($currentClass, $childFlowSuffix);
-
 		if (!class_exists($flowClass)) {
-            die();
-			$flowClass = $this->getNoFlowFoundClass($flowClass);
+			throw new \Exception('Flow class <b>' . $flowClass . ' not found</b>');
+			//			$flowClass = $this->getNoFlowFoundClass($flowClass);
 		}
 		/* @var $Flow Flow */
-		$Flow = new $flowClass();
+		$Flow = new $flowClass;
 
 		return $Flow;
 	}
@@ -236,8 +235,8 @@ class Flow {
 			if (class_exists($flowClass)) {
 				break;
 			} else {
-                $flowClass = $this->buildNoFloFoundClass(__NAMESPACE__ . $flowClass);
-            }
+				$flowClass = $this->buildNoFloFoundClass(__NAMESPACE__ . $flowClass);
+			}
 		}
 
 		return $flowClass;

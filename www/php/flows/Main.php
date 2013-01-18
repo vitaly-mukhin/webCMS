@@ -22,9 +22,7 @@ class Main extends \App\Flow {
 
         Block\Auth::process();
 
-	    Block\Flow\Nav::process();
-
-	    Block\Flow\Login::process();
+	    Block\Flow\Login::process(array(), $this->Output);
 
         Head::addPageTitle('webCMS');
 

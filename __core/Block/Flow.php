@@ -9,6 +9,7 @@ namespace Core\Block;
 use Core\Block;
 use Core\Dispatcher;
 use Core\Input;
+use Core\Input\Http;
 use Core\Output;
 use Core\Renderer;
 
@@ -96,8 +97,9 @@ abstract class Flow extends Block {
 		$OutputResult = $Block->invoke();
 
 		if ($Output) {
-			$Output->bind(static::getBindName(), Renderer\Http::di()
-					->render($OutputResult, $OutputResult->getTemplatePath()));
+			$name = static::getBindName();
+			$value = Renderer\Http::di()->render($OutputResult, $OutputResult->getTemplatePath());
+			$Output->bind($name, $value);
 		}
 	}
 
@@ -107,7 +109,11 @@ abstract class Flow extends Block {
 	 * @return string
 	 */
 	public static function getBindName() {
-		return get_called_class();
+		$class = get_called_class();
+		$class = str_replace('\\', '_', $class);
+		$class = stripos($class, '_') === 0 ? substr($class, 1) : $class;
+
+		return $class;
 	}
 
 }

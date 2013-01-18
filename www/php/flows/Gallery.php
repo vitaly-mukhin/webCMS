@@ -1,13 +1,18 @@
 <?php
 
-class Flow_Gallery extends Flow {
+namespace App\Flow;
+use \App\Flow;
+use \App\Block\Head;
+use \Core\Input;
+
+class Gallery extends Flow {
 
 	public function action_default() {
-		Block\Head::addPageTitle('Альбоми');
-		Block\Head::addJsLink(Www_Head::JS_GALLERY);
+		Head::addPageTitle('Альбоми');
+		Head::addJsLink(Head::JS_GALLERY);
 
-		Block\Flow_Gallery_Menu::process(array(), $this->Output);
-		Block\Flow_Gallery_Own::process(array(), $this->Output);
+		\App\Block\Flow\Gallery\Menu::process(array(), $this->Output);
+		\App\Block\Flow\Gallery\Own::process(array(), $this->Output);
 
 		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
 		if (intval($action) > 0) {
@@ -22,7 +27,7 @@ class Flow_Gallery extends Flow {
 	}
 
 	public function action_list() {
-		Block\Head::addPageTitle('Найновіші');
+		Head::addPageTitle('Найновіші');
 
 		$Albums = Album_Mapper::getLatest();
 
@@ -32,13 +37,12 @@ class Flow_Gallery extends Flow {
 	}
 
 	public function action_view() {
-		Block\Head::addPageTitle('Перегляд');
+		Head::addPageTitle('Перегляд');
 
 		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
 		$id     = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
 		if (intval($action) > 0) {
-			$id     = $action;
-			$action = 'view';
+			$id = $action;
 		}
 
 		$Album = Album_Mapper::getById($id);
@@ -47,7 +51,7 @@ class Flow_Gallery extends Flow {
 			$this->runChildFlow('noalbum');
 		}
 
-		Block\Head::addPageTitle($Album->getTitle());
+		Head::addPageTitle($Album->getTitle());
 
 		$this->Output->bind('Album', $Album);
 
@@ -63,7 +67,7 @@ class Flow_Gallery extends Flow {
 	}
 
 	public function action_add() {
-		Block\Head::addPageTitle('Додати альбом');
+		Head::addPageTitle('Додати альбом');
 
 		if (!($post = $this->Input->get(Input\Http::INPUT_POST)) || $post->isEmpty()) {
 			return true;
@@ -87,7 +91,7 @@ class Flow_Gallery extends Flow {
 	}
 
 	public function action_edit() {
-		Block\Head::addPageTitle('Редагування');
+		Head::addPageTitle('Редагування');
 
 		$id = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
 		if (!$id) {
@@ -101,7 +105,7 @@ class Flow_Gallery extends Flow {
 			return $this->runChildFlow('noperm');
 		}
 
-		Block\Head::addJsLink(Www_Head::JS_GALLERY_UPLOAD);
+		Head::addJsLink(Head::JS_GALLERY_UPLOAD);
 
 		$this->Output->bind('album', $Album);
 

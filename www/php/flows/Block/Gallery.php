@@ -1,6 +1,9 @@
 <?php
 
-class Flow_Block_Gallery extends Flow_AbstractBlock {
+namespace App\Flow\Block;
+use Core\Input;
+
+class Gallery extends \App\Flow\Block {
 
 	/**
 	 *
