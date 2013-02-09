@@ -4,6 +4,9 @@
 body {
   padding-top: 60px;
   padding-bottom: 40px; }
+  body #topbar {
+    width: 1240px;
+    margin: 0 auto; }
   body #body-content {
     width: 1230px;
     margin: 0 auto; }

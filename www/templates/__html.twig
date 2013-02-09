@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    {{ head | default('<!-- here should be the Block\Head -->') | raw }}
+    {{ App_Block_Head | default('<!-- here should be the Block\Head -->') | raw }}
 </head>
 <body>
-{{ body | default('<!-- here should be the Block\Head -->') | raw }}
+{{ html_body | raw }}
 </body>
 </html>

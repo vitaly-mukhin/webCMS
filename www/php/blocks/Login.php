@@ -5,16 +5,18 @@
  *
  * @author Vitaliy_Mukhin
  */
-namespace App\Block\Flow;
-use App\Block\Flow;
+namespace App\Block;
+use App\Block;
 use Core\Input;
 
-class Login extends Flow {
+class Login extends \Core\Block {
+
+	use \Core\Block\Flow;
 
 	/**
 	 * @param Input $InputRoute
 	 *
-	 * @return type
+	 * @return array
 	 */
 	protected function getRoute(Input $InputRoute) {
 		return array('action' => 'auth', 'step' => 'login');

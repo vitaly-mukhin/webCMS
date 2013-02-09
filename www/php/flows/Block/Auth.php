@@ -6,12 +6,13 @@
  * @author Mukhenok
  */
 namespace App\Flow\Block;
+use App\Flow;
 use \Core\Input;
 use \Core\Output;
 use \Core\User;
 use \App\Block\Head;
 
-class Auth extends \App\Flow {
+class Auth extends Flow {
 
 	public function action_default() {
 		$childFlow = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
@@ -30,8 +31,8 @@ class Auth extends \App\Flow {
 		Head::addCssLink(Head::CSS_AUTH_LOGIN);
 
 		if (!User::curr()->isLogged()) {
-			User\Auth::f()->authByPwd($this->Input->get(Input\Http::INPUT_POST)->get(User\Auth::LOGIN), $this->Input
-					->get(Input\Http::INPUT_POST)->get(User\Auth::PASSWORD));
+			User\Auth::f()->authByPwd($this->Input->get(Input\Http::INPUT_POST)->get(User\Auth::LOGIN), $this->Input->get(Input\Http::INPUT_POST)
+					->get(User\Auth::PASSWORD));
 		}
 
 		$this->Output->bind('User', User\Auth::f());

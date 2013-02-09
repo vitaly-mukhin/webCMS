@@ -31,12 +31,6 @@ class Http extends Output {
 	 */
 	protected $Cookies;
 
-	/**
-	 *
-	 * @var string
-	 */
-	protected $templatePath;
-
 	public function __construct() {
 		//		parent::__construct();
 
@@ -97,26 +91,6 @@ class Http extends Output {
 	 */
 	public function cookies() {
 		return $this->Cookies->export();
-	}
-
-	/**
-	 *
-	 * @param string $templatePath
-	 *
-	 * @return self
-	 */
-	public function setTemplatePath($templatePath) {
-		$this->templatePath = $templatePath;
-
-		return $this;
-	}
-
-	/**
-	 *
-	 * @return string
-	 */
-	public function getTemplatePath() {
-		return $this->templatePath;
 	}
 
 }

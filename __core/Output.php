@@ -9,17 +9,13 @@ namespace Core;
 
 class Output {
 
+	use Output\Template;
+
 	/**
 	 *
 	 * @var array
 	 */
 	protected $data = array();
-
-	/**
-	 *
-	 * @var Renderer
-	 */
-	protected $Renderer;
 
 	public function __construct($data = array()) {
 		$this->data = $data;
@@ -33,7 +29,11 @@ class Output {
 	 * @return Output
 	 */
 	public function bind($name, $value = null) {
-		$this->data[$name] = $value;
+		if (is_array($name)) {
+			$this->data = array_merge($this->data, $name);
+		} else {
+			$this->data[$name] = $value;
+		}
 
 		return $this;
 	}

@@ -9,8 +9,9 @@ namespace App\Flow;
 use Core\Input;
 use Core\Output;
 use App\Block\Head;
-use App\Block;
+use App\Block\Auth;
 use Core\Flow;
+use App\Block\Nav;
 
 class Main extends \App\Flow {
 
@@ -20,9 +21,9 @@ class Main extends \App\Flow {
 	protected function callPre($action) {
 		parent::callPre($action);
 
-		Block\Auth::process();
+		Auth::process(array(), $this->Output);
 
-		Block\Flow\Login::process(array(), $this->Output);
+		//		Login::process(array(), $this->Output);
 
 		Head::addPageTitle('webCMS');
 
@@ -33,11 +34,11 @@ class Main extends \App\Flow {
 		Head::addCssLink(Head::CSS_BOOTSTRAP);
 		Head::addCssLink(Head::CSS_MAIN);
 
-		Block\Flow\Login::process(array(), $this->Output);
+		//		Block\Login::process(array(), $this->Output);
 	}
 
 	protected function callPost($result) {
-		Block\Flow\Nav::process(array(), $this->Output);
+		Nav::process(array(), $this->Output);
 
 		parent::callPost($result);
 	}

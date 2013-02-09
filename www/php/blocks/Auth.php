@@ -18,7 +18,7 @@ class Auth extends Block {
 	 */
 	private static $User;
 
-	public static function process($params = array()) {
+	public static function process($params = array(), \Core\Output $Output = null) {
 		if (empty(self::$User)) {
 			self::initUser();
 		}

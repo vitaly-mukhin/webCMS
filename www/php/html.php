@@ -43,4 +43,13 @@ $Dispatcher = \Core\Dispatcher::di(array(\Core\Dispatcher::PARAM_MODE_CONFIG  =>
 $OutputHttp = new \Core\Output\Http;
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
-echo \Core\Renderer\Http\Html::di()->render($OutputHttp, $OutputHttp->getTemplatePath());
+$BufferedOutput = new \Core\Output;
+Block\Head::process(array(), $BufferedOutput);
+try {
+	$content = \Core\Renderer\Http::di()->render($OutputHttp, $OutputHttp->getTemplatePath());
+} catch (\Exception $E) {
+	$content = '';
+}
+$BufferedOutput->bind('html_body', $content);
+
+echo \Core\Renderer\Http::di()->render($BufferedOutput, '__html');

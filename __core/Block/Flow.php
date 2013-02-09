@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Abstract
+ * Description of Trait \Core\Block\Flow
  *
  * @author Vitaliy_Mukhin
  */
@@ -13,7 +13,7 @@ use Core\Input\Http;
 use Core\Output;
 use Core\Renderer;
 
-abstract class Flow extends Block {
+trait Flow {
 
 	/**
 	 *
@@ -27,7 +27,21 @@ abstract class Flow extends Block {
 	 */
 	protected $InputHttp;
 
-	const INITIAL_FLOW_STRING = 'block';
+	/**
+	 * @var string
+	 */
+	protected $initialFlowString = 'block';
+
+	/**
+	 * @return \Core\Output\Http
+	 */
+	protected function invoke() {
+		$Output = new Output\Http;
+
+		$this->Dispatcher->flow($this->InputHttp, $Output);
+
+		return $Output;
+	}
 
 	/**
 	 *
@@ -40,7 +54,7 @@ abstract class Flow extends Block {
 
 		$this->initInputs();
 
-		$this->Dispatcher = Dispatcher::di(array(Dispatcher::PARAM_INITIAL_FLOW => self::INITIAL_FLOW_STRING));
+		$this->Dispatcher = Dispatcher::di(array(Dispatcher::PARAM_INITIAL_FLOW => $this->initialFlowString));
 
 		return $this;
 	}
@@ -63,57 +77,6 @@ abstract class Flow extends Block {
 		                                        Input\Http::INPUT_POST   => $InputDefault->get(Input\Http::INPUT_POST),
 		                                        Input\Http::INPUT_SERVER => $InputDefault->get(Input\Http::INPUT_SERVER),
 		                                        Input\Http::INPUT_COOKIE => $InputDefault->get(Input\Http::INPUT_COOKIE)));
-	}
-
-	/**
-	 * @param Input $InputRoute
-	 *
-	 * @return array
-	 */
-	abstract protected function getRoute(Input $InputRoute);
-
-	/**
-	 *
-	 * @return string
-	 */
-	final protected function invoke() {
-		$Output = new Output\Http;
-
-		$this->Dispatcher->flow($this->InputHttp, $Output);
-
-		return $Output;
-	}
-
-	/**
-	 *
-	 * @param Output $Output
-	 * @param array  $params
-	 */
-	public static function process($params = array(), Output $Output = null) {
-		$Block = new static();
-
-		$Block->init($params);
-
-		$OutputResult = $Block->invoke();
-
-		if ($Output) {
-			$name = static::getBindName();
-			$value = Renderer\Http::di()->render($OutputResult, $OutputResult->getTemplatePath());
-			$Output->bind($name, $value);
-		}
-	}
-
-	/**
-	 * Returns the name of variable, where processed result is binded
-	 *
-	 * @return string
-	 */
-	public static function getBindName() {
-		$class = get_called_class();
-		$class = str_replace('\\', '_', $class);
-		$class = stripos($class, '_') === 0 ? substr($class, 1) : $class;
-
-		return $class;
 	}
 
 }

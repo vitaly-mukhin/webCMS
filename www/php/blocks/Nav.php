@@ -1,28 +1,24 @@
 <?php
 
 /**
- * Description of Flow_Block_Nav
+ * Description of Nav block
  *
  * @author Vitaliy_Mukhin
  */
 namespace App\Block;
 
-use Core\Block;
+use Core\Input;
 
-class Nav1 extends Block {
+class Nav extends \Core\Block {
 
-	/**
-	 *
-	 * @param array        $params
-	 * @param \Core\Output $Output
-	 *
-	 * @return boolean
-	 */
-	public static function process($params = array(), \Core\Output $Output = null) {
+	protected function invoke() {
+		$Output = parent::invoke();
+
 		$Output->bind('navArray', array('Головна' => '/',
 		                                'Блоги'   => '/blog',
 		                                'Альбоми' => '/gallery' //			'Цитатник' => '/quote'
 		                          ));
+		return $Output;
 	}
 
 }

@@ -1,16 +1,15 @@
 <?php
 
 /**
- * Description of Nav block
+ * Description of Login
  *
  * @author Vitaliy_Mukhin
  */
 namespace App\Block\Flow;
-
 use App\Block\Flow;
 use Core\Input;
 
-class Nav extends Flow {
+class Reg extends \Core\Flow {
 
 	/**
 	 * @param \Core\Input $InputRoute
@@ -18,7 +17,7 @@ class Nav extends Flow {
 	 * @return array
 	 */
 	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'nav');
+		return array('action' => 'auth', 'step' => 'reg');
 	}
 
 }

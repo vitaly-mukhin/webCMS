@@ -11,6 +11,8 @@ use Core;
 
 class Flow {
 
+	use Tpl;
+
 	const ACTION_PREFIX = 'action_';
 	const IS_ROOT       = false;
 
@@ -98,25 +100,6 @@ class Flow {
 		} else {
 			return $this->runChildFlow($action);
 		}
-	}
-
-	/**
-	 *
-	 * @param $action
-	 *
-	 * @return string
-	 */
-	protected function getTemplatePath($action) {
-		$array = explode(self::CLASS_DELIMITER, strtolower(get_called_class()));
-		// unset standard Flow
-		unset($array[0], $array[1]);
-		if (static::IS_ROOT) {
-			// unset standard Www
-			unset($array[1]);
-		}
-		$array[] = $action;
-
-		return implode(DIRECTORY_SEPARATOR, $array) . self::TEMPLATE_FILE_EXTENSION;
 	}
 
 	/**

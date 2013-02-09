@@ -9,7 +9,7 @@ namespace App\Block;
 
 class Head extends \Core\Block\Head {
 
-	const TPL = 'block/head/default.twig';
+	const TPL = 'block/head';
 
 	// consts for js scripts
 	const JS_BOOTSTRAP        = 'js/bootstrap-2.2.0.js';
