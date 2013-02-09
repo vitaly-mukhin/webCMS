@@ -12,15 +12,13 @@ class Nav extends Block {
 
 	/**
 	 *
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function action_default() {
-		$this->Output->bind('navArray', array(
-			'Головна' => '/',
-			'Блоги' => '/blog',
-			'Альбоми' => '/gallery'
-//			'Цитатник' => '/quote'
-		));
+		$this->Output->bind('navArray', array('Головна' => '/',
+		                                      'Блоги'   => '/blog',
+		                                      'Альбоми' => '/gallery' //			'Цитатник' => '/quote'
+		                                ));
 	}
 
 }

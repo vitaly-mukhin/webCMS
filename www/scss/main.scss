@@ -3,10 +3,15 @@
 */
 
 body {
-	padding-top: 92px;  
-	padding-bottom: 40px; 
+	padding-top: 60px;
+	padding-bottom: 40px;
+
+	#body-content {
+		width: 1230px;
+		margin: 0 auto;
+	}
 }
 
 a.logo {
-	margin:20px 0;
+	margin: 20px 1px;
 }

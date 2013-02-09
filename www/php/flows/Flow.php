@@ -9,6 +9,4 @@ namespace App;
 
 class Flow extends \Core\Flow {
 
-
-
 }

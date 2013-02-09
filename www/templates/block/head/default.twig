@@ -1,7 +1,8 @@
-<meta charset="utf-8" accesskey="a"/>
-<base href="/" />
+<base href="/"/>
 <title>{{ pageTitle | join(' | ') }}</title>
-{% for jsLink in jsLinks %}<script src="{{jsLink}}"></script>
+{% for jsLink in jsLinks %}
+    <script src="{{ jsLink }}"></script>
 {% endfor %}
-{% for cssLink in cssLinks %}<link rel="stylesheet" href="{{cssLink}}" type="text/css" />
+{% for cssLink in cssLinks %}
+    <link rel="stylesheet" href="{{ cssLink }}" type="text/css"/>
 {% endfor %}

@@ -31,8 +31,7 @@ class Auth extends \App\Flow {
 
 		if (!User::curr()->isLogged()) {
 			User\Auth::f()->authByPwd($this->Input->get(Input\Http::INPUT_POST)->get(User\Auth::LOGIN), $this->Input
-					                                                                                          ->get(Input\Http::INPUT_POST)
-					                                                                                          ->get(User\Auth::PASSWORD));
+					->get(Input\Http::INPUT_POST)->get(User\Auth::PASSWORD));
 		}
 
 		$this->Output->bind('User', User\Auth::f());

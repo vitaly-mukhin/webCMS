@@ -12,13 +12,13 @@ use Core\Input;
 
 class Nav extends Flow {
 
-    /**
-     * @param \Core\Input $InputRoute
-     *
-     * @return array
-     */
-    protected function getRoute(Input $InputRoute) {
-        return array('action' => 'nav');
-    }
+	/**
+	 * @param \Core\Input $InputRoute
+	 *
+	 * @return array
+	 */
+	protected function getRoute(Input $InputRoute) {
+		return array('action' => 'nav');
+	}
 
 }

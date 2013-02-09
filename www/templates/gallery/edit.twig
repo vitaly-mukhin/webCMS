@@ -1,32 +1,35 @@
 {% extends "gallery/__default.twig" %}
 {% block content_gallery %}
-<div class="container-fluid">
-    <form action="" method="post">
-		<fieldset>
-			<legend>Редагування альбому</legend>
-			<div class="control-group">
-				<label class="control-label" for="login">Назва</label>
-				<div class="controls">
-					<input name="title" type="text" class="input-xlarge" id="login" value="{{album.getTitle()}}"/>
-					<p class="help-block">Вкажіть назву галереї, яка буде відображатись у користувачів</p>
-				</div>
-			</div>
-			<div class="control-group well" id="gallery-edit-content">
-				<label class="control-label" for="email">Контент</label>
-				<div class="controls">
-                    {% for item in album.getContent() %}
-                        <div class="gallery-item">
-                            
-                        </div>
-                    {% endfor %}
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="controls">
-					<input value="Зберегти!" type="submit" class="btn btn-large btn-primary" />
-				</div>
-			</div>
-		</fieldset>
-    </form>
-</div>
+    <div class="container-fluid">
+        <form action="" method="post">
+            <fieldset>
+                <legend>Редагування альбому</legend>
+                <div class="control-group">
+                    <label class="control-label" for="login">Назва</label>
+
+                    <div class="controls">
+                        <input name="title" type="text" class="input-xlarge" id="login" value="{{ album.getTitle() }}"/>
+
+                        <p class="help-block">Вкажіть назву галереї, яка буде відображатись у користувачів</p>
+                    </div>
+                </div>
+                <div class="control-group well" id="gallery-edit-content">
+                    <label class="control-label" for="email">Контент</label>
+
+                    <div class="controls">
+                        {% for item in album.getContent() %}
+                            <div class="gallery-item">
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input value="Зберегти!" type="submit" class="btn btn-large btn-primary"/>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 {% endblock %}

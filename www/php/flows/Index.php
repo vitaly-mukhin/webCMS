@@ -11,10 +11,10 @@ use App\Block\Head;
 
 class Index extends Flow {
 
-    public function action_default() {
-        Head::addPageTitle('index');
+	public function action_default() {
+		Head::addPageTitle('index');
 
-        $this->Output->bind('result', 'OK');
-    }
+		$this->Output->bind('result', 'OK');
+	}
 
 }

@@ -2,18 +2,11 @@
 * @outputFile ../public_html/css/main.css
 */
 body {
-  padding-top: 100px;
-  padding-bottom: 40px;
-}
+  padding-top: 60px;
+  padding-bottom: 40px; }
+  body #body-content {
+    width: 1230px;
+    margin: 0 auto; }
 
 a.logo {
-  margin: 20px 0;
-}
-
-#top-user {
-	
-}
-/*#top-user a:hover {
-    text-decoration: none;
-    color: #d9edf7;
-}*/
+  margin: 20px 1px; }

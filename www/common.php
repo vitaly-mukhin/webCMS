@@ -5,11 +5,16 @@ namespace App;
 use VM\Autoloader;
 use Core\Log\Fb;
 
-set_exception_handler(function(\Exception $Exception){
+set_error_handler(function($code, $message, $file, $line, $context) {
+	if (!error_reporting()) {
+		throw new \ErrorException($message, $code, 1, $file, $line, $context);
+	}
+});
+set_exception_handler(function (\Exception $Exception) {
 	echo $Exception->getMessage();
 });
 
-register_shutdown_function(function(){
+register_shutdown_function(function () {
 	if ($e = error_get_last()) {
 		print_r($e);
 		echo 'Hello, World!';
