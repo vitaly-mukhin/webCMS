@@ -1,9 +1,9 @@
 {% extends "gallery/__default.twig" %}
 {% block content_gallery %}
     <div class="list">
-        {% for album in Albums %}
+        {% for Album in Albums %}
             <div class="">
-                <h3><a href="/gallery/{{ album.getId() }}">{{ album.getTitle() }}</a></h3>
+                <h3><a href="/gallery/{{ Album.albumId }}">{{ Album.title }}</a></h3>
             </div>
         {% endfor %}
     </div>

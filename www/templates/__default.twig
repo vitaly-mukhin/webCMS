@@ -1,19 +1,18 @@
-<div class="container-fluid">
-    <div id="body-head">
-        <div class="navbar navbar-fixed-top navbar-inverse">
-            <div class="navbar-inner">
-                <div id="topbar" class="container-fluid">
-                    <a class="logo pull-left"><!-- <img src="/img/logo.png" alt="Main Logo"/> --></a>
-                    <div class="row-fluid">
-                        {{ App_Block_Nav | default('<!-- here should be the Block\Nav -->') | raw }}
-                        {{ App_Block_Login | default('<!-- here should be the Block\Login -->') | raw }}
-                    </div>
+<div id="body-head">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div id="topbar" class="container-fluid">
+                <a class="logo pull-left"><!-- <img src="/img/logo.png" alt="Main Logo"/> --></a>
+
+                <div class="row-fluid">
+                    {{ App_Block_Nav | default('<!-- here should be the Block\Nav -->') | raw }}
+                    {{ App_Block_Login | default('<!-- here should be the Block\Login -->') | raw }}
                 </div>
             </div>
         </div>
     </div>
-    {% block head %}<h1 id="body-title">Hello, World!</h1>{% endblock %}
-    <div id="body-content">
-        {% block content %}{% endblock %}
-    </div>
+</div>
+{% block head %}<h1 id="body-title">Hello, World!</h1>{% endblock %}
+<div id="body-content">
+    {% block content %}{% endblock %}
 </div>

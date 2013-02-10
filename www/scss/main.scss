@@ -7,12 +7,14 @@ body {
 	padding-bottom: 40px;
 
 	#topbar {
-		width: 1240px;
+		min-width: 1000px;
+		max-width: 1240px;
 		margin: 0 auto;
 	}
 
 	#body-content {
-		width: 1230px;
+		max-width: 1230px;
+		min-width: 1000px;
 		margin: 0 auto;
 	}
 }

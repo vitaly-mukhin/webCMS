@@ -12,11 +12,19 @@ use App\Block\Head;
 use App\Block\Auth;
 use Core\Flow;
 use App\Block\Nav;
+use App\Block\Login;
 
 class Main extends \App\Flow {
 
-	const IS_ROOT        = true;
+	const IS_ROOT = true;
+
 	const DEFAULT_ACTION = 'default';
+
+	public function action_default() {
+		$next = $this->Input->get(Input\Http::INPUT_ROUTE)->get('page', 'index');
+		$next = $next ? : 'index';
+		$this->runChildFlow($next);
+	}
 
 	protected function callPre($action) {
 		parent::callPre($action);
@@ -34,19 +42,13 @@ class Main extends \App\Flow {
 		Head::addCssLink(Head::CSS_BOOTSTRAP);
 		Head::addCssLink(Head::CSS_MAIN);
 
-		//		Block\Login::process(array(), $this->Output);
+		Login::process(array(), $this->Output);
 	}
 
 	protected function callPost($result) {
 		Nav::process(array(), $this->Output);
 
 		parent::callPost($result);
-	}
-
-	public function action_default() {
-		$next = $this->Input->get(Input\Http::INPUT_ROUTE)->get('page', 'index');
-		$next = $next ? : 'index';
-		$this->runChildFlow($next);
 	}
 
 }

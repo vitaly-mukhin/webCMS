@@ -7,11 +7,12 @@
  */
 namespace App\Block;
 use App\Block;
+use Core\Block\Flow;
 use Core\Input;
 
 class Login extends \Core\Block {
 
-	use \Core\Block\Flow;
+	use Flow;
 
 	/**
 	 * @param Input $InputRoute

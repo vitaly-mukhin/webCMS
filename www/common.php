@@ -5,7 +5,7 @@ namespace App;
 use VM\Autoloader;
 use Core\Log\Fb;
 
-set_error_handler(function($code, $message, $file, $line, $context) {
+set_error_handler(function ($code, $message, $file, $line, $context) {
 	if (!error_reporting()) {
 		throw new \ErrorException($message, $code, 1, $file, $line, $context);
 	}

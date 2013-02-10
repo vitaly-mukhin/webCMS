@@ -1,10 +1,47 @@
 <?php
 
+namespace App;
+
+use Core\Input;
+use Core\Result;
+use Core\User;
+use Fw_Db;
+
+/**
+ * Class Album
+ *
+ * @package App
+ *
+ * @property int    $albumId
+ * @property int    $userId
+ * @property string $title
+ * @property string $dateModified
+ * @property string $dateCreated
+ *
+ */
 class Album {
+
+	const TBL = 'albums';
+
+	const LATEST_N = 10;
+
+	protected static $tblFields = array('album_id', 'title', 'date_created', 'date_modified', 'user_id');
+
+	protected static $dataKeys;
 
 	/**
 	 *
-	 * @param Input $data
+	 * @var array
+	 */
+	protected $data;
+
+	public function __construct($data) {
+		$this->data = new Input($data);
+	}
+
+	/**
+	 *
+	 * @param \Core\Input $data
 	 *
 	 * @return Result
 	 */
@@ -13,7 +50,7 @@ class Album {
 			return $Result;
 		}
 
-		if ($id = Album_Mapper::add($Result->value)) {
+		if ($id = self::_add($Result->value)) {
 			return new Result($id);
 		}
 
@@ -24,7 +61,7 @@ class Album {
 	 *
 	 * @param Input $Data
 	 *
-	 * @return \Result
+	 * @return Result
 	 */
 	protected static function validate(Input $Data) {
 		if (!($title = $Data->get('title')) || !trim($title)) {
@@ -34,41 +71,93 @@ class Album {
 		return new Result($Data);
 	}
 
+	protected static function _add(Input $Data) {
+		$values = array(
+			'title'   => trim($Data->get('title', '')),
+			'user_id' => User::curr()->getUserId(),
+		);
+
+		$id = Fw_Db::i()->query()->insert(self::TBL, $values)->fetchRow();
+
+		return $id;
+	}
+
+	public static function getLatest($n = self::LATEST_N) {
+		return self::getList($n);
+	}
+
 	/**
 	 *
-	 * @var array
+	 * @param int   $n
+	 * @param array $params
+	 *
+	 * @return array
 	 */
-	protected $data;
+	protected static function getList($n = self::LATEST_N, $params = array()) {
+		$db = Fw_Db::i();
+		$q  = $db->query()->select()->from(self::TBL, self::$tblFields)->limit($n)->orderBy(array('date_created' => false));
+		if (!empty($params['__where__'])) {
+			foreach ($params['__where__'] as $where => $value) {
+				$q->where($where, $value);
+			}
+		}
+		$list = $q->fetch();
+
+		$result = array();
+		foreach ($list as $row) {
+			$result[] = new static($row);
+		}
+
+		return $result;
+	}
+
+	public static function getOwn($n = self::LATEST_N) {
+		return self::getList($n, array('__where__' => array('user_id = ?' => User::curr()->getUserId())));
+	}
+
+	/***********************************************/
 
 	/**
 	 *
-	 * @var Album_Mapper
+	 * @param int $id
+	 *
+	 * @return self|null
 	 */
-	protected $Mapper;
+	public static function getById($id) {
+		$row = Fw_Db::i()->query()->select()->from(self::TBL, self::$tblFields)->where('album_id = ?', $id)->fetchRow();
 
-	public function __construct($data, Album_Mapper $Mapper) {
-		$this->data   = new Input($data);
-		$this->Mapper = $Mapper;
+		if ($row) {
+			return new static($row);
+		}
+
+		return null;
 	}
 
-	public function getTitle() {
-		return $this->data->get('title');
+	public function __get($name) {
+		if (!self::$dataKeys) {
+			$this->setDataKeys();
+		}
+
+		if (($k = array_search($name, self::$dataKeys)) !== false) {
+			return $this->data->get($k);
+		}
 	}
 
-	public function getId() {
-		return $this->data->get('album_id');
+	public function __isset($name) {
+		if (!self::$dataKeys) {
+			$this->setDataKeys();
+		}
+
+		return in_array($name, self::$dataKeys);
 	}
 
-	public function getUserId() {
-		return $this->data->get('user_id');
-	}
-
-	public function getDateCreated() {
-		return $this->data->get('date_created');
-	}
-
-	public function getContent() {
-		return array();
+	protected function setDataKeys() {
+		self::$dataKeys = array_fill_keys($this->data->keys(), '');
+		array_walk(self::$dataKeys,
+			function (&$v, $k) {
+				$n = str_replace('_', ' ', $k);
+				$v = lcfirst(str_replace(' ', '', ucwords($n)));
+			});
 	}
 
 }

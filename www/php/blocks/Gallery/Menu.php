@@ -5,11 +5,10 @@
  *
  * @author Vitaliy_Mukhin
  */
-namespace App\Block\Flow\Gallery;
-use App\Block\Flow;
+namespace App\Block\Gallery;
 use Core\Input;
 
-class Menu extends Flow {
+class Menu extends \Core\Block {
 
 	/**
 	 * @param \Core\Input $InputRoute

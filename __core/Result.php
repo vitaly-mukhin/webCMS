@@ -1,4 +1,5 @@
 <?php
+namespace Core;
 
 /**
  * Description of Result
@@ -9,7 +10,6 @@
  * @property-read mixed $data
  * @property-read mixed $error
  */
-namespace Core;
 class Result {
 
 	/**

@@ -5,6 +5,8 @@
     {{ App_Block_Head | default('<!-- here should be the Block\Head -->') | raw }}
 </head>
 <body>
-{{ html_body | raw }}
+<div class="container-fluid">
+    {{ html_body | raw }}
+    <div>
 </body>
 </html>

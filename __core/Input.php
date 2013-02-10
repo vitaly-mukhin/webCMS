@@ -39,6 +39,13 @@ class Input {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function keys() {
+		return array_keys($this->data);
+	}
+
+	/**
 	 * Get a value from a holded data array.
 	 *
 	 * @param mixed $key

@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Flow;
+use App\Block\Gallery\Menu;
+use App\Block\Gallery\Own;
 use \App\Flow;
+use \App\Album;
 use \App\Block\Head;
 use \Core\Input;
 
@@ -11,8 +14,8 @@ class Gallery extends Flow {
 		Head::addPageTitle('Альбоми');
 		Head::addJsLink(Head::JS_GALLERY);
 
-		\App\Block\Flow\Gallery\Menu::process(array(), $this->Output);
-		\App\Block\Flow\Gallery\Own::process(array(), $this->Output);
+		Menu::process(array(), $this->Output);
+		Own::process(array(), $this->Output);
 
 		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
 		if (intval($action) > 0) {
@@ -29,7 +32,7 @@ class Gallery extends Flow {
 	public function action_list() {
 		Head::addPageTitle('Найновіші');
 
-		$Albums = Album_Mapper::getLatest();
+		$Albums = Album::getLatest();
 
 		$this->Output->bind('Albums', $Albums);
 
@@ -45,13 +48,13 @@ class Gallery extends Flow {
 			$id = $action;
 		}
 
-		$Album = Album_Mapper::getById($id);
+		$Album = Album::getById($id);
 
 		if (!$Album) {
 			$this->runChildFlow('noalbum');
 		}
 
-		Head::addPageTitle($Album->getTitle());
+		Head::addPageTitle($Album->title);
 
 		$this->Output->bind('Album', $Album);
 
@@ -80,7 +83,7 @@ class Gallery extends Flow {
 		$Result = Album::add($post);
 
 		if ($Result->error) {
-			$this->Output->bind('errors', (array) $Result->error);
+			$this->Output->bind('errors', (array)$Result->error);
 
 			return true;
 		}
@@ -116,7 +119,7 @@ class Gallery extends Flow {
 		$Result = Album::edit($post);
 
 		if ($Result->error) {
-			$this->Output->bind('errors', (array) $Result->error);
+			$this->Output->bind('errors', (array)$Result->error);
 
 			return true;
 		}
