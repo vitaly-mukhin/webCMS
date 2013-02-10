@@ -3,6 +3,7 @@
 namespace App;
 
 use Core\Input;
+use Core\Model\Data;
 use Core\Result;
 use Core\User;
 use Fw_Db;
@@ -21,22 +22,16 @@ use Fw_Db;
  */
 class Album {
 
+	use Data;
+
 	const TBL = 'albums';
 
 	const LATEST_N = 10;
 
 	protected static $tblFields = array('album_id', 'title', 'date_created', 'date_modified', 'user_id');
 
-	protected static $dataKeys;
-
-	/**
-	 *
-	 * @var array
-	 */
-	protected $data;
-
 	public function __construct($data) {
-		$this->data = new Input($data);
+		$this->traitSetData($data);
 	}
 
 	/**
@@ -134,30 +129,11 @@ class Album {
 	}
 
 	public function __get($name) {
-		if (!self::$dataKeys) {
-			$this->setDataKeys();
-		}
-
-		if (($k = array_search($name, self::$dataKeys)) !== false) {
-			return $this->data->get($k);
-		}
+		return $this->traitGetter($name);
 	}
 
 	public function __isset($name) {
-		if (!self::$dataKeys) {
-			$this->setDataKeys();
-		}
-
-		return in_array($name, self::$dataKeys);
-	}
-
-	protected function setDataKeys() {
-		self::$dataKeys = array_fill_keys($this->data->keys(), '');
-		array_walk(self::$dataKeys,
-			function (&$v, $k) {
-				$n = str_replace('_', ' ', $k);
-				$v = lcfirst(str_replace(' ', '', ucwords($n)));
-			});
+		return $this->traitIsset($name);
 	}
 
 }

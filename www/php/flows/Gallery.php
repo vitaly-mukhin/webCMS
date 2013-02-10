@@ -7,6 +7,7 @@ use \App\Flow;
 use \App\Album;
 use \App\Block\Head;
 use \Core\Input;
+use \Core\User;
 
 class Gallery extends Flow {
 
@@ -40,8 +41,6 @@ class Gallery extends Flow {
 	}
 
 	public function action_view() {
-		Head::addPageTitle('Перегляд');
-
 		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
 		$id     = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
 		if (intval($action) > 0) {
@@ -54,7 +53,7 @@ class Gallery extends Flow {
 			$this->runChildFlow('noalbum');
 		}
 
-		Head::addPageTitle($Album->title);
+		Head::addPageTitle('Перегляд альбому "' . $Album->title . '"');
 
 		$this->Output->bind('Album', $Album);
 

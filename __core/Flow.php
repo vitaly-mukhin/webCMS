@@ -14,7 +14,18 @@ class Flow {
 	use Tpl;
 
 	const ACTION_PREFIX = 'action_';
-	const IS_ROOT       = false;
+
+	const IS_ROOT = false;
+
+	const DEFAULT_ACTION = 'default';
+
+	const CLASS_DELIMITER = '\\';
+
+	const FLOW_NOT_FOUND_CLASS = 'NoFlowFound';
+
+	const TEMPLATE_FILE_EXTENSION = '.twig';
+
+	//	const CLASS_DELIMITER         = '_';
 
 	/**
 	 *
@@ -33,12 +44,6 @@ class Flow {
 	 * @var string
 	 */
 	protected $runnedAction;
-
-	const DEFAULT_ACTION = 'default';
-	//	const CLASS_DELIMITER         = '_';
-	const CLASS_DELIMITER         = '\\';
-	const FLOW_NOT_FOUND_CLASS    = 'NoFlowFound';
-	const TEMPLATE_FILE_EXTENSION = '.twig';
 
 	/**
 	 * @param Input\Http  $Input
@@ -68,6 +73,14 @@ class Flow {
 		$this->callPost($result);
 
 		return $result;
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getDefaultAction() {
+		return static::DEFAULT_ACTION;
 	}
 
 	/**
@@ -104,23 +117,18 @@ class Flow {
 
 	/**
 	 * @param string $action
+	 *
+	 * @return bool|string
 	 */
 	protected function runChildFlow($action) {
 		$Flow = $this->getFlow($action);
 		if ($Flow != $this) {
 			$Flow->init($this->Input, $this->Output);
-			$Flow->action();
-		} else {
-			$this->action($action);
-		}
-	}
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getDefaultAction() {
-		return static::DEFAULT_ACTION;
+			return $Flow->action();
+		} else {
+			return $this->action($action);
+		}
 	}
 
 	/**
@@ -155,47 +163,6 @@ class Flow {
 	}
 
 	/**
-	 * Build class name for child flow (by using $childFlowSuffix)
-	 *
-	 * @param string $flowClass
-	 * @param string $childFlowSuffix
-	 *
-	 * @return string
-	 */
-	protected function getChildFlowName($flowClass, $childFlowSuffix) {
-		return $flowClass . self::CLASS_DELIMITER . ucfirst($childFlowSuffix);
-	}
-
-	/**
-	 * Transform $flowClass into the parent NoFlowFound class
-	 *
-	 * Example 1:
-	 *     $flowClass = Flow_Block\Auth_Reset
-	 * Return:
-	 *     Flow_Block\Auth_NoFlowFound
-	 *
-	 * Example 2:
-	 *     $flowClass = Flow_Block\Auth_NoFlowFound
-	 * Return:
-	 *     Flow_Block_NoFlowFound
-	 *
-	 * @param string $flowClass
-	 *
-	 * @return string
-	 */
-	protected function buildNoFloFoundClass($flowClass) {
-		// remove _NoFlowFound from the flow class name
-		$flowClassShort = str_replace(static::FLOW_NOT_FOUND_CLASS, '', $flowClass);
-		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
-
-		// remove prelast part of class name
-		$flowClassShort = substr($flowClassShort, 0, strrpos($flowClassShort, self::CLASS_DELIMITER));
-		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
-
-		return $this->getChildFlowName($flowClassShort, self::FLOW_NOT_FOUND_CLASS);
-	}
-
-	/**
 	 * Get the nearest relative NoFlowFound class
 	 *
 	 * Example:
@@ -223,6 +190,47 @@ class Flow {
 		}
 
 		return $flowClass;
+	}
+
+	/**
+	 * Transform $flowClass into the parent NoFlowFound class
+	 *
+	 * Example 1:
+	 *     $flowClass = Flow\Block\Auth\Reset
+	 * Return:
+	 *     Flow\Block\Auth\NoFlowFound
+	 *
+	 * Example 2:
+	 *     $flowClass = Flow\Block\Auth\NoFlowFound
+	 * Return:
+	 *     Flow\Block\NoFlowFound
+	 *
+	 * @param string $flowClass
+	 *
+	 * @return string
+	 */
+	protected function buildNoFloFoundClass($flowClass) {
+		// remove _NoFlowFound from the flow class name
+		$flowClassShort = str_replace(static::FLOW_NOT_FOUND_CLASS, '', $flowClass);
+		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
+
+		// remove prelast part of class name
+		$flowClassShort = substr($flowClassShort, 0, strrpos($flowClassShort, self::CLASS_DELIMITER));
+		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
+
+		return $this->getChildFlowName($flowClassShort, self::FLOW_NOT_FOUND_CLASS);
+	}
+
+	/**
+	 * Build class name for child flow (by using $childFlowSuffix)
+	 *
+	 * @param string $flowClass
+	 * @param string $childFlowSuffix
+	 *
+	 * @return string
+	 */
+	protected function getChildFlowName($flowClass, $childFlowSuffix) {
+		return $flowClass . self::CLASS_DELIMITER . ucfirst($childFlowSuffix);
 	}
 
 	/**
