@@ -2,11 +2,11 @@
 
 // calling mode config, and setup mode params
 namespace App;
-//use Core\Input;
-//use Core\Router;
-//use Core\Dispatcher;
-//use Core\Output;
-//use Core\Renderer;
+	//use Core\Input;
+	//use Core\Router;
+	//use Core\Dispatcher;
+	//use Core\Output;
+	//use Core\Renderer;
 //use Core\Renderer\Http\Html;
 
 $ModeConfig = \Core\Input\Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
@@ -38,9 +38,18 @@ switch ($InputRoute->get('page')) {
 }
 
 $Dispatcher = \Core\Dispatcher::di(array(\Core\Dispatcher::PARAM_MODE_CONFIG  => $ModeConfig,
-                                   \Core\Dispatcher::PARAM_INITIAL_FLOW => $initialFlow));
+                                         \Core\Dispatcher::PARAM_INITIAL_FLOW => $initialFlow));
 
 $OutputHttp = new \Core\Output\Http;
 $Dispatcher->flow($InputHttp, $OutputHttp);
 
-echo \Core\Renderer\Http\Html::di()->render($OutputHttp, $OutputHttp->getTemplatePath());
+$BufferedOutput = new \Core\Output;
+Block\Head::process(array(), $BufferedOutput);
+try {
+	$content = \Core\Renderer\Http::di()->render($OutputHttp, $OutputHttp->getTemplatePath());
+} catch (\Exception $E) {
+	$content = '';
+}
+$BufferedOutput->bind('html_body', $content);
+
+echo \Core\Renderer\Http::di()->render($BufferedOutput, '__html');

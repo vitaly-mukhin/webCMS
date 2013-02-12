@@ -8,6 +8,8 @@
 namespace Core\Renderer;
 class Engine {
 
+	const  TEMPLATE_FILE_EXTENSION = '.twig';
+
 	/**
 	 *
 	 * @var \Twig_Environment
@@ -41,11 +43,12 @@ class Engine {
 	 */
 	public function render($data, $templatePath) {
 
-		if (!file_exists(PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . $templatePath)) {
+		$filename = PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . $templatePath . static::TEMPLATE_FILE_EXTENSION;
+		if (!file_exists($filename)) {
 			return '<!-- template "' . htmlspecialchars($templatePath, ENT_IGNORE, 'UTF-8') . '" not found -->';
 		}
 
-		$Template = $this->core->loadTemplate($templatePath);
+		$Template = $this->core->loadTemplate($templatePath . static::TEMPLATE_FILE_EXTENSION);
 
 		$content = $Template->render($data);
 

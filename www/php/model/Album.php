@@ -1,72 +1,139 @@
 <?php
 
+namespace App;
+
+use Core\Input;
+use Core\Model\Data;
+use Core\Result;
+use Core\User;
+use Fw_Db;
+
+/**
+ * Class Album
+ *
+ * @package App
+ *
+ * @property int    $albumId
+ * @property int    $userId
+ * @property string $title
+ * @property string $dateModified
+ * @property string $dateCreated
+ *
+ */
 class Album {
 
-    /**
-     * 
-     * @param Input $data
-     * @return Result
-     */
-    public static function add(Input $data) {
-        if (($Result = static::validate($data)) && $Result->error) {
-            return $Result;
-        }
+	use Data;
 
-        if ($id = Album_Mapper::add($Result->value)) {
-            return new Result($id);
-        }
+	const TBL = 'albums';
 
-        return new Result(null, 'Виникла помилка. Спробуйте, будь ласка, пізніше');
-    }
+	const LATEST_N = 10;
 
-    /**
-     * 
-     * @param Input $Data
-     * @return \Result
-     */
-    protected static function validate(Input $Data) {
-        if (!($title = $Data->get('title')) || !trim($title)) {
-            return new Result(NULL, array('Поле "Назва" пусте'));
-        }
+	protected static $tblFields = array('album_id', 'title', 'date_created', 'date_modified', 'user_id');
 
-        return new Result($Data);
-    }
+	public function __construct($data) {
+		$this->traitSetData($data);
+	}
 
-    /**
-     *
-     * @var array
-     */
-    protected $data;
+	/**
+	 *
+	 * @param \Core\Input $data
+	 *
+	 * @return Result
+	 */
+	public static function add(Input $data) {
+		if (($Result = static::validate($data)) && $Result->error) {
+			return $Result;
+		}
 
-    /**
-     *
-     * @var Album_Mapper
-     */
-    protected $Mapper;
+		if ($id = self::_add($Result->value)) {
+			return new Result($id);
+		}
 
-    public function __construct($data, Album_Mapper $Mapper) {
-        $this->data = new Input($data);
-        $this->Mapper = $Mapper;
-    }
+		return new Result(null, 'Виникла помилка. Спробуйте, будь ласка, пізніше');
+	}
 
-    public function getTitle() {
-        return $this->data->get('title');
-    }
+	/**
+	 *
+	 * @param Input $Data
+	 *
+	 * @return Result
+	 */
+	protected static function validate(Input $Data) {
+		if (!($title = $Data->get('title')) || !trim($title)) {
+			return new Result(null, array('Поле "Назва" пусте'));
+		}
 
-    public function getId() {
-        return $this->data->get('album_id');
-    }
+		return new Result($Data);
+	}
 
-    public function getUserId() {
-        return $this->data->get('user_id');
-    }
+	protected static function _add(Input $Data) {
+		$values = array(
+			'title'   => trim($Data->get('title', '')),
+			'user_id' => User::curr()->getUserId(),
+		);
 
-    public function getDateCreated() {
-        return $this->data->get('date_created');
-    }
+		$id = Fw_Db::i()->query()->insert(self::TBL, $values)->fetchRow();
 
-    public function getContent() {
-        return array();
-    }
+		return $id;
+	}
+
+	public static function getLatest($n = self::LATEST_N) {
+		return self::getList($n);
+	}
+
+	/**
+	 *
+	 * @param int   $n
+	 * @param array $params
+	 *
+	 * @return array
+	 */
+	protected static function getList($n = self::LATEST_N, $params = array()) {
+		$db = Fw_Db::i();
+		$q  = $db->query()->select()->from(self::TBL, self::$tblFields)->limit($n)->orderBy(array('date_created' => false));
+		if (!empty($params['__where__'])) {
+			foreach ($params['__where__'] as $where => $value) {
+				$q->where($where, $value);
+			}
+		}
+		$list = $q->fetch();
+
+		$result = array();
+		foreach ($list as $row) {
+			$result[] = new static($row);
+		}
+
+		return $result;
+	}
+
+	public static function getOwn($n = self::LATEST_N) {
+		return self::getList($n, array('__where__' => array('user_id = ?' => User::curr()->getUserId())));
+	}
+
+	/***********************************************/
+
+	/**
+	 *
+	 * @param int $id
+	 *
+	 * @return self|null
+	 */
+	public static function getById($id) {
+		$row = Fw_Db::i()->query()->select()->from(self::TBL, self::$tblFields)->where('album_id = ?', $id)->fetchRow();
+
+		if ($row) {
+			return new static($row);
+		}
+
+		return null;
+	}
+
+	public function __get($name) {
+		return $this->traitGetter($name);
+	}
+
+	public function __isset($name) {
+		return $this->traitIsset($name);
+	}
 
 }

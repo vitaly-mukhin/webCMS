@@ -5,19 +5,24 @@
  *
  * @author Vitaliy_Mukhin
  */
-class Flow_Block_Nav extends Flow_AbstractBlock {
+namespace App\Block;
+
+use Core\Block;
+
+class Nav1 extends Block {
 
 	/**
 	 *
-	 * @return boolean 
+	 * @param array        $params
+	 * @param \Core\Output $Output
+	 *
+	 * @return boolean
 	 */
-	public function action_default() {
-		$this->Output->bind('navArray', array(
-			'Головна' => '/',
-			'Блоги' => '/blog',
-			'Альбоми' => '/gallery'
-//			'Цитатник' => '/quote'
-		));
+	public static function process($params = array(), \Core\Output $Output = null) {
+		$Output->bind('navArray', array('Головна' => '/',
+		                                'Блоги'   => '/blog',
+		                                'Альбоми' => '/gallery' //			'Цитатник' => '/quote'
+		                          ));
 	}
 
 }

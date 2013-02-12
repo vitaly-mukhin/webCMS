@@ -13,271 +13,271 @@ use Core\Result;
 
 class Auth {
 
-    const USER_ID         = 'user_id';
-    const LOGIN           = 'login';
-    const PASSWORD        = 'password';
-    const HASH            = 'hash';
-    const PASSWORD_REPEAT = 'password_repeat';
+	const USER_ID         = 'user_id';
+	const LOGIN           = 'login';
+	const PASSWORD        = 'password';
+	const HASH            = 'hash';
+	const PASSWORD_REPEAT = 'password_repeat';
 
-    /**
-     * Storage, which contains data
-     *
-     * @var Input
-     */
-    protected $userAuth = null;
+	/**
+	 * Storage, which contains data
+	 *
+	 * @var Input
+	 */
+	protected $userAuth = null;
 
-    /**
-     * @var \Fw_Db
-     */
-    protected $Db;
+	/**
+	 * @var \Fw_Db
+	 */
+	protected $Db;
 
-    protected function __construct() {
-        $this->Db = \Fw_Db::i();
-    }
+	protected function __construct() {
+		$this->Db = \Fw_Db::i();
+	}
 
-    /**
-     * Factory method for creating new instance, and initiating it
-     *
-     * @return \Core\User\Auth
-     */
-    public static function f() {
-        $UserAuth = new self();
+	/**
+	 * Factory method for creating new instance, and initiating it
+	 *
+	 * @return \Core\User\Auth
+	 */
+	public static function f() {
+		$UserAuth = new self();
 
-        $UserAuth->init();
+		$UserAuth->init();
 
-        return $UserAuth;
-    }
+		return $UserAuth;
+	}
 
-    /**
-     * Check the data for creating a new User
-     *
-     * @param Input $Data
-     *
-     * @return \Core\Result
-     */
-    public function checkReg(Input $Data) {
-        $result = true;
-        $msgs   = array();
+	/**
+	 * Check the data for creating a new User
+	 *
+	 * @param Input $Data
+	 *
+	 * @return \Core\Result
+	 */
+	public function checkReg(Input $Data) {
+		$result = true;
+		$msgs   = array();
 
-        $login = $Data->get(self::LOGIN);
-        $pwd   = $Data->get(self::PASSWORD);
-        $pwd2  = $Data->get(self::PASSWORD_REPEAT);
+		$login = $Data->get(self::LOGIN);
+		$pwd   = $Data->get(self::PASSWORD);
+		$pwd2  = $Data->get(self::PASSWORD_REPEAT);
 
-        switch (true) {
-            case (!$login):
-                $msgs[] = 'Поле Логін не може бути пустим';
-                $result = false;
-                break;
+		switch (true) {
+			case (!$login):
+				$msgs[] = 'Поле Логін не може бути пустим';
+				$result = false;
+				break;
 
-            case (!preg_match('/^\w[A-z0-9]*/i', $login)):
-                $msgs[] = 'Поле Логін повинно починатись із літери та містити як мінімум 2 символи';
-                $result = false;
-                break;
+			case (!preg_match('/^\w[A-z0-9]*/i', $login)):
+				$msgs[] = 'Поле Логін повинно починатись із літери та містити як мінімум 2 символи';
+				$result = false;
+				break;
 
-            case (!$pwd || !$pwd2):
-                $msgs[] = 'Поля Пароль та Пароль повторно не можуть бути пустими';
-                $result = false;
-                break;
+			case (!$pwd || !$pwd2):
+				$msgs[] = 'Поля Пароль та Пароль повторно не можуть бути пустими';
+				$result = false;
+				break;
 
-            case ($pwd != $pwd2):
-                $msgs[] = 'Поля Пароль та Пароль повторно повинні збігатися';
-                $result = false;
-                break;
-        }
+			case ($pwd != $pwd2):
+				$msgs[] = 'Поля Пароль та Пароль повторно повинні збігатися';
+				$result = false;
+				break;
+		}
 
-        $result = $result && $this->_checkReg($Data);
+		$result = $result && $this->_checkReg($Data);
 
-        return new Result(false, !$result, $msgs);
-    }
+		return new Result(false, !$result, $msgs);
+	}
 
-    /**
-     * Initiating the storage with empty data
-     */
-    protected function init() {
+	/**
+	 * Initiating the storage with empty data
+	 */
+	protected function init() {
 
-        $Data = $this->getEmptyAuth();
+		$Data = $this->getEmptyAuth();
 
-        $this->setAuth($Data);
-    }
+		$this->setAuth($Data);
+	}
 
-    /**
-     * Returns empty data for initial
-     *
-     * @return Input
-     */
-    protected function getEmptyAuth() {
-        return new Input(array());
-    }
+	/**
+	 * Returns empty data for initial
+	 *
+	 * @return Input
+	 */
+	protected function getEmptyAuth() {
+		return new Input(array());
+	}
 
-    /**
-     * @param Input $Auth
-     *
-     * @return \Core\User\Auth
-     */
-    protected function setAuth(Input $Auth) {
-        $this->userAuth = $Auth;
+	/**
+	 * @param Input $Auth
+	 *
+	 * @return \Core\User\Auth
+	 */
+	protected function setAuth(Input $Auth) {
+		$this->userAuth = $Auth;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Authenticating user with login/password combination
-     *
-     * @param string $login
-     * @param string $password
-     *
-     * @return \Core\User\Auth
-     */
-    public function authByPwd($login, $password) {
+	/**
+	 * Authenticating user with login/password combination
+	 *
+	 * @param string $login
+	 * @param string $password
+	 *
+	 * @return \Core\User\Auth
+	 */
+	public function authByPwd($login, $password) {
 
-        $hash = $this->buildHash($login, $password);
+		$hash = $this->buildHash($login, $password);
 
-        $this->setAuth($this->byHash($login, $hash));
+		$this->setAuth($this->byHash($login, $hash));
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Authenticating user with login/hash combination
-     *
-     * @param string $login
-     * @param string $hash
-     *
-     * @return \Core\User\Auth
-     */
-    public function authByHash($login, $hash) {
+	/**
+	 * Authenticating user with login/hash combination
+	 *
+	 * @param string $login
+	 * @param string $hash
+	 *
+	 * @return \Core\User\Auth
+	 */
+	public function authByHash($login, $hash) {
 
-        $this->setAuth($this->byHash($login, $hash));
+		$this->setAuth($this->byHash($login, $hash));
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Unified method for retrieving the data from storage
-     *
-     * @param string $field
-     *
-     * @return mixed
-     */
-    protected function get($field) {
-        return $this->userAuth->get($field);
-    }
+	/**
+	 * Unified method for retrieving the data from storage
+	 *
+	 * @param string $field
+	 *
+	 * @return mixed
+	 */
+	protected function get($field) {
+		return $this->userAuth->get($field);
+	}
 
-    /**
-     * Providing the registration
-     *
-     * @param int   $user_id
-     * @param Input $Data
-     *
-     * @return int
-     */
-    public function reg($user_id, Input $Data) {
-        $Data = new Input(array(self::F_USER_ID => $user_id,
-                                self::F_LOGIN   => $Data->get(self::LOGIN),
-                                self::F_HASH    => $this->buildHash($Data->get(self::LOGIN), $Data->get(self::PASSWORD))));
+	/**
+	 * Providing the registration
+	 *
+	 * @param int   $user_id
+	 * @param Input $Data
+	 *
+	 * @return int
+	 */
+	public function reg($user_id, Input $Data) {
+		$Data = new Input(array(self::F_USER_ID => $user_id,
+		                        self::F_LOGIN   => $Data->get(self::LOGIN),
+		                        self::F_HASH    => $this->buildHash($Data->get(self::LOGIN), $Data->get(self::PASSWORD))));
 
-        return $this->_reg($Data);
-    }
+		return $this->_reg($Data);
+	}
 
-    /**
-     * Build hash-string with login/password combination
-     *
-     * @param string $login
-     * @param string $password
-     *
-     * @return string
-     */
-    private function buildHash($login, $password) {
-        return sha1($login . ' / ' . $password);
-    }
+	/**
+	 * Build hash-string with login/password combination
+	 *
+	 * @param string $login
+	 * @param string $password
+	 *
+	 * @return string
+	 */
+	private function buildHash($login, $password) {
+		return sha1($login . ' / ' . $password);
+	}
 
-    /**
-     * Get the USER_ID
-     *
-     * @return int|null
-     */
-    public function getUserId() {
-        return $this->get(self::F_USER_ID);
-    }
+	/**
+	 * Get the USER_ID
+	 *
+	 * @return int|null
+	 */
+	public function getUserId() {
+		return $this->get(self::F_USER_ID);
+	}
 
-    /**
-     * Get the LOGIN
-     *
-     * @return string|null
-     */
-    public function getLogin() {
-        return $this->get(self::F_LOGIN);
-    }
+	/**
+	 * Get the LOGIN
+	 *
+	 * @return string|null
+	 */
+	public function getLogin() {
+		return $this->get(self::F_LOGIN);
+	}
 
-    /**
-     * Get the HASH
-     *
-     * @return string|null
-     */
-    public function getHash() {
-        return $this->get(self::F_HASH);
-    }
+	/**
+	 * Get the HASH
+	 *
+	 * @return string|null
+	 */
+	public function getHash() {
+		return $this->get(self::F_HASH);
+	}
 
-    const F_AUTH_ID = 'auth_id';
-    const F_USER_ID = 'user_id';
-    const F_LOGIN   = 'login';
-    const F_HASH    = 'hash';
+	const F_AUTH_ID = 'auth_id';
+	const F_USER_ID = 'user_id';
+	const F_LOGIN   = 'login';
+	const F_HASH    = 'hash';
 
-    /**
-     * @var string
-     */
-    protected $tableName = 'user_auths';
+	/**
+	 * @var string
+	 */
+	protected $tableName = 'user_auths';
 
-    /**
-     * @var array
-     */
-    private static $fields = array(
-        self::F_AUTH_ID, self::F_USER_ID, self::F_LOGIN, self::F_HASH
-    );
+	/**
+	 * @var array
+	 */
+	private static $fields
+			= array(self::F_AUTH_ID,
+			        self::F_USER_ID,
+			        self::F_LOGIN,
+			        self::F_HASH);
 
-    /**
-     * @param string $login
-     * @param string $hash
-     *
-     * @return Input
-     */
-    public function byHash($login, $hash) {
-        $Q = $this->Db->query();
+	/**
+	 * @param string $login
+	 * @param string $hash
+	 *
+	 * @return Input
+	 */
+	public function byHash($login, $hash) {
+		$Q = $this->Db->query();
 
-        $Q->select()->from($this->tableName, self::$fields)->where(self::F_LOGIN . ' = ?', $login)->where(self::F_HASH . ' = ?', $hash);
+		$Q->select()->from($this->tableName, self::$fields)->where(self::F_LOGIN . ' = ?', $login)->where(self::F_HASH . ' = ?', $hash);
 
-        $result = $Q->fetchRow();
+		$result = $Q->fetchRow();
 
-        return new Input((array) $result);
-    }
+		return new Input((array) $result);
+	}
 
-    protected function _reg(Input $Data) {
-        $data = array(
-            self::F_USER_ID => $Data->get(self::F_USER_ID),
-            self::F_LOGIN   => $Data->get(self::F_LOGIN),
-            self::F_HASH    => $Data->get(self::F_HASH)
-        );
+	protected function _reg(Input $Data) {
+		$data = array(self::F_USER_ID => $Data->get(self::F_USER_ID),
+		              self::F_LOGIN   => $Data->get(self::F_LOGIN),
+		              self::F_HASH    => $Data->get(self::F_HASH));
 
-        $Q = $this->Db->query();
+		$Q = $this->Db->query();
 
-        $Q->insert($this->tableName, $data);
+		$Q->insert($this->tableName, $data);
 
-        $id = $Q->fetchRow();
+		$id = $Q->fetchRow();
 
-        return $id;
-    }
+		return $id;
+	}
 
-    /**
-     * @param Input $Data
-     *
-     * @return boolean
-     */
-    protected function _checkReg(Input $Data) {
-        $Q = $this->Db->query()->select()->from($this->tableName, self::$fields)->where(self::F_LOGIN . ' = ?', $Data->get(self::LOGIN));
+	/**
+	 * @param Input $Data
+	 *
+	 * @return boolean
+	 */
+	protected function _checkReg(Input $Data) {
+		$Q = $this->Db->query()->select()->from($this->tableName, self::$fields)->where(self::F_LOGIN . ' = ?', $Data->get(self::LOGIN));
 
-        $result = $Q->fetchRow();
+		$result = $Q->fetchRow();
 
-        return empty($result);
-    }
+		return empty($result);
+	}
 
 }

@@ -5,43 +5,50 @@
  *
  * @author Vitaliy_Mukhin
  */
-namespace App;
+namespace App\Flow;
 use Core\Input;
 use Core\Output;
 use App\Block\Head;
+use App\Block\Auth;
+use Core\Flow;
+use App\Block\Nav;
+use App\Block\Login;
 
-class Main extends Flow {
+class Main extends \App\Flow {
 
-    const IS_ROOT        = true;
-    const DEFAULT_ACTION = 'default';
+	const IS_ROOT = true;
 
-    protected function callPre($action) {
-        parent::callPre($action);
+	const DEFAULT_ACTION = 'default';
 
-        Block\Auth::process();
+	public function action_default() {
+		$next = $this->Input->get(Input\Http::INPUT_ROUTE)->get('page', 'index');
+		$next = $next ? : 'index';
+		$this->runChildFlow($next);
+	}
 
-        Head::addPageTitle('webCMS');
+	protected function callPre($action) {
+		parent::callPre($action);
 
-        Head::addJsLink(Head::JS_JQUERY);
-        Head::addJsLink(Head::JS_BOOTSTRAP);
-        Head::addJsLink(Head::JS_COMMON);
+		Auth::process(array(), $this->Output);
 
-        Head::addCssLink(Head::CSS_BOOTSTRAP);
-        Head::addCssLink(Head::CSS_MAIN);
+		//		Login::process(array(), $this->Output);
 
-        Block\Flow\Login::process(array(), $this->Output);
-    }
+		Head::addPageTitle('webCMS');
 
-    protected function callPost($result) {
-        Block\Flow\Nav::process(array(), $this->Output);
+		Head::addJsLink(Head::JS_JQUERY);
+		Head::addJsLink(Head::JS_BOOTSTRAP);
+		Head::addJsLink(Head::JS_COMMON);
 
-        parent::callPost($result);
-    }
+		Head::addCssLink(Head::CSS_BOOTSTRAP);
+		Head::addCssLink(Head::CSS_MAIN);
 
-    public function action_default() {
-        $next = $this->Input->get(Input\Http::INPUT_ROUTE)->get('page', 'index');
-        $next = $next ? : 'index';
-        $this->runChildFlow($next);
-    }
+		Login::process(array(), $this->Output);
+	}
+
+	protected function callPost($result) {
+		Nav::process(array(), $this->Output);
+
+		parent::callPost($result);
+	}
 
 }

@@ -2,29 +2,31 @@
 {% block head %}
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <form action="/gallery/add" class="form-auth-reg form-horizontal" method="post">
-		<fieldset>
-			<legend>Додати галерею</legend>
-			<div class="control-group">
-				<label class="control-label" for="login">Назва</label>
-				<div class="controls">
-					<input name="title" type="text" class="input-xlarge" id="title" value=""/>
-					<p class="help-block">Вкажіть назву галереї, яка буде відображатись у користувачів</p>
-				</div>
-			</div>
-			<!--<div class="control-group">
-				<label class="control-label" for="email">Опис</label>
-				<div class="controls">
-					<input name="email" type="text" class="input-xlarge" id="email" placeholder="Email" value="example@example.com"/>
-				</div>
-			</div>-->
-			<div class="control-group">
-				<div class="controls">
-					<input value="Додати" type="submit" class="btn btn-large btn-primary" />
-				</div>
-			</div>
-		</fieldset>
-    </form>
-</div>
+    <div class="container-fluid">
+        <form action="/gallery/add" class="form-auth-reg form-horizontal" method="post">
+            <fieldset>
+                <legend>Додати галерею</legend>
+                <div class="control-group">
+                    <label class="control-label" for="login">Назва</label>
+
+                    <div class="controls">
+                        <input name="title" type="text" class="input-xlarge" id="title" value=""/>
+
+                        <p class="help-block">Вкажіть назву галереї, яка буде відображатись у користувачів</p>
+                    </div>
+                </div>
+                <!--<div class="control-group">
+                    <label class="control-label" for="email">Опис</label>
+                    <div class="controls">
+                        <input name="email" type="text" class="input-xlarge" id="email" placeholder="Email" value="example@example.com"/>
+                    </div>
+                </div>-->
+                <div class="control-group">
+                    <div class="controls">
+                        <input value="Додати" type="submit" class="btn btn-large btn-primary"/>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 {% endblock %}

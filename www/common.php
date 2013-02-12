@@ -2,11 +2,26 @@
 
 namespace App;
 
-use VM\Loader;
 use VM\Autoloader;
 use Core\Log\Fb;
 
-if (preg_match('/.*webcms$/i', $_SERVER['SERVER_NAME'])) {
+set_error_handler(function ($code, $message, $file, $line, $context) {
+	if (!error_reporting()) {
+		throw new \ErrorException($message, $code, 1, $file, $line, $context);
+	}
+});
+set_exception_handler(function (\Exception $Exception) {
+	echo $Exception->getMessage();
+});
+
+register_shutdown_function(function () {
+	if ($e = error_get_last()) {
+		print_r($e);
+		echo 'Hello, World!';
+	}
+});
+
+if (preg_match('/(.*)webcms$/i', $_SERVER['SERVER_NAME'], $m)) {
 	error_reporting(E_ALL);
 }
 

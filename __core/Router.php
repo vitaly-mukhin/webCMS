@@ -7,15 +7,16 @@
  */
 namespace Core;
 class Router {
+
 	/**
-	 * Default route mask 
+	 * Default route mask
 	 */
 
 	const DEFAULT_MASK = '/(?<p>[^\/]*)(\/(?<a>[^\/]+))?(\/(?<s>[^\/]+))?/i';
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @var string
 	 */
 	protected $routeMask;
@@ -23,6 +24,7 @@ class Router {
 	/**
 	 *
 	 * @param Input\Config $Config
+	 *
 	 * @return Router
 	 */
 	public static function init(Input\Config $Config) {
@@ -35,6 +37,7 @@ class Router {
 	/**
 	 *
 	 * @param string $routeMask
+	 *
 	 * @return Router
 	 */
 	public function setRouteMask($routeMask) {
@@ -61,6 +64,7 @@ class Router {
 					unset($m[$k]);
 				}
 			}
+
 			return $m;
 		}
 

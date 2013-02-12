@@ -9,14 +9,15 @@ namespace App\Block\Flow;
 use App\Block\Flow;
 use Core\Input;
 
-class Login extends Flow {
+class Reg extends \Core\Flow {
 
 	/**
-	 * @param Input $InputRoute
-	 * @return type 
+	 * @param \Core\Input $InputRoute
+	 *
+	 * @return array
 	 */
 	protected function getRoute(Input $InputRoute) {
-		return array('action' => 'auth', 'step' => 'login');
+		return array('action' => 'auth', 'step' => 'reg');
 	}
 
 }

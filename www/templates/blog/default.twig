@@ -1,0 +1,9 @@
+{% extends "blog/__default.twig" %}
+{% block content_blog %}
+    <div class="list">
+        {% for blog in blogs %}
+            <h3><a href="/blog/{{ blog.blog_id }}">{{ blog.title }}</a></h3>
+            <div class=""></div>
+        {% endfor %}
+    </div>
+{% endblock %}

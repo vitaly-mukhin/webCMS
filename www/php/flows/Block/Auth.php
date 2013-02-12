@@ -6,12 +6,13 @@
  * @author Mukhenok
  */
 namespace App\Flow\Block;
+use App\Flow;
 use \Core\Input;
 use \Core\Output;
 use \Core\User;
 use \App\Block\Head;
 
-class Auth extends \App\Flow {
+class Auth extends Flow {
 
 	public function action_default() {
 		$childFlow = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
@@ -30,10 +31,11 @@ class Auth extends \App\Flow {
 		Head::addCssLink(Head::CSS_AUTH_LOGIN);
 
 		if (!User::curr()->isLogged()) {
-			\Core\User\Auth::getUser()->auth($this->Input->get(Input\Http::INPUT_POST));
+			User\Auth::f()->authByPwd($this->Input->get(Input\Http::INPUT_POST)->get(User\Auth::LOGIN), $this->Input->get(Input\Http::INPUT_POST)
+					->get(User\Auth::PASSWORD));
 		}
 
-		$this->Output->bind('User', Auth::getUser());
+		$this->Output->bind('User', User\Auth::f());
 	}
 
 	public function action_profile() {
@@ -47,8 +49,8 @@ class Auth extends \App\Flow {
 	}
 
 	public function action_reg() {
-		Head::addJsLink(Www_Head::JS_BLOCK_AUTH);
-		Head::addJsLink(Www_Head::JS_BLOCK_AUTH_LOGIN);
+		Head::addJsLink(Head::JS_BLOCK_AUTH);
+		Head::addJsLink(Head::JS_BLOCK_AUTH_LOGIN);
 
 		$post = $this->Input->get(Input\Http::INPUT_POST);
 		if (!$post->export()) {

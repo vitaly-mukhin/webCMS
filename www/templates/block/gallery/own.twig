@@ -1,4 +1,5 @@
 <li class="nav-header">Мої альбоми</li>
 {% for album in albumArray %}
-        <li><a class="" href="/gallery/{{album.getId()}}" title="Створено: {{album.getDateCreated()}}">{{album.getTitle()}}</a></li>
+    <li><a class="" href="/gallery/{{ album.getId() }}"
+           title="Створено: {{ album.getDateCreated() }}">{{ album.getTitle() }}</a></li>
 {% endfor %}
