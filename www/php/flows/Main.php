@@ -6,13 +6,13 @@
  * @author Vitaliy_Mukhin
  */
 namespace App\Flow;
-use Core\Input;
-use Core\Output;
-use App\Block\Head;
-use App\Block\Auth;
-use Core\Flow;
-use App\Block\Nav;
-use App\Block\Login;
+use Core\Input as Input;
+use Core\Output as Output;
+use App\Block\Head as Head;
+use App\Block\Auth as Auth;
+use Core\Flow as Flow;
+use App\Block\Nav as Nav;
+use App\Block\Login as Login;
 
 class Main extends \App\Flow {
 

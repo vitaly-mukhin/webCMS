@@ -24,7 +24,7 @@ class Auth extends Flow {
 	}
 
 	public function action_login() {
-		Block\Login::process(array(), $this->Output);
+//		Block\Login::process(array(), $this->Output);
 
 		$referrer      = $this->Input->get(Input\Http::INPUT_SERVER)->get('HTTP_REFERRER', false);
 		$currentDomain = $this->Input->get(Input\Http::INPUT_SERVER)->get('SERVER_NAME');

@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Core\Input;
-use Core\Model\Data;
-use Core\Result;
-use Core\User;
+use Core\Input as Input;
+use Core\Model\Data as Data;
+use Core\Result as Result;
+use Core\User as User;
 use Fw_Db;
 
 /**

@@ -12,18 +12,21 @@ use \Core\Input;
 trait Data {
 
 	/**
+	 * @var array
+	 */
+	protected static $dataKeys;
+
+	/**
 	 *
 	 * @var Input
 	 */
 	protected $data;
 
 	/**
-	 * @var array
+	 * @param Input|array $data
 	 */
-	protected static $dataKeys;
-
 	protected function traitSetData($data) {
-		$this->data = new Input($data);
+		$this->data = $data instanceof Input ? $data : new Input($data);
 		if (!static::$dataKeys) {
 			$this->setDataKeys();
 		}
