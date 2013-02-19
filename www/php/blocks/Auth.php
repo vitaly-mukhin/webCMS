@@ -7,6 +7,7 @@
  */
 namespace App\Block;
 use Core\Block;
+use Core\Input;
 use Core\Session;
 use Core\User;
 
@@ -21,6 +22,9 @@ class Auth extends Block {
 	public static function process($params = array(), \Core\Output $Output = null) {
 		if (empty(self::$User)) {
 			self::initUser();
+			if (!empty($_POST) && !self::$User->isLogged()) {
+				self::$User->auth(new Input($_POST));
+			}
 		}
 	}
 

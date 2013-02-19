@@ -43,7 +43,7 @@ class Auth extends Flow {
 	}
 
 	public function action_logout() {
-		User::curr()->deleteAuth();
+		User::curr()->deleteAuthInSession();
 
 		$this->Output->header('Location: /');
 	}

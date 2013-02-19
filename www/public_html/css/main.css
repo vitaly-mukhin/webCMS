@@ -4,10 +4,13 @@
 body {
   padding-top: 60px;
   padding-bottom: 40px; }
-  body #topbar {
+  body #body-head #topbar {
     min-width: 1000px;
     max-width: 1240px;
     margin: 0 auto; }
+    body #body-head #topbar input {
+      padding-top: 1px;
+      padding-bottom: 1px; }
   body #body-content {
     max-width: 1230px;
     min-width: 1000px;
