@@ -23,7 +23,7 @@ class Auth extends Block {
 		if (empty(self::$User)) {
 			self::initUser();
 			if (!empty($_POST) && !self::$User->isLogged()) {
-				User::auth(new Input($_POST));
+				self::$User->auth(new Input($_POST));
 			}
 		}
 	}

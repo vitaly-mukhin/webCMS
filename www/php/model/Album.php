@@ -3,7 +3,7 @@
 namespace App;
 
 use Core\Input as Input;
-use Core\Model\Data as Data;
+use Core\Model\Get as Data;
 use Core\Result as Result;
 use Core\User as User;
 use Fw_Db;
@@ -22,7 +22,7 @@ use Fw_Db;
  */
 class Album {
 
-	use Data;
+	use Get;
 
 	const TBL = 'albums';
 

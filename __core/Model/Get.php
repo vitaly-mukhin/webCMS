@@ -9,16 +9,16 @@
 namespace Core\Model;
 use \Core\Input;
 
-trait Data {
+trait Get {
 
 	/**
 	 * @var array
 	 */
-	protected static $dataKeys;
+	protected $dataKeys;
 
 	/**
 	 *
-	 * @var Input
+	 * @var array
 	 */
 	protected $data;
 
@@ -26,15 +26,16 @@ trait Data {
 	 * @param Input|array $data
 	 */
 	protected function traitSetData($data) {
-		$this->data = $data instanceof Input ? $data : new Input($data);
-		if (!static::$dataKeys) {
+		//		$this->data = $data instanceof Input ? $data : new Input($data);
+		$this->data = $data;
+		if (!empty($data)) {
 			$this->setDataKeys();
 		}
 	}
 
 	private function setDataKeys() {
-		self::$dataKeys = array_fill_keys($this->data->keys(), '');
-		array_walk(self::$dataKeys,
+		$this->dataKeys = array_fill_keys(array_keys($this->data), '');
+		array_walk($this->dataKeys,
 			function (&$v, $k) {
 				$n = str_replace('_', ' ', $k);
 				$v = lcfirst(str_replace(' ', '', ucwords($n)));
@@ -47,7 +48,11 @@ trait Data {
 	 * @return bool
 	 */
 	protected function traitIsset($name) {
-		return in_array($name, self::$dataKeys);
+		if (!$this->dataKeys) {
+			return false;
+		}
+
+		return in_array($name, $this->dataKeys) || array_key_exists($name, $this->dataKeys);
 	}
 
 	/**
@@ -56,8 +61,11 @@ trait Data {
 	 * @return bool
 	 */
 	protected function traitGetter($name) {
-		if (($k = array_search($name, self::$dataKeys)) !== false) {
-			return $this->data->get($k);
+		if (($k = array_search($name, $this->dataKeys)) !== false) {
+			return $this->data[$k];
+		}
+		if (array_key_exists($name, $this->dataKeys)) {
+			return $this->data[$name];
 		}
 	}
 }

@@ -7,13 +7,12 @@
  * @author Vitaliy_Mukhin
  */
 namespace Core;
+
+use Core\Model\Get;
+
 class Input {
 
-	/**
-	 *
-	 * @var array
-	 */
-	protected $data;
+	use Get;
 
 	/**
 	 * Throws Exception if data are incompatible
@@ -27,7 +26,7 @@ class Input {
 			throw new \ErrorException('Source data are incompatible');
 		}
 
-		$this->data = $data;
+		$this->traitSetData($data);
 	}
 
 	/**
@@ -42,7 +41,7 @@ class Input {
 	 * @return array
 	 */
 	public function keys() {
-		return array_keys($this->data);
+		return array_flip(self::$dataKeys);
 	}
 
 	/**
@@ -54,7 +53,26 @@ class Input {
 	 * @return mixed
 	 */
 	public function get($key, $default = null) {
-		return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
+		return $this->traitIsset($key) ? $this->__get($key) : $default;
+	}
+
+	/**
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
+	public function __get($name) {
+		return $this->traitGetter($name);
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed  $value
+	 *
+	 * @throws \ErrorException
+	 */
+	public function __set($name, $value) {
+		throw new \ErrorException('AAAAAAAAAAAAAAAAAAAAA');
 	}
 
 	/**

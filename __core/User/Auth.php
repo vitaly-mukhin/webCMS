@@ -10,7 +10,7 @@ namespace Core\User;
 use Core\Input;
 use Core\Output;
 use Core\Result;
-use Core\Model\Data;
+use Core\Model\Get;
 
 /**
  * Class Auth
@@ -24,7 +24,7 @@ use Core\Model\Data;
  */
 class Auth {
 
-	use Data;
+	use Get;
 
 	const USER_ID = 'user_id';
 
@@ -56,13 +56,6 @@ class Auth {
 			);
 
 	/**
-	 * Storage, which contains data
-	 *
-	 * @var Input
-	 */
-	protected $userAuth = null;
-
-	/**
 	 * @var \Fw_Db
 	 */
 	protected $Db;
@@ -92,10 +85,8 @@ class Auth {
 	/**
 	 * Initiating the storage with empty data
 	 */
-	protected function init() {
-		$this->traitSetData(self::getEmptyAuth());
-
-		//		$this->setAuth();
+	protected function init($data = array()) {
+		$this->traitSetData($data ? : self::getEmptyAuth());
 	}
 
 	/**
@@ -104,7 +95,7 @@ class Auth {
 	 * @return Input
 	 */
 	protected static function getEmptyAuth() {
-		return new Input(array_fill_keys(self::$fields, false));
+		return array_fill_keys(self::$fields, false);
 	}
 
 	public function __get($name) {
@@ -123,13 +114,11 @@ class Auth {
 	 * @return \Core\Result
 	 */
 	public function checkReg(Input $Data) {
-		$result   = true;
-		$messages = array();
-
 		$login = $Data->get(self::LOGIN);
 		$pwd   = $Data->get(self::PASSWORD);
 		$pwd2  = $Data->get(self::PASSWORD_REPEAT);
 
+		$messages = array();
 		switch (true) {
 			case (!$login):
 				$messages[] = 'Поле Логін не може бути пустим';
@@ -178,10 +167,7 @@ class Auth {
 	public function authByPwd($login, $password) {
 		$hash = self::buildHash($login, $password);
 
-		$data = $this->byHash($login, $hash);
-		if ($data) {
-			$this->traitSetData($data);
-		}
+		$this->init($this->byHash($login, $hash));
 
 		return $this;
 	}
@@ -195,10 +181,7 @@ class Auth {
 	 * @return \Core\User\Auth
 	 */
 	public function authByHash($login, $hash) {
-		$data = $this->byHash($login, $hash);
-		if ($data) {
-			$this->traitSetData($data);
-		}
+		$this->init($this->byHash($login, $hash));
 
 		return $this;
 	}
@@ -207,7 +190,7 @@ class Auth {
 	 * @param string $login
 	 * @param string $hash
 	 *
-	 * @return Input
+	 * @return array|false
 	 */
 	public function byHash($login, $hash) {
 		$Q = $this->Db->query();

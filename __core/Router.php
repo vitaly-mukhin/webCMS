@@ -23,13 +23,13 @@ class Router {
 
 	/**
 	 *
-	 * @param Input\Config $Config
+	 * @param Input\Config $RouterConfig
 	 *
 	 * @return Router
 	 */
-	public static function init(Input\Config $Config) {
+	public static function init(Input\Config $RouterConfig) {
 		$Router = new Router();
-		$Router->setRouteMask($Config->get('mask'));
+		$Router->setRouteMask($RouterConfig->get('mask'));
 
 		return $Router;
 	}
@@ -55,7 +55,7 @@ class Router {
 	 */
 	public function parse($route) {
 		if (is_null($this->routeMask)) {
-			throw new Exception('Route mask has not been set');
+			throw new \Exception('Route mask has not been set');
 		}
 
 		if (preg_match($this->routeMask, $route, $m)) {

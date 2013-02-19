@@ -6,7 +6,9 @@
  * @author Vitaliy_Mukhin
  */
 namespace Core;
-class Session extends \ArrayObject {
+class Session {
+
+	use \Core\Model\Get;
 
 	const USER = 'section_user';
 
@@ -15,6 +17,13 @@ class Session extends \ArrayObject {
 	 * @var Session
 	 */
 	private static $i;
+
+	protected $id;
+
+	protected function __construct(array $data, $sessionId) {
+		$this->traitSetData($data);
+		$this->id = $sessionId;
+	}
 
 	/**
 	 *
@@ -32,15 +41,9 @@ class Session extends \ArrayObject {
 
 		$sessionId = session_id();
 
-		$Session = new Session($sessionId);
+		$Session = new Session($_SESSION, $sessionId);
 
-		self::$i = $Session;
-
-		return self::i();
-	}
-
-	public function __construct($id) {
-		parent::__construct($_SESSION);
+		return self::$i = $Session;
 	}
 
 	public function __destruct() {
