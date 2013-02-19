@@ -98,7 +98,7 @@ CREATE TABLE `user_auths` (
 
 LOCK TABLES `user_auths` WRITE;
 /*!40000 ALTER TABLE `user_auths` DISABLE KEYS */;
-INSERT INTO `user_auths` VALUES (1,1,'someLogin','d763bba346510be03d985770878b157f8a382fcb'),(4,4,'someLogin1','343eafb0124d884a35cc8a8dd2df891a11558c86'),(5,5,'someLogin8','399579d71274c4e396bfecc3e49b85bd8f4e36e5'),(6,6,'someLoginyyyy','50bb44716d9cdf2cd12c95b89c3316aa4cc5787d'),(7,14,'s','fe67f37b5bfd0adfb96f556d0b884d1c95e795ff');
+INSERT INTO `user_auths` VALUES (1,1,'someLogin','d763bba346510be03d985770878b157f8a382fcb'),(4,4,'someLogin1','343eafb0124d884a35cc8a8dd2df891a11558c86'),(5,5,'someLogin8','399579d71274c4e396bfecc3e49b85bd8f4e36e5'),(6,6,'someLoginyyyy','50bb44716d9cdf2cd12c95b89c3316aa4cc5787d'),(7,14,'slevin','2a7423380fe1d60224511a53607e89aeff69e5ec');
 /*!40000 ALTER TABLE `user_auths` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -137,4 +137,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-02-12 12:37:06
+-- Dump completed on 2013-02-19 12:47:52
