@@ -28,3 +28,14 @@ $FwLoader->setBaseFolder(PATH_LIBS . DIRECTORY_SEPARATOR . 'Fw')->useFilePrefix(
 Autoloader::add($FwLoader);
 
 require_once PATH_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php';
+
+set_error_handler(function ($code, $message, $file, $line, $context) {
+	if (error_reporting()) {
+		new \Core\Exception($message, $code);
+		//		throw new \ErrorException($message, $code, 1, $file, $line, $context);
+	}
+});
+set_exception_handler(function (\Exception $Exception) {
+	$Exc = new \Core\Exception($Exception->getMessage(), $Exception->getCode(), $Exception);
+	echo $Exc->getMessage();
+});

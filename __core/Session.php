@@ -6,9 +6,9 @@
  * @author Vitaliy_Mukhin
  */
 namespace Core;
-class Session {
+use Core\Model\Get;
 
-	use \Core\Model\Get;
+class Session {
 
 	const USER = 'section_user';
 
@@ -16,50 +16,63 @@ class Session {
 	 *
 	 * @var Session
 	 */
-	private static $i;
+	private static $instance;
 
+	/**
+	 * @var string
+	 */
 	protected $id;
 
+	protected $data;
+
 	protected function __construct(array $data, $sessionId) {
-		$this->traitSetData($data);
+		$this->data = $data;
 		$this->id = $sessionId;
+	}
+
+	protected function __clone() {
 	}
 
 	/**
 	 *
+	 * @throws \Exception
 	 * @return Session
-	 * @throws Exception
 	 */
 	public static function i() {
-		if (!empty(self::$i)) {
-			return self::$i;
+		if (!empty(static::$instance)) {
+			return static::$instance;
 		}
 
 		if (!session_start()) {
-			throw new Exception('Cannot start a session');
+			throw new \Exception('Cannot start a session');
 		}
 
 		$sessionId = session_id();
 
-		$Session = new Session($_SESSION, $sessionId);
-
-		return self::$i = $Session;
+		return static::$instance = new static($_SESSION, $sessionId);
 	}
 
 	public function __destruct() {
-		$_SESSION = $this->getArrayCopy();
+		$_SESSION = $this->data;
+	}
+
+	/**
+	 * @param $sectionId
+	 *
+	 * @return bool
+	 */
+	public function exists($sectionId){
+		return array_key_exists($sectionId, $this->data);
 	}
 
 	/**
 	 *
 	 * @param string $sectionId
 	 *
-	 * @return Input
+	 * @return mixed
 	 */
 	public function get($sectionId) {
-		$data = $this->offsetExists($sectionId) ? $this->offsetGet($sectionId) : null;
-
-		return is_array($data) ? new Input($data) : $data;
+		return $this->exists($sectionId) ? $this->data[$sectionId] : null;
 	}
 
 	/**
@@ -70,13 +83,12 @@ class Session {
 	 * @return Session
 	 */
 	public function set($sectionId, $params = array()) {
-
-		if ($this->offsetExists($sectionId) && is_array($params)) {
-			$existing = $this->offsetGet($sectionId);
-			$params   = (is_array($existing)) ? array_merge($existing, $params) : $params;
+		if (($isset = $this->exists($sectionId)) && is_array($params)) {
+			$existing = $this->get($sectionId);
+			$params   = is_array($existing) ? array_merge($existing, $params) : $params;
 		}
 
-		$this->offsetSet($sectionId, $params);
+		$this->data[$sectionId] = $params;
 
 		return $this;
 	}

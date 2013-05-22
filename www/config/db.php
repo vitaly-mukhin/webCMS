@@ -3,6 +3,7 @@
 define ('DB_TBL_BLOG', 'blog');
 define ('DB_TBL_USER', 'users');
 define ('DB_TBL_USER_AUTH', 'user_auths');
+define ('DB_TBL_LOG', 'logs');
 
 return array('driver'   => 'mysql',
              'server'   => 'localhost',

@@ -32,7 +32,7 @@ class Auth extends Block {
 	 *
 	 */
 	private static function initUser() {
-		$UserSessionData = Session::i()->get(Session::USER);
+		$UserSessionData = new Input((array)Session::i()->get(Session::USER));
 		self::$User      = User::f($UserSessionData, true);
 	}
 

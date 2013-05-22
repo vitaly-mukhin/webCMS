@@ -4,16 +4,6 @@ namespace App;
 
 use VM\Autoloader;
 use Core\Log\Fb;
-
-set_error_handler(function ($code, $message, $file, $line, $context) {
-	if (!error_reporting()) {
-		throw new \ErrorException($message, $code, 1, $file, $line, $context);
-	}
-});
-set_exception_handler(function (\Exception $Exception) {
-	echo $Exception->getMessage();
-});
-
 register_shutdown_function(function () {
 	if ($e = error_get_last()) {
 		print_r($e);
@@ -42,5 +32,9 @@ require PATH_MODE_PHP . DIRECTORY_SEPARATOR . 'LoaderNames.php';
 // Setup the connection to DB
 $DbLog = new Fb(new \Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'log.php'));
 
-\Fw_Db::i()->setLogger($DbLog);
-\Fw_Db::i()->connect(new \Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
+$Db = \Fw_Db::i();
+
+$Db->setLogger($DbLog);
+$Db->connect(new \Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
+
+\Core\Exception::$Db = $Db;

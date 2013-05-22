@@ -1,6 +1,7 @@
 {% extends "gallery/__default.twig" %}
 {% block content_gallery %}
     <div class="container-fluid">
-        <h5>{{ Album.title }}</h5>
+        <h3>{{ Album.title }}</h3>
+        <h4>{{ Album.Author.username }}</h4>
     </div>
 {% endblock %}

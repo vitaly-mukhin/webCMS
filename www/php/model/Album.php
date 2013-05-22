@@ -18,11 +18,13 @@ use Fw_Db;
  * @property string $title
  * @property string $dateModified
  * @property string $dateCreated
+ * @property string $Author
  *
  */
 class Album {
 
-	use Get;
+	const WHERE = '__where__';
+	use Data;
 
 	const TBL = 'albums';
 
@@ -32,6 +34,14 @@ class Album {
 
 	public function __construct($data) {
 		$this->traitSetData($data);
+	}
+
+	public function __get($name) {
+		if ($name == 'Author') {
+			return \Core\User::i($this->userId);
+		}
+
+		return $this->traitGetter($name);
 	}
 
 	/**
@@ -91,8 +101,8 @@ class Album {
 	protected static function getList($n = self::LATEST_N, $params = array()) {
 		$db = Fw_Db::i();
 		$q  = $db->query()->select()->from(self::TBL, self::$tblFields)->limit($n)->orderBy(array('date_created' => false));
-		if (!empty($params['__where__'])) {
-			foreach ($params['__where__'] as $where => $value) {
+		if (!empty($params[self::WHERE])) {
+			foreach ($params[self::WHERE] as $where => $value) {
 				$q->where($where, $value);
 			}
 		}
@@ -107,7 +117,7 @@ class Album {
 	}
 
 	public static function getOwn($n = self::LATEST_N) {
-		return self::getList($n, array('__where__' => array('user_id = ?' => User::curr()->getUserId())));
+		return self::getList($n, array(self::WHERE => array('user_id = ?' => User::curr()->getUserId())));
 	}
 
 	/***********************************************/
@@ -128,11 +138,8 @@ class Album {
 		return null;
 	}
 
-	public function __get($name) {
-		return $this->traitGetter($name);
-	}
-
 	public function __isset($name) {
+		if ($name == 'Author') return true;
 		return $this->traitIsset($name);
 	}
 

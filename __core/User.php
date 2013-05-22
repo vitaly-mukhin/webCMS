@@ -41,6 +41,8 @@ class User {
 	 */
 	protected $Auth;
 
+	protected static $instances = array();
+
 	private function __construct() {
 
 	}
@@ -93,6 +95,18 @@ class User {
 		$User->setAuth($Data);
 
 		return new Result($User);
+	}
+
+	public static function i($id = null) {
+		if (isset(static::$instances[$id])) return static::$instances[$id];
+
+		/* @var \Core\User $User */
+		$User = new static();
+		if ($id) {
+			$User->setData($id);
+		}
+
+		return static::$instances[$id] = $User;
 	}
 
 	/**
@@ -235,7 +249,7 @@ class User {
 	 * @return User
 	 */
 	public function auth(Input $Data) {
-		return self::f($Data, self::SET_CURRENT);
+		return static::f($Data, static::SET_CURRENT);
 	}
 
 	/**
@@ -244,8 +258,10 @@ class User {
 	 * @return boolean
 	 */
 	public function isLogged() {
-		$sessionUserId = (bool)Session::i()->get(Session::USER)->get(Auth::USER_ID);
-		$isLogged      = (bool)Session::i()->get(Session::USER)->get(self::IS_LOGGED);
+		$U = new Input(Session::i()->get(Session::USER));
+
+		$sessionUserId = $U ? (bool)$U->get(Auth::USER_ID) : false;
+		$isLogged      = $U && $U->get(self::IS_LOGGED);
 
 		$result = $isLogged && ($sessionUserId == $this->getUserId());
 
