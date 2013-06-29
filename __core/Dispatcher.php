@@ -15,9 +15,12 @@ class Dispatcher {
 	 */
 	private $initialFlow;
 
-	const ROUTE_IN_GET       = 'route';
-	const MODE_ROUTER        = 'router';
-	const PARAM_MODE_CONFIG  = 'modeConfig';
+	const ROUTE_IN_GET = 'route';
+
+	const MODE_ROUTER = 'router';
+
+	const PARAM_MODE_CONFIG = 'modeConfig';
+
 	const PARAM_INITIAL_FLOW = 'initialFlow';
 
 	/**
@@ -56,19 +59,9 @@ class Dispatcher {
 	}
 
 	/**
-	 * @return self
+	 * @return static
 	 */
-	public function init() {
-		$this->initModeEnv();
-
-		return $this;
-	}
-
-	/**
-	 * @return self
-	 */
-	private function initModeEnv() {
-
+	protected function init() {
 		$this->addModeAutoloaders(PATH_MODE);
 
 		return $this;
@@ -100,23 +93,16 @@ class Dispatcher {
 	 * @param string $modeFolder
 	 */
 	private function addModeAutoloaders($modeFolder) {
-		$baseFolder = $modeFolder . DIRECTORY_SEPARATOR . 'php';
+		$base_folder = $modeFolder . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR;
 
 		// autoloader for Flow_*
-		$FlowLoader = new \App\LoaderNames();
-		$FlowLoader->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'flows')->setIgnoreFirstPart(true)->useFilePrefix(false);
-		Autoloader::add($FlowLoader);
+		Autoloader::add(\App\LoaderNames::i($base_folder . 'flows', true, false));
 
 		// autoloader for Block_*
-		$BlockLoader = new \App\LoaderNames();
-		$BlockLoader->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'blocks')->setIgnoreFirstPart(true)->useFilePrefix(false);
-		Autoloader::add($BlockLoader);
+		Autoloader::add(\App\LoaderNames::i($base_folder . 'blocks', true, false));
 
 		// autoloader for models
-		$BlockLoader = new \App\LoaderNames();
-		$BlockLoader->setBaseFolder($baseFolder . DIRECTORY_SEPARATOR . 'model')->useFilePrefix(false);
-
-		Autoloader::add($BlockLoader);
+		Autoloader::add(\App\LoaderNames::i($base_folder . 'model', null, false));
 	}
 
 	/**
@@ -124,8 +110,7 @@ class Dispatcher {
 	 * @param Output\Http $Output
 	 */
 	public function flow(Input\Http $Input = null, Output\Http $Output) {
-		$Flow = new \App\Flow();
-		$Flow->init($Input, $Output);
+		$Flow = \App\Flow::i($Input, $Output);
 
 		$Flow->action($this->initialFlow);
 	}

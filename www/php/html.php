@@ -9,7 +9,7 @@ namespace App;
 	//use Core\Renderer;
 //use Core\Renderer\Http\Html;
 
-$ModeConfig = \Core\Input\Config::init(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'config.php');
+$ModeConfig = \Core\Input\Config::init(PATH_MODE_CONFIG . 'config.php');
 
 $InputGET = new \Core\Input($_GET);
 

@@ -1,14 +1,13 @@
 <?php
 
+namespace Core;
+use Core;
+
 /**
  * Description of Flow
  *
  * @author Mukhenok
  */
-
-namespace Core;
-use Core;
-
 class Flow {
 
 	use Tpl;
@@ -48,18 +47,21 @@ class Flow {
 	/**
 	 * @param Input\Http  $Input
 	 * @param Output\Http $Output
+	 *
+	 * @return static
 	 */
-	public function init(Input\Http $Input, Output\Http $Output) {
-		$this->Input = $Input;
+	static public function i(Input\Http $Input, Output\Http $Output) {
+		$i = new static;
+		$i->init($Input, $Output);
 
-		$this->Output = $Output;
+		return $i;
 	}
 
 	/**
 	 *
 	 * @param string $action
 	 *
-	 * @return string|boolean
+	 * @return bool|string
 	 */
 	public function action($action = null) {
 		$action = is_null($action) ? $this->getDefaultAction() : $action;
@@ -93,19 +95,9 @@ class Flow {
 
 	/**
 	 *
-	 * @param string|boolean $result
-	 */
-	protected function callPost($result) {
-		if ($result !== true) {
-			$this->runnedAction = false;
-		}
-	}
-
-	/**
-	 *
 	 * @param string $action
 	 *
-	 * @return string|boolean
+	 * @return bool|string
 	 */
 	protected function call($action) {
 		if ($this->existsAction($action)) {
@@ -113,6 +105,26 @@ class Flow {
 		} else {
 			return $this->runChildFlow($action);
 		}
+	}
+
+	/**
+	 *
+	 * @param string $action
+	 *
+	 * @return bool
+	 */
+	protected function existsAction($action) {
+		return method_exists($this, $this->getAction($action));
+	}
+
+	/**
+	 *
+	 * @param string $action
+	 *
+	 * @return string
+	 */
+	protected function getAction($action) {
+		return static::ACTION_PREFIX . $action;
 	}
 
 	/**
@@ -134,24 +146,22 @@ class Flow {
 	/**
 	 * Get the current or child Flow, that might proceed with $childFlowSuffix
 	 *
-	 * @param string $childFlowSuffix
+	 * @param string $child_flow_suffix
 	 *
 	 * @throws \Exception
 	 * @return Flow
 	 */
-	final protected function getFlow($childFlowSuffix) {
+	final protected function getFlow($child_flow_suffix) {
 		// for being able to redirect inside current Flow
-		if ($this->existsAction($childFlowSuffix)) {
+		if ($this->existsAction($child_flow_suffix)) {
 			return $this;
 		}
 
 		$currentClass = get_called_class();
 
-		if (static::IS_ROOT) {
-			$currentClass = substr($currentClass, 0, strrpos($currentClass, self::CLASS_DELIMITER));
-		}
+		if (static::IS_ROOT) $currentClass = substr($currentClass, 0, strrpos($currentClass, self::CLASS_DELIMITER));
 
-		$flowClass = $this->getChildFlowName($currentClass, $childFlowSuffix);
+		$flowClass = $this->getChildFlowName($currentClass, $child_flow_suffix);
 		if (!class_exists($flowClass)) {
 			throw new \Exception('Flow class <b>' . $flowClass . ' not found</b>');
 			//			$flowClass = $this->getNoFlowFoundClass($flowClass);
@@ -160,6 +170,38 @@ class Flow {
 		$Flow = new $flowClass;
 
 		return $Flow;
+	}
+
+	/**
+	 * Build class name for child flow (by using $childFlowSuffix)
+	 *
+	 * @param string $flowClass
+	 * @param string $childFlowSuffix
+	 *
+	 * @return string
+	 */
+	protected function getChildFlowName($flowClass, $childFlowSuffix) {
+		return $flowClass . self::CLASS_DELIMITER . ucfirst($childFlowSuffix);
+	}
+
+	/**
+	 * @param Input\Http  $Input
+	 * @param Output\Http $Output
+	 */
+	public function init(Input\Http $Input, Output\Http $Output) {
+		$this->Input = $Input;
+
+		$this->Output = $Output;
+	}
+
+	/**
+	 *
+	 * @param string|boolean $result
+	 */
+	protected function callPost($result) {
+		if ($result !== true) {
+			$this->runnedAction = false;
+		}
 	}
 
 	/**
@@ -219,38 +261,6 @@ class Flow {
 		$flowClassShort = trim($flowClassShort, self::CLASS_DELIMITER);
 
 		return $this->getChildFlowName($flowClassShort, self::FLOW_NOT_FOUND_CLASS);
-	}
-
-	/**
-	 * Build class name for child flow (by using $childFlowSuffix)
-	 *
-	 * @param string $flowClass
-	 * @param string $childFlowSuffix
-	 *
-	 * @return string
-	 */
-	protected function getChildFlowName($flowClass, $childFlowSuffix) {
-		return $flowClass . self::CLASS_DELIMITER . ucfirst($childFlowSuffix);
-	}
-
-	/**
-	 *
-	 * @param string $action
-	 *
-	 * @return boolean
-	 */
-	protected function existsAction($action) {
-		return method_exists($this, $this->getAction($action));
-	}
-
-	/**
-	 *
-	 * @param string $action
-	 *
-	 * @return string
-	 */
-	protected function getAction($action) {
-		return static::ACTION_PREFIX . $action;
 	}
 
 }

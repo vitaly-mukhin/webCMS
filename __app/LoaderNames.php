@@ -1,12 +1,13 @@
 <?php
+
+namespace App;
+
 /**
  * Created by JetBrains PhpStorm.
  * User: Виталик
  * Date: 19.12.12
  * Time: 16:41
- * To change this template use File | Settings | File Templates.
  */
-namespace App;
 class LoaderNames extends \VM\LoaderNames {
 
 	/**
@@ -26,7 +27,7 @@ class LoaderNames extends \VM\LoaderNames {
 		}
 
 		if (count($class_array) > 1) {
-			$path     = implode(DIRECTORY_SEPARATOR, array_slice($class_array, 0, -1));
+			$path = implode(DIRECTORY_SEPARATOR, array_slice($class_array, 0, -1));
 			$filename = $path . DIRECTORY_SEPARATOR . $this->getFilePrefix($class_array[count($class_array) - 2]) . $class_array[count($class_array) - 1] . $this->getFileSuffix();
 		} else {
 			$filename = $this->getPrefix() . implode($class_array) . $this->getFileSuffix();

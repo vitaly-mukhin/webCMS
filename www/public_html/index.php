@@ -1,9 +1,8 @@
 <?php
-
-define('DIR_UP', '..');
+define('PATH_HTDOCS', __DIR__ . DIRECTORY_SEPARATOR);
 
 ob_start();
-require_once __DIR__ . DIRECTORY_SEPARATOR . DIR_UP . DIRECTORY_SEPARATOR . 'common.php';
+require_once PATH_HTDOCS . '..' . DIRECTORY_SEPARATOR . 'common.php';
 
-require_once PATH_MODE_PHP . DIRECTORY_SEPARATOR . 'html.php';
+require_once PATH_MODE_PHP . 'html.php';
 ob_flush();

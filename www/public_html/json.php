@@ -1,7 +1,9 @@
 <?php
 
-define('DIR_UP', '..');
+define('PATH_HTDOCS', __DIR__ . DIRECTORY_SEPARATOR);
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . DIR_UP . DIRECTORY_SEPARATOR . 'common.php';
+ob_start();
+require_once PATH_HTDOCS . '..' . DIRECTORY_SEPARATOR . 'common.php';
 
-require_once PATH_MODE_PHP . DIRECTORY_SEPARATOR . 'json.php';
+require_once PATH_MODE_PHP . 'json.php';
+ob_flush();

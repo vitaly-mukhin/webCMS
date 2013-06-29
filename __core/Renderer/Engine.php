@@ -21,7 +21,7 @@ class Engine {
 	 * @return self
 	 */
 	public function init() {
-		require_once PATH_LIBS . DIRECTORY_SEPARATOR . 'Twig' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+		require_once PATH_LIBS . 'Twig' . DIRECTORY_SEPARATOR . 'Autoloader.php';
 
 		\Twig_Autoloader::register();
 
@@ -43,7 +43,7 @@ class Engine {
 	 */
 	public function render($data, $templatePath) {
 
-		$filename = PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . $templatePath . static::TEMPLATE_FILE_EXTENSION;
+		$filename = PATH_MODE_TEMPLATES . $templatePath . static::TEMPLATE_FILE_EXTENSION;
 		if (!file_exists($filename)) {
 			return '<!-- template "' . htmlspecialchars($templatePath, ENT_IGNORE, 'UTF-8') . '" not found -->';
 		}

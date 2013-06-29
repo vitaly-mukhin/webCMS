@@ -1,3 +1,5 @@
 <?php
 
-return array();
+return array(
+	'table' => 'db_log'
+);

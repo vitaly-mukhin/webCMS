@@ -4,6 +4,15 @@ namespace App;
 
 use VM\Autoloader;
 use Core\Log\Fb;
+
+define('SESS', md5(microtime(true) . rand(100000, 999999)));
+
+// define a root folder for a current mode
+define('PATH_MODE', __DIR__ . DIRECTORY_SEPARATOR);
+
+// calling global bootstrap
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '__bootstrap' . DIRECTORY_SEPARATOR . 'boost.php';
+
 register_shutdown_function(function () {
 	if ($e = error_get_last()) {
 		print_r($e);
@@ -11,30 +20,21 @@ register_shutdown_function(function () {
 	}
 });
 
-if (preg_match('/(.*)webcms$/i', $_SERVER['SERVER_NAME'], $m)) {
-	error_reporting(E_ALL);
-}
+define('PATH_MODE_PHP', PATH_MODE . 'php' . DIRECTORY_SEPARATOR);
+define('PATH_MODE_CONFIG', PATH_MODE . 'config' . DIRECTORY_SEPARATOR);
+define('PATH_MODE_TEMPLATES', PATH_MODE . 'templates' . DIRECTORY_SEPARATOR);
+define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . '__c' . DIRECTORY_SEPARATOR);
 
-// calling global bootstrap
-define('PATH_BOOTSTRAP', __DIR__ . DIRECTORY_SEPARATOR . DIR_UP . DIRECTORY_SEPARATOR . '__bootstrap');
-require PATH_BOOTSTRAP . DIRECTORY_SEPARATOR . 'boost.php';
-
-// define a root folder for a current mode
-define('PATH_MODE', __DIR__);
-
-define('PATH_MODE_PHP', PATH_MODE . DIRECTORY_SEPARATOR . 'php');
-define('PATH_MODE_CONFIG', PATH_MODE . DIRECTORY_SEPARATOR . 'config');
-define('PATH_MODE_TEMPLATES', PATH_MODE . DIRECTORY_SEPARATOR . 'templates');
-define('PATH_MODE_TEMPLATES_C', PATH_MODE_TEMPLATES . DIRECTORY_SEPARATOR . '__c');
-
-require PATH_MODE_PHP . DIRECTORY_SEPARATOR . 'LoaderNames.php';
+require PATH_APP . 'LoaderNames.php';
 
 // Setup the connection to DB
-$DbLog = new Fb(new \Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'log.php'));
-
 $Db = \Fw_Db::i();
 
+//$DbLog = new Fb(new \Fw_Config(PATH_MODE_CONFIG . 'log.php'));
+$DbLog = \App\DbLog::i(PATH_MODE_CONFIG . 'log.php', $Db);
+
+
 $Db->setLogger($DbLog);
-$Db->connect(new \Fw_Config(PATH_MODE_CONFIG . DIRECTORY_SEPARATOR . 'db.php'));
+$Db->connect(new \Fw_Config(PATH_MODE_CONFIG . 'db.php'));
 
 \Core\Exception::$Db = $Db;
