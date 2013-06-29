@@ -26,13 +26,15 @@ class LoaderNames extends \VM\LoaderNames {
 			array_shift($class_array);
 		}
 
+		$ds = DIRECTORY_SEPARATOR;
 		if (count($class_array) > 1) {
-			$path = implode(DIRECTORY_SEPARATOR, array_slice($class_array, 0, -1));
-			$filename = $path . DIRECTORY_SEPARATOR . $this->getFilePrefix($class_array[count($class_array) - 2]) . $class_array[count($class_array) - 1] . $this->getFileSuffix();
-		} else {
+			$path = implode($ds, array_slice($class_array, 0, -1));
+			$filename = $path . $ds . $this->getFilePrefix($class_array[count($class_array) - 2]) . $class_array[count($class_array) - 1] . $this->getFileSuffix();
+		}
+		else {
 			$filename = $this->getPrefix() . implode($class_array) . $this->getFileSuffix();
 		}
 
-		return $this->baseFolder . DIRECTORY_SEPARATOR . $filename;
+		return str_replace($ds.$ds, $ds, $this->baseFolder . $ds) . $filename;
 	}
 }

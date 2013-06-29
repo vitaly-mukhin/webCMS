@@ -24,9 +24,9 @@ class Auth extends Flow {
 	}
 
 	public function action_login() {
-//		Block\Login::process(array(), $this->Output);
+		//		Block\Login::process(array(), $this->Output);
 
-		$referrer      = $this->Input->get(Input\Http::INPUT_SERVER)->get('HTTP_REFERRER', false);
+		$referrer = $this->Input->get(Input\Http::INPUT_SERVER)->get('HTTP_REFERRER', false);
 		$currentDomain = $this->Input->get(Input\Http::INPUT_SERVER)->get('SERVER_NAME');
 
 		if (User::curr()->isLogged() && $referrer && strpos($referrer, $currentDomain) !== false) {
@@ -39,11 +39,11 @@ class Auth extends Flow {
 	}
 
 	public function action_logout() {
-		Block\Logout::process(array());
+		Flow\Block\Logout::process(array());
 	}
 
 	public function action_reg() {
-		Block\Reg::process(array());
+		Block\Auth\Reg::process(array(), $this->Output);
 	}
 
 	public function action_profile() {

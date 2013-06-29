@@ -1,4 +1,4 @@
 {% extends "auth/__default.twig" %}
 {% block content_auth %}
-    {{ Block_Auth_Reg | default }}
+    {{ App_Block_Auth_Reg | default | raw}}
 {% endblock %}

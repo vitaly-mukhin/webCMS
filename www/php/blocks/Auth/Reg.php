@@ -1,15 +1,18 @@
 <?php
 
 /**
- * Description of Login
+ * Description of Reg
  *
  * @author Vitaliy_Mukhin
  */
-namespace App\Block\Flow;
-use App\Block\Flow;
+namespace App\Block\Auth;
+use App\Block;
+use Core\Block\Flow;
 use Core\Input;
 
-class Reg extends \Core\Flow {
+class Reg extends \Core\Block {
+
+	use Flow;
 
 	/**
 	 * @param \Core\Input $InputRoute
