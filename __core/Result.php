@@ -17,7 +17,9 @@ class Result {
 	 * @var mixed
 	 */
 	protected $error;
+
 	protected $value;
+
 	protected $data;
 
 	public function __get($name) {
@@ -25,7 +27,7 @@ class Result {
 			case 'value':
 				return $this->value;
 			case 'data':
-				return $this->value;
+				return $this->data;
 			case 'error':
 				return $this->error;
 			default:
