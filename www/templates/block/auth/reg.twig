@@ -2,36 +2,34 @@
 	<form class="form-auth-reg form-horizontal" action="/auth/reg" method="post" autocomplete="off">
 		<fieldset>
 			<legend>Реєстрація</legend>
-			<div class="control-group">
-				<label class="control-label" for="login">Логін</label>
+			<div class="control-group {% if errors.email %}error{% endif %}">
+				<label class="control-label" for="email">Email</label>
 				<div class="controls">
-					<input name="login" type="text" class="input-xlarge" id="login" placeholder="someLogin" value="{{ data.get('login') }}" />
+					<input name="email" type="text" class="input-xlarge" id="email" placeholder="Email" value="{{ data.get('email') }}" />
+					{% if errors.email %}<span class="help-inline">{{ errors.email }}</span>{% endif %}
 					<p class="help-block">Вкажіть логін, який буде використовуватись для входу</p>
 				</div>
 			</div>
-			<div class="control-group">
+			<div class="control-group {% if errors.password %}error{% endif %}">
 				<label class="control-label" for="password">Пароль</label>
 				<div class="controls">
 					<input name="password" type="password" class="input-xlarge" id="password" placeholder="somePwd" value="{{ data.get('password') }}" />
+					{% if errors.password %}<span class="help-inline">{{ errors.password }}</span>{% endif %}
 				</div>
 			</div>
-			<div class="control-group">
+			<div class="control-group {% if errors.password_repeat %}error{% endif %}">
 				<label class="control-label" for="password_repeat">Пароль повторно</label>
 				<div class="controls">
 					<input name="password_repeat" type="password" class="input-xlarge" id="password_repeat" placeholder="somePwd"
 						   value="{{ data.get('password_repeat') }}" />
+					{% if errors.password_repeat %}<span class="help-inline">{{ errors.password_repeat }}</span>{% endif %}
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="email">Email</label>
-				<div class="controls">
-					<input name="email" type="text" class="input-xlarge" id="email" placeholder="Email" value="{{ data.get('email') }}" />
-				</div>
-			</div>
-			<div class="control-group">
+			<div class="control-group {% if errors.username %}error{% endif %}">
 				<label class="control-label" for="username">Username</label>
 				<div class="controls">
 					<input name="username" type="text" class="input-xlarge" id="email" placeholder="Username" value="{{ data.get('username') }}" />
+					{% if errors.username %}<span class="help-inline">{{ errors.username }}</span>{% endif %}
 				</div>
 			</div>
 			<div class="control-group">

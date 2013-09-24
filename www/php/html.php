@@ -20,11 +20,11 @@ $routeString = $InputGET->get(\Core\Dispatcher::ROUTE_IN_GET, '');
 // ... save parsed route to a Input
 $InputRoute = new \Core\Input($Router->parse($routeString));
 
-$InputHttp = new \Core\Input\Http(array(\Core\Input\Http::INPUT_ROUTE  => $InputRoute,
-                                        \Core\Input\Http::INPUT_GET    => $InputGET,
-                                        \Core\Input\Http::INPUT_POST   => $_POST,
-                                        \Core\Input\Http::INPUT_SERVER => $_SERVER,
-                                        \Core\Input\Http::INPUT_COOKIE => $_COOKIE));
+$InputHttp = new \Core\Input\Http(array(\Core\Input\Http::ROUTE  => $InputRoute,
+                                        \Core\Input\Http::GET    => $InputGET,
+                                        \Core\Input\Http::POST   => $_POST,
+                                        \Core\Input\Http::SERVER => $_SERVER,
+                                        \Core\Input\Http::COOKIE => $_COOKIE));
 
 \Core\Input\Http::setDefault($InputHttp);
 

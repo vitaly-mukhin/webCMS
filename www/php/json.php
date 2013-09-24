@@ -19,11 +19,11 @@ $routeString = $InputGET->get(Dispatcher::ROUTE_IN_GET, '');
 $InputRoute = new Input($Router->parse($routeString));
 
 $InputHttp = new Input\Http(array(
-                                 Input\Http::INPUT_ROUTE  => $InputRoute,
-                                 Input\Http::INPUT_GET    => $InputGET,
-                                 Input\Http::INPUT_POST   => $_POST,
-                                 Input\Http::INPUT_SERVER => $_SERVER,
-                                 Input\Http::INPUT_COOKIE => $_COOKIE
+                                 Input\Http::ROUTE  => $InputRoute,
+                                 Input\Http::GET    => $InputGET,
+                                 Input\Http::POST   => $_POST,
+                                 Input\Http::SERVER => $_SERVER,
+                                 Input\Http::COOKIE => $_COOKIE
                             ));
 
 Input\Http::setDefault($InputHttp);

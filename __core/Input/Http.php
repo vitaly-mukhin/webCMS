@@ -10,11 +10,7 @@ use Core\Input;
 
 class Http extends Input {
 
-	const INPUT_ROUTE  = 'route_data';
-	const INPUT_GET    = 'get_data';
-	const INPUT_POST   = 'post_data';
-	const INPUT_SERVER = 'server_data';
-	const INPUT_COOKIE = 'coockie_data';
+	const ROUTE = 'route_data', GET = 'get_data', POST = 'post_data', SERVER = 'server_data', COOKIE = 'coockie_data';
 
 	/**
 	 *
@@ -54,7 +50,7 @@ class Http extends Input {
 	 */
 	public function get($key, $default = null) {
 		//	first time called this data - should create proxy Input, save it and return it
-		if (!key_exists($key, $this->inputs)) {
+		if (!array_key_exists($key, $this->inputs)) {
 			$Input = parent::get($key, null);
 			if (is_null($Input)) {
 				throw new \Exception('No such data provided');
@@ -63,7 +59,8 @@ class Http extends Input {
 			$Input = $Input instanceof Input ? $Input : new Input($Input);
 
 			$this->inputs[$key] = $Input;
-		} else {
+		}
+		else {
 			$Input = $this->inputs[$key];
 		}
 

@@ -79,7 +79,7 @@ class Album {
 	protected static function _add(Input $Data) {
 		$values = array(
 			'title'   => trim($Data->get('title', '')),
-			'user_id' => User::curr()->getUserId(),
+			'user_id' => User::curr()->user_id,
 		);
 
 		$id = Fw_Db::i()->query()->insert(self::TBL, $values)->fetchRow();
@@ -99,8 +99,8 @@ class Album {
 	 * @return array
 	 */
 	protected static function getList($n = self::LATEST_N, $params = array()) {
-		$db = Fw_Db::i();
-		$q  = $db->query()->select()->from(self::TBL, self::$tblFields)->limit($n)->orderBy(array('date_created' => false));
+		$db = \Fw_Db::i();
+		$q = $db->query()->select()->from(self::TBL, self::$tblFields)->limit($n)->orderBy(array('date_created' => false));
 		if (!empty($params[self::WHERE])) {
 			foreach ($params[self::WHERE] as $where => $value) {
 				$q->where($where, $value);
@@ -140,6 +140,7 @@ class Album {
 
 	public function __isset($name) {
 		if ($name == 'Author') return true;
+
 		return $this->traitIsset($name);
 	}
 

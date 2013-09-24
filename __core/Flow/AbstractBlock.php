@@ -12,7 +12,7 @@ use Core\Flow;
 class AbstractBlock extends Flow {
 
 	public function action_default() {
-		$this->runChildFlow($this->Input->get(Http::INPUT_ROUTE)->get(0));
+		$this->runChildFlow($this->Input->get(Http::ROUTE)->get(0));
 	}
 
 }

@@ -18,7 +18,7 @@ class Block extends AbstractBlock {
 	}
 
 	public function action_default() {
-		$this->runChildFlow($this->Input->get(Http::INPUT_ROUTE)->get('action'));
+		$this->runChildFlow($this->Input->get(Http::ROUTE)->get('action'));
 	}
 
 }

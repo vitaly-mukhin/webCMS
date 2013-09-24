@@ -21,7 +21,7 @@ class Main extends \App\Flow {
 	const DEFAULT_ACTION = 'default';
 
 	public function action_default() {
-		$next = $this->Input->get(Input\Http::INPUT_ROUTE)->get('page', 'index');
+		$next = $this->Input->get(Input\Http::ROUTE)->get('page', 'index');
 		$next = $next ? : 'index';
 		$this->runChildFlow($next);
 	}

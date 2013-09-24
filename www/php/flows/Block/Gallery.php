@@ -10,7 +10,7 @@ class Gallery extends \App\Flow\Block {
 	 * @return boolean
 	 */
 	public function action_default() {
-		$this->runChildFlow($this->Input->get(Input\Http::INPUT_ROUTE)->get('step'));
+		$this->runChildFlow($this->Input->get(Input\Http::ROUTE)->get('step'));
 	}
 
 	public function action_menu() {

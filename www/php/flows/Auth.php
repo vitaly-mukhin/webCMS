@@ -14,7 +14,7 @@ use Core\User;
 class Auth extends Flow {
 
 	public function action_default() {
-		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
+		$action = $this->Input->get(Input\Http::ROUTE)->get('action');
 
 		if (!$action && User::curr()->isLogged()) {
 			$action = 'profile';
@@ -26,8 +26,8 @@ class Auth extends Flow {
 	public function action_login() {
 		//		Block\Login::process(array(), $this->Output);
 
-		$referrer = $this->Input->get(Input\Http::INPUT_SERVER)->get('HTTP_REFERRER', false);
-		$currentDomain = $this->Input->get(Input\Http::INPUT_SERVER)->get('SERVER_NAME');
+		$referrer = $this->Input->get(Input\Http::SERVER)->get('HTTP_REFERRER', false);
+		$currentDomain = $this->Input->get(Input\Http::SERVER)->get('SERVER_NAME');
 
 		if (User::curr()->isLogged() && $referrer && strpos($referrer, $currentDomain) !== false) {
 			$this->Output->header('Location: ' . $referrer);

@@ -15,7 +15,7 @@ use \App\Block\Head;
 class Auth extends Flow {
 
 	public function action_default() {
-		$childFlow = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
+		$childFlow = $this->Input->get(Input\Http::ROUTE)->get('step');
 		$childFlow = $childFlow ? : 'reg';
 
 		$this->runChildFlow($childFlow);
@@ -31,11 +31,12 @@ class Auth extends Flow {
 		Head::addCssLink(Head::CSS_AUTH_LOGIN);
 
 		if (!User::curr()->isLogged()) {
-			User\Auth::f()->authByPwd($this->Input->get(Input\Http::INPUT_POST)->get(User\Auth::LOGIN), $this->Input->get(Input\Http::INPUT_POST)
-					->get(User\Auth::PASSWORD));
+			$email = $this->Input->get(Input\Http::POST)->get(User\Data::EMAIL);
+			$password = $this->Input->get(Input\Http::POST)->get(User\Data::PASSWORD);
+			User::f()->authByPwd($email, $password);
 		}
 
-		$this->Output->bind('User', User\Auth::f());
+		$this->Output->bind('User', User::f());
 	}
 
 	public function action_profile() {
@@ -52,18 +53,19 @@ class Auth extends Flow {
 		Head::addJsLink(Head::JS_BLOCK_AUTH);
 		Head::addJsLink(Head::JS_BLOCK_AUTH_LOGIN);
 
-		$post = $this->Input->get(Input\Http::INPUT_POST);
-		if (!$post->export()) {
-			return null;
-		}
+		$post = $this->Input->get(Input\Http::POST);
+		if (!$post->export()) return null;
 
 		$Result = User::reg($post);
 
-		if (!$Result->error && ($User = $Result->value) instanceof User && $User->isLogged()) {
+		if (!$Result->error && (($User = $Result->value) instanceof User) && $User->isLogged()) {
 			$redirect = ($this->Output instanceof Output\Http\Json ? '/json/block' : '') . '/auth/profile';
 			$this->Output->header('Location: ' . $redirect);
 
 			return true;
+		}
+		elseif ($Result->data) {
+			$this->Output->bind('errors', $Result->data);
 		}
 
 		$this->Output->bind('data', $post);

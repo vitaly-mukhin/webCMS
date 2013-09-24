@@ -3,11 +3,11 @@
 namespace App\Flow;
 use App\Block\Gallery\Menu;
 use App\Block\Gallery\Own;
-use \App\Flow;
-use \App\Album;
-use \App\Block\Head;
-use \Core\Input;
-use \Core\User;
+use App\Flow;
+use App\Album;
+use App\Block\Head;
+use Core\Input;
+use Core\User;
 
 class Gallery extends Flow {
 
@@ -18,7 +18,7 @@ class Gallery extends Flow {
 		Menu::process(array(), $this->Output);
 		Own::process(array(), $this->Output);
 
-		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
+		$action = $this->Input->get(Input\Http::ROUTE)->get('action');
 		if (intval($action) > 0) {
 			$action = 'view';
 		}
@@ -41,8 +41,8 @@ class Gallery extends Flow {
 	}
 
 	public function action_view() {
-		$action = $this->Input->get(Input\Http::INPUT_ROUTE)->get('action');
-		$id     = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
+		$action = $this->Input->get(Input\Http::ROUTE)->get('action');
+		$id = $this->Input->get(Input\Http::ROUTE)->get('step');
 		if (intval($action) > 0) {
 			$id = $action;
 		}
@@ -71,7 +71,7 @@ class Gallery extends Flow {
 	public function action_add() {
 		Head::addPageTitle('Додати альбом');
 
-		if (!($post = $this->Input->get(Input\Http::INPUT_POST)) || $post->isEmpty()) {
+		if (!($post = $this->Input->get(Input\Http::POST)) || $post->isEmpty()) {
 			return true;
 		}
 
@@ -95,7 +95,7 @@ class Gallery extends Flow {
 	public function action_edit() {
 		Head::addPageTitle('Редагування');
 
-		$id = $this->Input->get(Input\Http::INPUT_ROUTE)->get('step');
+		$id = $this->Input->get(Input\Http::ROUTE)->get('step');
 		if (!$id) {
 			$this->Output->header('Location: /gallery');
 
@@ -103,7 +103,7 @@ class Gallery extends Flow {
 		}
 		$Album = Album_Mapper::getById($id);
 
-		if (!User::curr()->isLogged() || !$Album || User::curr()->getUserId() != $Album->getUserId()) {
+		if (!User::curr()->isLogged() || !$Album || User::curr()->user_id != $Album->getUserId()) {
 			return $this->runChildFlow('noperm');
 		}
 
@@ -111,7 +111,7 @@ class Gallery extends Flow {
 
 		$this->Output->bind('album', $Album);
 
-		if (!($post = $this->Input->get(Input\Http::INPUT_POST)) || $post->isEmpty()) {
+		if (!($post = $this->Input->get(Input\Http::POST)) || $post->isEmpty()) {
 			return true;
 		}
 

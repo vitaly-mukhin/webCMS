@@ -68,17 +68,17 @@ trait Flow {
 		$InputDefault = Input\Http::getDefault();
 
 		// generating _GET array with combined values
-		$getData = $InputDefault->get(Input\Http::INPUT_GET)->export();
-		$routeData = $this->getRoute($InputDefault->get(Input\Http::INPUT_GET));
+		$getData = $InputDefault->get(Input\Http::GET)->export();
+		$routeData = $this->getRoute($InputDefault->get(Input\Http::GET));
 		$params = array_merge($getData, $this->params);
 		$InputGET = new Input($params);
 
 		$this->InputHttp = new Input\Http(array(
-		                                       Input\Http::INPUT_ROUTE  => new Input($routeData),
-		                                       Input\Http::INPUT_GET    => $InputGET,
-		                                       Input\Http::INPUT_POST   => $InputDefault->get(Input\Http::INPUT_POST),
-		                                       Input\Http::INPUT_SERVER => $InputDefault->get(Input\Http::INPUT_SERVER),
-		                                       Input\Http::INPUT_COOKIE => $InputDefault->get(Input\Http::INPUT_COOKIE)
+		                                       Input\Http::ROUTE  => new Input($routeData),
+		                                       Input\Http::GET    => $InputGET,
+		                                       Input\Http::POST   => $InputDefault->get(Input\Http::POST),
+		                                       Input\Http::SERVER => $InputDefault->get(Input\Http::SERVER),
+		                                       Input\Http::COOKIE => $InputDefault->get(Input\Http::COOKIE)
 		                                  ));
 	}
 
