@@ -22,8 +22,9 @@ class Auth extends Block {
 	public static function process($params = array(), \Core\Output $Output = null) {
 		if (empty(self::$User)) {
 			self::initUser();
-			if (!empty($_POST) && !self::$User->isLogged()) {
-				self::$User->auth(new Input($_POST));
+			$User = self::$User;
+			if (!$User->isLogged() && !empty($_POST['auth'])) {
+				$User->auth($_POST);
 			}
 		}
 	}
@@ -32,8 +33,8 @@ class Auth extends Block {
 	 *
 	 */
 	private static function initUser() {
-		$UserSessionData = new Input((array)Session::i()->get(Session::USER));
-		self::$User      = User::f($UserSessionData, true);
+		self::$User = User::curr();
+		self::$User->authFromSession();
 	}
 
 	/**

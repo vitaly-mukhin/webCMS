@@ -19,8 +19,11 @@ use Core\Result;
  * @property int    $user_id
  * @property string $email
  * @property string $username
+ * @property string $hash
  */
 class Data {
+
+	use \Core\Arrayable;
 
 	const USER_ID = 'user_id';
 
@@ -56,13 +59,13 @@ class Data {
 	 * @var array
 	 */
 	private static $fields
-			= array(
+			= [
 				self::F_USER_ID,
 				self::F_EMAIL,
 				self::F_HASH,
 				self::F_DATE_CREATED,
 				self::F_USERNAME
-			);
+			];
 
 	/**
 	 * Name of user table
@@ -75,13 +78,6 @@ class Data {
 	 * @var \Fw_Db
 	 */
 	protected $Db;
-
-	/**
-	 * Storage, which contains data
-	 *
-	 * @var Input
-	 */
-	protected $data = null;
 
 	protected function __construct() {
 		$this->Db = \Fw_Db::i();
@@ -112,43 +108,19 @@ class Data {
 	 * @return void
 	 */
 	protected function init($userId) {
+		$data = [];
 		if ($userId && (int)$userId > 0) {
 			if (!is_array($userId)) {
 				$Q = $this->Db->query();
 				$Q->select()->from($this->tableName, self::$fields)->where(self::F_USER_ID . ' = ?', $userId);
-				$user_data = $Q->fetchRow() ? : array();
-			} else {
-				$user_data = $userId;
+				$data = $Q->fetchRow();
 			}
-			$Data = new Input($user_data);
+			else {
+				$data = $userId;
+			}
 		}
-		else {
-			$Data = $this->getEmptyData();
-		}
 
-		$this->setData($Data);
-	}
-
-	/**
-	 * Returns empty Input for unlogged user
-	 *
-	 * @return \Core\Input
-	 */
-	protected function getEmptyData() {
-		return new Input(array());
-	}
-
-	/**
-	 * Set up the $Data as a source of data about current class entity
-	 *
-	 * @param Input $Data
-	 *
-	 * @return self
-	 */
-	protected function setData(Input $Data) {
-		$this->data = $Data;
-
-		return $this;
+		$this->data = (array)$data;
 	}
 
 	/**
@@ -158,7 +130,7 @@ class Data {
 	 * @throws \Exception
 	 */
 	public function __get($name) {
-		if (isset($this->$name)) return $this->data->get($name);
+		if (isset($this->$name)) return $this->offsetGet($name);
 
 		throw new \Exception('Unknown property: ' . $name);
 	}
@@ -178,9 +150,9 @@ class Data {
 	 * @return \Core\Result
 	 */
 	public function reg(array $data) {
-		if (($Result = $this->checkReg($data)) && $Result->error) {
-			return $Result;
-		}
+		$Result = $this->checkReg($data);
+		if ($Result->error) return $Result;
+
 		$insert = array(
 			self::F_EMAIL    => $email = v(self::EMAIL, false, $data),
 			self::F_USERNAME => v(self::USERNAME, false, $data),
@@ -204,7 +176,7 @@ class Data {
 		$pwd = v(self::PASSWORD, false, $data);
 		$pwd2 = v(self::PASSWORD_REPEAT, false, $data);
 
-		$messages = array();
+		$messages = [];
 		$Q = $this->Db->query()->select()->from($this->tableName, self::F_USER_ID)->where(self::F_EMAIL . ' = ?', $email);
 		switch (true) {
 			case (!filter_var($email, FILTER_VALIDATE_EMAIL)):
@@ -226,9 +198,8 @@ class Data {
 				$messages[self::EMAIL] = 'Вказаний Email вже зареєстровано';
 				break;
 		}
-		$result = empty($messages);
 
-		return new Result(false, !$result, $messages);
+		return new Result(false, !(empty($messages)), $messages);
 	}
 
 	/**
@@ -244,23 +215,12 @@ class Data {
 	}
 
 	/**
-	 * Unified method for retrieving data from source by field name
-	 *
-	 * @param string $field one of Mapper_User\Data::F_* constants
-	 *
-	 * @return string
-	 */
-	protected function get($field) {
-		return $this->data->get($field, 'field_not_found');
-	}
-
-	/**
 	 * Get the DATE_CREATED
 	 *
 	 * @return string
 	 */
 	public function getDateCreated() {
-		return $this->get(self::F_DATE_CREATED);
+		return $this->{self::F_DATE_CREATED};
 	}
 
 	/**
@@ -294,13 +254,12 @@ class Data {
 	/**
 	 * Authenticating user with login/hash combination
 	 *
-	 * @param string $email
-	 * @param string $hash
+	 * @param string $id
 	 *
-	 * @return \Core\User\Auth
+	 * @return static
 	 */
-	public function authByHash($email, $hash) {
-		$this->init($this->byHash($email, $hash));
+	public function authed($id) {
+		$this->init($id);
 
 		return $this;
 	}

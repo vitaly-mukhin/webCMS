@@ -53,8 +53,8 @@ class User {
 	 */
 	protected $Auth;
 
-	private function __construct() {
-		$this->Data = User\Data::f();
+	private function __construct($id = null, Input $UserData = null, $setCurrent = false) {
+		$this->setData($id);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class User {
 	 * @return User|null
 	 */
 	public static function curr() {
-		return empty(self::$current) ? null : self::$current;
+		return empty(self::$current) ? static::i() : self::$current;
 	}
 
 	/**
@@ -74,89 +74,72 @@ class User {
 	 * @return \Core\Result
 	 */
 	public static function reg(Input $Post) {
-		$User = static::f();
+		$User = static::i();
 
 		// add user to users table
 		$Result = $User->Data->reg(v([User\Data::EMAIL, User\Data::USERNAME, User\Data::PASSWORD, User\Data::PASSWORD_REPEAT], '', $Post->export()));
 		if ($Result->error) return $Result;
 
-		$User = static::f($Result->value);
+		$User = static::i($Result->value);
 
 		return new Result($User);
 	}
 
-	/**
-	 * @param Input   $UserData
-	 * @param boolean $setCurrent
-	 *
-	 * @return User
-	 */
-	public static function f(Input $UserData = null, $setCurrent = false) {
-		/* @var User $User */
-		$User = new static();
+	public static function i($id = null, Input $UserData = null, $setCurrent = false) {
+		if (isset(static::$instances[$id])) return static::$instances[$id];
 
-		$UserData = self::getFullInput($UserData);
+		/* @var \Core\User $User */
+		$User = new static($id);
+		if ($id) $User->setData($id);
 
-		$User->setAuth($setCurrent ? $UserData : null);
+		//		$UserData = $UserData ? : new Input();
+		//
+		//		$User->setAuth($setCurrent ? $UserData : null);
+		//
+		//		$User->setData($User->user_id);
+		//
+		//
+		//		if ($setCurrent == self::SET_CURRENT) {
+		//			self::$current = $User;
+		//		}
+		//
+		//		return $User;
 
-		$User->setData($User->user_id);
-
-
-		if ($setCurrent == self::SET_CURRENT) {
-			self::$current = $User;
-		}
-
-		return $User;
+		return static::$instances[$id] = $User;
 	}
 
-	/**
-	 * Prepare full set of user data
-	 *
-	 * @param Input $Input
-	 *
-	 * @return Input
-	 */
-	private static function getFullInput(Input $Input = null) {
-		return $Input ? : new Input();
-	}
-
-	/**
-	 * Set the Auth parameter, which is initiated through User\Data::f()
-	 *
-	 * @param Input $Data
-	 *
-	 * @return User
-	 */
-	private function setAuth(Input $Data = null) {
+	public function authFromSession() {
+		$session = (array)Session::i()[Session::USER];
 		$this->deleteAuthInSession();
 
-		if (is_null($Data)) return $this;
+		$id = v(Data::USER_ID, false, $session);
+		$hash = v('hashWithIP', false, $session);
+		$ip = v('REMOTE_ADDR', false, $_SERVER);
+		$curr_hash = sha1($id . '|' . $ip);
 
-		$login = $Data->get(Data::EMAIL);
-		$password = $Data->get(Data::PASSWORD);
-		if ($login && $password) $this->Data->authByPwd($login, $password);
+		if ($hash && $curr_hash && $hash == $curr_hash) $this->Data->authed($id);
 
-		if ($this->Data->user_id) $this->saveAuth();
-
-		return $this;
+		$this->saveAuthToSession();
 	}
 
 	public function deleteAuthInSession() {
-		Session::i()->set(Session::USER,
-		                  array(
-		                       'is_logged' => false,
-		                       'hash'      => false
-		                  ));
+		$params = [self::IS_LOGGED => false, 'hashWithIP' => false, Data::USER_ID => null];
+		Session::i()[Session::USER] = $params;
 	}
 
-	protected function saveAuth() {
-		Session::i()->set(Session::USER,
-		                  array(
-		                       self::IS_LOGGED => true,
-		                       Data::USER_ID   => $this->Data->user_id,
-		                       Data::EMAIL     => $this->Data->login,
-		                       self::REFRESHED => date('c')
-		                  ));
+	protected function saveAuthToSession() {
+		if (!$this->Data->user_id) {
+			return;
+		}
+
+		$hashWithIP = sha1($this->Data->user_id . '|' . v('REMOTE_ADDR', false, $_SERVER));
+		$params = [
+			self::IS_LOGGED => true,
+			Data::USER_ID   => $this->Data->user_id,
+			'hashWithIP'    => $hashWithIP,
+			self::REFRESHED => date('c')
+		];
+		Session::i()[Session::USER] = $params;
 	}
 
 	/**
@@ -166,20 +149,10 @@ class User {
 	 *
 	 * @return User
 	 */
-	private function setData($userId) {
+	private function setData($userId = null) {
 		$this->Data = User\Data::f($userId);
 
 		return $this;
-	}
-
-	public static function i($id = null) {
-		if (isset(static::$instances[$id])) return static::$instances[$id];
-
-		/* @var \Core\User $User */
-		$User = new static();
-		if ($id) $User->setData($id);
-
-		return static::$instances[$id] = $User;
 	}
 
 	public function __get($name) {
@@ -194,22 +167,28 @@ class User {
 	 * @return array
 	 */
 	public function exportData() {
-		return array(
+		return [
 			User\Data::EMAIL        => $this->Data->email,
 			User\Data::USERNAME     => $this->Data->username,
 			User\Data::DATE_CREATED => $this->Data->getDateCreated()
-		);
+		];
 	}
 
 	/**
 	 * Authenticate the User with data from $Data, and set it as current.
 	 *
-	 * @param Input $Data
+	 * @param array $data
 	 *
 	 * @return User
 	 */
-	public function auth(Input $Data) {
-		return static::f($Data, static::SET_CURRENT);
+	public function auth(array $data) {
+		$login = v('login', false, $data);
+		$password = v(Data::PASSWORD, false, $data);
+		if ($login && $password) $this->Data->authByPwd($login, $password);
+
+		$this->saveAuthToSession();
+
+		return $this;
 	}
 
 	/**
@@ -218,42 +197,14 @@ class User {
 	 * @return boolean
 	 */
 	public function isLogged() {
-		$U = new Input(Session::i()->get(Session::USER));
+		$U = (array)Session::i()[Session::USER];
 
-		$sessionUserId = $U ? (bool)$U->get(Data::USER_ID) : false;
-		$isLogged = $U && $U->get(self::IS_LOGGED);
+		$sessionUserId = (bool)v(Data::USER_ID, false, $U);
+		$isLogged = (bool)v(self::IS_LOGGED, false, $U);
 
 		$result = $isLogged && ($sessionUserId == $this->user_id);
 
 		return $result;
-	}
-
-	/**
-	 * Authenticating user with login/password combination
-	 *
-	 * @param string $email
-	 * @param string $password
-	 *
-	 * @return static
-	 */
-	public function authByPwd($email, $password) {
-		$this->Data->authByPwd($email, $password);
-
-		return $this;
-	}
-
-	/**
-	 * Authenticating user with login/hash combination
-	 *
-	 * @param string $email
-	 * @param string $hash
-	 *
-	 * @return static
-	 */
-	public function authByHash($email, $hash) {
-		$this->Data->authByHash($email, $hash);
-
-		return $this;
 	}
 
 }

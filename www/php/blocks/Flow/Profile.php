@@ -7,7 +7,7 @@
  */
 namespace App\Block\Flow;
 
-class Profile extends \App\Block\Flow {
+class Profile extends \Core\Block\Flow {
 
 	/**
 	 * @param \Core\Input $InputRoute

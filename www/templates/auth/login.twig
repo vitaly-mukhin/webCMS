@@ -1,6 +1,7 @@
 {% extends "auth/__default.twig" %}
 {% block content %}
     <form class="form-signin" method="post">
+		<input type="hidden" name="auth" value="1">
         <h2 class="form-signin-heading">Представляємось</h2>
         <input type="text" name="login" class="input-block-level" placeholder="Login">
         <input type="password" name="password" class="input-block-level" placeholder="Password">

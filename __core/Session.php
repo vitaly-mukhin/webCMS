@@ -8,26 +8,28 @@
 namespace Core;
 use Core\Model\Get;
 
-class Session {
+class Session implements \ArrayAccess {
+
+	use Arrayable;
 
 	const USER = 'section_user';
-
-	/**
-	 *
-	 * @var Session
-	 */
-	private static $instance;
 
 	/**
 	 * @var string
 	 */
 	protected $id;
 
-	protected $data;
-
+	/**
+	 * @param array  $data
+	 * @param string $sessionId
+	 */
 	protected function __construct(array $data, $sessionId) {
 		$this->data = $data;
 		$this->id = $sessionId;
+	}
+
+	public function __destruct() {
+		$this->toUpdateData();
 	}
 
 	protected function __clone() {
@@ -39,9 +41,8 @@ class Session {
 	 * @return Session
 	 */
 	public static function i() {
-		if (!empty(static::$instance)) {
-			return static::$instance;
-		}
+		static $i;
+		if (!empty($i)) return $i;
 
 		if (!session_start()) {
 			throw new \Exception('Cannot start a session');
@@ -49,48 +50,14 @@ class Session {
 
 		$sessionId = session_id();
 
-		return static::$instance = new static($_SESSION, $sessionId);
+		return $i = new static($_SESSION, $sessionId);
 	}
 
-	public function __destruct() {
+	/**
+	 * Update data into $_SESSION superglobal array
+	 */
+	protected function toUpdateData() {
 		$_SESSION = $this->data;
-	}
-
-	/**
-	 * @param $sectionId
-	 *
-	 * @return bool
-	 */
-	public function exists($sectionId){
-		return array_key_exists($sectionId, $this->data);
-	}
-
-	/**
-	 *
-	 * @param string $sectionId
-	 *
-	 * @return mixed
-	 */
-	public function get($sectionId) {
-		return $this->exists($sectionId) ? $this->data[$sectionId] : null;
-	}
-
-	/**
-	 *
-	 * @param string $sectionId
-	 * @param mixed  $params
-	 *
-	 * @return Session
-	 */
-	public function set($sectionId, $params = array()) {
-		if (($isset = $this->exists($sectionId)) && is_array($params)) {
-			$existing = $this->get($sectionId);
-			$params   = is_array($existing) ? array_merge($existing, $params) : $params;
-		}
-
-		$this->data[$sectionId] = $params;
-
-		return $this;
 	}
 
 }

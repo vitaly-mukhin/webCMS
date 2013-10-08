@@ -30,13 +30,8 @@ class Auth extends Flow {
 		Head::addJsLink(Head::JS_BLOCK_AUTH_LOGIN);
 		Head::addCssLink(Head::CSS_AUTH_LOGIN);
 
-		if (!User::curr()->isLogged()) {
-			$email = $this->Input->get(Input\Http::POST)->get(User\Data::EMAIL);
-			$password = $this->Input->get(Input\Http::POST)->get(User\Data::PASSWORD);
-			User::f()->authByPwd($email, $password);
-		}
-
-		$this->Output->bind('User', User::f());
+		// User should be logged in Block\Auth
+		$this->Output->bind('User', User::curr());
 	}
 
 	public function action_profile() {

@@ -24,13 +24,12 @@ class Auth extends Flow {
 	}
 
 	public function action_login() {
-		//		Block\Login::process(array(), $this->Output);
-
-		$referrer = $this->Input->get(Input\Http::SERVER)->get('HTTP_REFERRER', false);
+		$referrer = $this->Input->get(Input\Http::SERVER)->get('HTTP_REFERER', false);
 		$currentDomain = $this->Input->get(Input\Http::SERVER)->get('SERVER_NAME');
 
-		if (User::curr()->isLogged() && $referrer && strpos($referrer, $currentDomain) !== false) {
-			$this->Output->header('Location: ' . $referrer);
+		if (User::curr()->isLogged()) {
+			if ($referrer && strpos($referrer, $currentDomain) !== false && !strpos($referrer, 'login')) $this->Output->header('Location: ' . $referrer);
+			else  $this->Output->header('Location: /auth/profile');
 		}
 
 		Block\Head::addPageTitle('Привітаймося!');
@@ -39,7 +38,7 @@ class Auth extends Flow {
 	}
 
 	public function action_logout() {
-		Flow\Block\Logout::process(array());
+		Flow\Block\Logout::process([]);
 	}
 
 	public function action_reg() {
@@ -47,7 +46,7 @@ class Auth extends Flow {
 	}
 
 	public function action_profile() {
-		Block\Flow\Profile::process(array(), $this->Output);
+		Block\Auth\Profile::process([], $this->Output);
 	}
 
 }
